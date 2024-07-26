@@ -1,0 +1,293 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Booking - YourCompany</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+        .navbar-custom {
+            background-color: #0a3d62;
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .navbar-nav .nav-link {
+            color: white;
+        }
+        .hero-section {
+            background-image: url('{% static "images/busbg.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .booking-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+        }
+        .nav-tabs {
+            border: none;
+        }
+        .nav-tabs .nav-link {
+            border: none;
+            background-color: #f8f9fa;
+            color: #495057;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+            padding: 10px 20px;
+        }
+        .nav-tabs .nav-link.active {
+            background-color: #dc3545;
+            color: white;
+        }
+        .form-control {
+            margin-bottom: 15px;
+        }
+        .btn-search {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+        .btn-search:hover {
+            background-color: #c82333;
+        }
+        footer {
+            background-color: #0a3d62;
+            color: white;
+            padding: 20px 0;
+        }
+
+        /* Styling for the logo and company name */
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand .logo-image {
+            max-height: 40px; /* Adjust this value to control the height of the logo */
+            margin-right: 10px; /* Adjust this value to control the space between the logo and the text */
+        }
+
+        .navbar-brand .company-name {
+            font-size: 1.5rem; /* Adjust this value to control the font size of the company name */
+            font-weight: bold; /* Adjust this value for desired font weight */
+        }
+        .travel-blogs {
+            background-color: #f8f9fa;
+            padding: 50px 0;
+        }
+
+        .blog-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .blog-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .blog-card .card-body {
+            padding: 20px;
+        }
+
+        .blog-card .card-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .blog-card .card-text {
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+
+        .blog-card .btn-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container d-flex align-items-center">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'welcome' %}">
+                <img src="{% static 'images/logo1.png' %}" alt="alternative" class="logo-image">
+                <span class="company-name">TBSC</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'welcome' %}">HOME</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">LOGOUT</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Booking Form -->
+    <section class="hero-section">
+        <div class="booking-container">
+            <ul class="nav nav-tabs mb-3">
+                <li class="nav-item" style="margin-left: 329px;">
+                    <a class="nav-link active" href="#"><i class="fas fa-bus"></i> BUS</a>
+                </li>
+            </ul>
+            <form>
+                <div class="row">
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" placeholder="Source" required>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" placeholder="Destination" required>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" class="form-control" required>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-search w-100">SEARCH BUS</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section class="travel-blogs">
+        <h2 class="text-center mb-4">TRAVEL BLOGS</h2>
+        <div class="container">
+            <div class="row" id="blogCarousel">
+                <!-- Blog cards will be dynamically inserted here -->
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="#" class="btn btn-primary">See All Blogs →</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>About Us</h5>
+                    <p>Your trusted partner for comfortable and reliable bus travel.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Home</a></li>
+                        <li><a href="#" class="text-white">Book a Trip</a></li>
+                        <li><a href="#" class="text-white">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact Info</h5>
+                    <p>Email: info@yourcompany.com<br>Phone: +1 234 567 8900</p>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2024 YourCompany. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+    <script>
+        const blogs = [
+            {
+                title: "Dubai",
+                image: "{% static 'images/Dubai.jpg' %}",
+                description: "Dubai is HOT! I know-Duh. During the 'winter months', which correlate to ours, the temperatures are cooler wit...",
+                link: "#"
+            },
+            {
+                title: "Goa",
+                image: "{% static 'images/goa.jpg' %}",
+                description: "Goa is the perfect mix of natural beauty, lively nightlife, and tropical environs. Check out our Goa blog...",
+                link: "#"
+            },
+            {
+                title: "Kerala",
+                image: "{% static 'images/kerala-tourism.jpg' %}",
+                description: "If you're looking for a Southern getaway in India then Kerala is the perfect choice of destination to plan...",
+                link: "#"
+            },
+            {
+                title: "Goa",
+                image: "{% static 'images/goa.jpg' %}",
+                description: "Goa is the perfect mix of natural beauty, lively nightlife, and tropical environs. Check out our Goa blog...",
+                link: "#"
+            },
+            // Add more blog objects as needed
+        ];
+
+        function createBlogCard(blog) {
+            return `
+                <div class="col-md-3">
+                    <div class="blog-card">
+                        <img src="${blog.image}" alt="${blog.title}">
+                        <div class="card-body">
+                            <h5 class="card-title">${blog.title}</h5>
+                            <p class="card-text">${blog.description}</p>
+                            <a href="${blog.link}" class="btn-link">Read more →</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateBlogCarousel() {
+            console.log('Updating blog carousel'); // Debugging log
+            const carousel = document.getElementById('blogCarousel');
+            carousel.innerHTML = '';
+            const displayedBlogs = blogs.slice(0, 4); // Display 4 blogs at a time
+            displayedBlogs.forEach(blog => {
+                carousel.innerHTML += createBlogCard(blog);
+            });
+        }
+
+        // Initial update
+        updateBlogCarousel();
+
+        // Rotate blogs every 5 seconds
+        setInterval(() => {
+            blogs.push(blogs.shift()); // Move the first blog to the end
+            updateBlogCarousel();
+        }, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+        }
+        
+        body {
+            background-image: url('{% static "images/bg3.jpg" %}');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            backdrop-filter: blur(5px);
+        }
+        
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .card {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            font-size: 1.5rem;
+            background-color: rgba(0, 123, 255, 0.8);
+        }
+        
+        .form-group label {
+            font-weight: bold;
+        }
+        
+        input[type="file"] {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: .375rem .75rem;
+        }
+        
+        fieldset {
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+        }
+        
+        legend {
+            width: auto;
+            padding: 0 10px;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background-color: rgba(0, 123, 255, 0.8);
+            border-color: #007bff;
+            font-size: 1.25rem;
+        }
+        
+        input:invalid {
+            border-color: #dc3545;
+        }
+        
+        input:valid {
+            border-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header text-center bg-primary text-white">
+                <h4>Create Account</h4>
+            </div>
+            <div class="card-body">
+                <form id="registrationForm" action="{% url 'signup_moderator' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="fname">First Name</label>
+                            <input type="text" class="form-control" id="fname" name="f_name" placeholder="Enter First Name" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="lname">Last Name</label>
+                            <input type="text" class="form-control" id="lname" name="l_name" placeholder="Enter Last Name" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="mobile">Mobile No.</label>
+                            <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile No." required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="email">Email ID</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Email ID" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="re-password">Re-type Password</label>
+                            <input type="password" class="form-control" id="re-password" name="password_confirm" placeholder="Re-type Password" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="file">Upload CV File</label>
+                        <input type="file" class="form-control-file" id="file" name="cv_file">
+                    </div>
+                    <fieldset class="border p-3">
+                        <legend class="w-auto px-2">Tax Information</legend>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="gst">GST</label>
+                                <input type="text" class="form-control" id="gst" name="gst" placeholder="Please Enter GST Number">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="pan">PAN</label>
+                                <input type="text" class="form-control" id="pan" name="pan" placeholder="Please Enter PAN Number">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="panName">PAN Name</label>
+                                <input type="text" class="form-control" id="panName" name="pan_name" placeholder="Enter PAN Name">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="aadhar">Aadhar Number</label>
+                                <input type="text" class="form-control" id="aadhar" name="aadhar" placeholder="Enter Aadhar Number">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="company">Company Name</label>
+                                <input type="text" class="form-control" id="company" name="company" placeholder="Company Name">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="city">City</label>
+                                <input type="text" class="form-control" id="city" name="city" placeholder="City">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{% static 'scripts.js' %}"></script>
+    <script>
+       
+    </script>
+</body>
+</html>
