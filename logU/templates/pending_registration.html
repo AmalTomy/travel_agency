@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Pending</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+            text-align: center;
+        }
+        .message-box {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .message-box h1 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        .message-box p {
+            font-size: 16px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="message-box">
+            <h1>Registration Pending</h1>
+            <p>{{ message }}</p>
+            <p>Please wait while our team reviews your registration. You will receive an email once your registration has been approved.</p>
+            <p>If you have any questions, please contact our support team at <a href="{% url 'index' %}">HOME</a>.</p>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-     'django.contrib.admin',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -56,6 +56,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'django.contrib.sites.middleware.CurrentSiteMiddleware', 
+    
 ]
 
 ROOT_URLCONF = 'logU.urls'
@@ -133,7 +135,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
+    
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -148,7 +150,7 @@ EMAIL_HOST_USER = 'amaltomy321@gmail.com'
 EMAIL_HOST_PASSWORD='mqhi mmoe ucqk dzjj'
 DEFAULT_FROM_EMAIL = 'amaltomy321@gmail.com'
 
-SITE_ID = 2
+SITE_ID = 1 
 
 
 

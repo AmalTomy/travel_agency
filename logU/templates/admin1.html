@@ -93,27 +93,34 @@
         <!-- Sidebar -->
         <nav id="sidebar" class="bg-dark text-light">
             <div class="sidebar-header">
-                <h3 class="mb-0">Nexus</h3>
+                <h3 class="mb-0">TBSC</h3>
             </div>
             <ul class="list-unstyled components">
                 <li class="active">
-                    <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a href="{% url 'admin1' %}"><i class="fas fa-home"></i> Dashboard</a>
                 </li>
                 <li>
-                    <a href="#"><i class="fas fa-layer-group"></i> Moderators Requests</a>
+                    <a href="{% url 'moderator_details' %}"><i class="fas fa-users"></i> Moderators</a>
                 </li>
                 <li>
-                    <a href="#"><i class="fas fa-chart-line"></i> Analytics</a>
+                    <a href="{% url 'customer_details' %}"><i class="fas fa-user"></i> Customers</a>
                 </li>
                 <li>
-                    <a href="#"><i class="fas fa-user-circle"></i> User Management</a>
+                    <a href="#"><i class="fas fa-plus-circle"></i> Add News</a>
                 </li>
                 <li>
-                    <a href="#"><i class="fas fa-cog"></i> Settings</a>
+                    <a href="{% url 'mod_req_details' %}"><i class="fas fa-tools"></i> Moderator Requests</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fas fa-bus"></i> Buses</a>
+                </li>
+                <li>
+                    <a href="{% url 'add_locations' %}"><i class="fas fa-bus"></i> Add Locations</a>
                 </li>
             </ul>
+            
             <div class="sidebar-footer">
-                <a href="#" class="btn btn-primary btn-block">LOGOUT</a>
+                <a href="{% url 'signout' %}" class="btn btn-primary btn-block">LOGOUT</a>
             </div>
         </nav>
 
@@ -129,13 +136,13 @@
                         <div class="dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src="https://via.placeholder.com/30" alt="User" class="rounded-circle">
-                                <span class="ms-2">John Doe</span>
+                                <span class="ms-2">Admin</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                                <li><a class="dropdown-item" href="{% url 'signout' %}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                             </ul>
                         </div>
                     </div>
@@ -197,12 +204,12 @@
                     <div class="col-md-4 mb-4">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="card-title mb-0">Top Products</h5>
+                                <h5 class="card-title mb-0">Clients</h5>
                             </div>
                             <div class="card-body">
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Users
+                                        Customers
                                         <span class="badge bg-primary rounded-pill">234</span>
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between align-items-center">

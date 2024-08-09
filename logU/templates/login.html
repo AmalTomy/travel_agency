@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 
 {% load socialaccount %}
@@ -6,171 +7,241 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="styles.css">
+    
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-
         /* styles.css */
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f7f7f7;
-    font-family: Arial, sans-serif;
-    margin: 0;
-}
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f7f7f7;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
 
-.login-container {
-    background: #fff;
-    padding: 40px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    text-align: center;
-    width: 300px;
-}
+        .login-container {
+            background: #fff;
+            padding: 40px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            width: 300px;
+        }
 
-.login-container h1 {
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #333;
-}
+        .login-container h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
 
-.input-group {
-    margin-bottom: 20px;
-    text-align: left;
-}
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
 
-.input-group label {
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-    color: #666;
-}
+        .input-group label {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #666;
+        }
 
-.input-group label i {
-    margin-right: 8px;
-}
+        .input-group label i {
+            margin-right: 8px;
+        }
 
-.input-group input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
 
-.forgot-password {
-    display: block;
-    text-align: right;
-    margin-top: -10px;
-    margin-bottom: 20px;
-    font-size: 12px;
-    color: #999;
-    text-decoration: none;
-}
+        .forgot-password {
+            display: block;
+            text-align: right;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #999;
+            text-decoration: none;
+        }
 
-.login-btn {
-    width: 100%;
-    padding: 10px;
-    background: linear-gradient(to right, #00d2ff, #3a7bd5);
-    border: none;
-    border-radius: 4px;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-}
+        .login-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(to right, #00d2ff, #3a7bd5);
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
 
-.login-btn:hover {
-    opacity: 0.9;
-}
+        .login-btn:hover {
+            opacity: 0.9;
+        }
 
-.social-icons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-}
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
 
-.social-icons a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    color: #fff;
-    font-size: 20px;
-}
+        .social-icons a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 20px;
+        }
 
-.social-icons a:nth-child(1) {
-    background: #3b5998;
-}
+        .social-icons a:nth-child(1) {
+            background: #3b5998;
+        }
 
-.social-icons a:nth-child(2) {
-    background: #00acee;
-}
+        .social-icons a:nth-child(2) {
+            background: #00acee;
+        }
 
-.social-icons a:nth-child(3) {
-    background: #db4437;
-}
-.small-label {
-    font-size: 0.875rem; /* This makes the text smaller */
-    display: block; /* Ensure it's block-level if needed */
-    margin-top: 10px; /* Adjust as needed for spacing */
-}
+        .social-icons a:nth-child(3) {
+            background: #db4437;
+        }
 
-.small-label .caption {
-    font-size: inherit; /* Inherit font size from the parent */
-}
+        .small-label {
+            font-size: 0.875rem; /* This makes the text smaller */
+            display: block; /* Ensure it's block-level if needed */
+            margin-top: 10px; /* Adjust as needed for spacing */
+        }
 
-.small-label a {
-    font-size: inherit; /* Inherit font size from the parent */
-    color: #007bff; /* Adjust link color if needed */
-    text-decoration: none;
-}
+        .small-label .caption {
+            font-size: inherit; /* Inherit font size from the parent */
+        }
 
-.small-label a:hover {
-    color: #0056b3; /* Adjust link hover color if needed */
-    text-decoration: underline;
-}
+        .small-label a {
+            font-size: inherit; /* Inherit font size from the parent */
+            color: #007bff; /* Adjust link color if needed */
+            text-decoration: none;
+        }
 
+        .small-label a:hover {
+            color: #0056b3; /* Adjust link hover color if needed */
+            text-decoration: underline;
+        }
+
+        /* Validation Error Messages */
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none; /* Hidden by default */
+        }
+
+        /* Input field with error */
+        input.invalid {
+            border-color: red;
+        }
+
+        /* Error message visibility */
+        input:focus + .error-message {
+            display: block;
+        }
     </style>
-
 </head>
 <body>
     <div class="login-container">
         <h1>Login</h1>
-        {% if messages %}
-        {{ messages.error }}
+        {% if error %}
+        <div style="color: rgb(255, 0, 0); padding: 10px;">
+            {{ error }}
+        </div>
         {% endif %}
-        <form action="{% url 'login' %}"method="post">
+        <form id="login-form" action="{% url 'login' %}" method="post">
             {% csrf_token %}
             <div class="input-group">
                 <label for="username">
                     <i class="fa fa-user"></i>
                     Email
                 </label>
-                <input type="email" id="email"name="email" placeholder="Type your email">
+                <input type="email" id="email" name="email" placeholder="Type your email">
+                <div id="email-error" class="error-message"></div> <!-- Error message element -->
             </div>
             <div class="input-group">
                 <label for="password">
                     <i class="fa fa-lock"></i>
                     Password
                 </label>
-                <input type="password" id="password" name="password"placeholder="Type your password">
+                <input type="password" id="password" name="password" placeholder="Type your password">
+                <div id="password-error" class="error-message"></div> <!-- Error message element -->
             </div>
             <a href="{% url 'password_reset' %}" class="forgot-password">Forgot password?</a>
             <button type="submit" class="login-btn">Login</button>
         </form>
-        <p>Or Sign Up Using</p>
+        <!-- <p>Or Sign Up Using</p> -->
         {% comment %} <div class="social-icons">
             <a href="{% provider_login_url 'google' %}"><i class="bi bi-google"></i></a>
         </div><br> {% endcomment %}
         <label class="control control--checkbox mb-0 small-label">
             <span class="caption">Don't have an account? <a href="{% url 'signup' %}">Sign Up</a>.</span>
         </label>
-        
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('login-form');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const emailError = document.getElementById('email-error');
+            const passwordError = document.getElementById('password-error');
+
+            console.log('Form:', form);
+            console.log('Email Input:', emailInput);
+            console.log('Password Input:', passwordInput);
+            console.log('Email Error:', emailError);
+            console.log('Password Error:', passwordError);
+
+            form.addEventListener('submit', function(event) {
+                let valid = true;
+
+                // Email validation
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(emailInput.value.trim())) {
+                    emailError.textContent = 'Please enter a valid email address.';
+                    emailError.style.display = 'block';
+                    emailInput.classList.add('invalid');
+                    valid = false;
+                } else {
+                    emailError.style.display = 'none';
+                    emailInput.classList.remove('invalid');
+                }
+
+                // Password validation
+                if (passwordInput.value.trim() === '') {
+                    passwordError.textContent = 'Password is required.';
+                    passwordError.style.display = 'block';
+                    passwordInput.classList.add('invalid');
+                    console.log('Password is required');
+                    valid = false;
+                } else {
+                    passwordError.style.display = 'none';
+                    passwordInput.classList.remove('invalid');
+                }
+
+                // If not valid, prevent form submission
+                if (!valid) {
+                    event.preventDefault();
+                }
+
+                console.log('Form valid:', valid);
+            });
+        });
+    </script>
 </body>
 </html>

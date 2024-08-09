@@ -16,8 +16,19 @@
     
     <!-- Style -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <title>Sign Up</title>
+    <style>
+      .is-invalid {
+        border-color: #dc3545;
+    }
+    
+    .error-message {
+        color: #dc3545;
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+    }
+  </style>  
   </head>
   <body>
   
@@ -31,7 +42,7 @@
           <div class="col-md-7 py-5">
             <h3>Register</h3>
             <p class="mb-4">Register to continue.</p>
-            <form action="{% url 'signup' %}" method="POST">
+            <form action="{% url 'signup' %}" method="POST" id="signup-form">
               {% csrf_token %}
               <div class="row">
                 <div class="col-md-6">
@@ -105,9 +116,10 @@
 
     
   </div>
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/signup-validation.js' %}"></script>
   </body>
 </html>

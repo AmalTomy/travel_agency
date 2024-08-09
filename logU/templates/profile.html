@@ -1,163 +1,359 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="Aria is a business focused HTML landing page template built with Bootstrap to help you create lead generation websites for companies and their services.">
-    <meta name="author" content="Inovatik">
-
-    <!-- OG Meta Tags to improve the way the post looks when you share the page on LinkedIn, Facebook, Google+ -->
-	<meta property="og:site_name" content="" /> <!-- website name -->
-	<meta property="og:site" content="" /> <!-- website link -->
-	<meta property="og:title" content=""/> <!-- title shown in the actual shared post -->
-	<meta property="og:description" content="" /> <!-- description shown in the actual shared post -->
-	<meta property="og:image" content="" /> <!-- image link, make sure it's jpg -->
-	<meta property="og:url" content="" /> <!-- where do you want your post to link to -->
-	<meta property="og:type" content="article" />
+    {% load static %}
 
     <!-- Website Title -->
     <title>TBSC</title>
-    
+
     <!-- Styles -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:500,700&display=swap&subset=latin-ext" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600&display=swap&subset=latin-ext" rel="stylesheet">
     <link href="{% static 'css1/bootstrap.css' %}" rel="stylesheet">
     <link href="{% static 'css1/fontawesome-all.css' %}" rel="stylesheet">
-    <link href="{% static 'css1/swiper.css' %}" rel="stylesheet">
-	<link href="{% static 'css1/magnific-popup.css' %}" rel="stylesheet">
-	<link href="{% static 'css1/styles.css' %}" rel="stylesheet">
-	
-	<!-- Favicon  -->
+    <link href="{% static 'css1/styles.css' %}" rel="stylesheet">
+
+    <!-- Favicon  -->
     <link rel="icon" href="{% static 'images/logo1.png' %}">
+    <style>
+        body {
+            background-color: #103C4A; /* Adjust the color to match your image */
+            color: #fff;
+        }
+        .navbar-custom {
+            background-color: #103C4A;
+            padding: 10px 20px; /* Reduced padding */
+        }
+        .navbar-brand img {
+            height: 40px; /* Adjust the logo size */
+        }
+        .form-container {
+            background-color: #1A5263;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-top: 20px; /* Add some margin for spacing */
+        }
+        .form-container label {
+            color: #fff;
+        }
+        .form-container .form-control {
+            background-color: #2B7A8C;
+            border: none;
+            color: #fff;
+        }
+        .form-container .form-control::placeholder {
+            color: #fff;
+        }
+        .btn-custom {
+            background-color: #FFD700;
+            color: #103C4A;
+        }
+        .footer {
+            background-color: #103C4A;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0; /* Reduced padding */
+        }
+        .hidden {
+            display: none;
+        }
+        .profile-image {
+            width: 150px; /* Adjust the size as needed */
+            height: 150px; /* Adjust the size as needed */
+            border-radius: 50%; /* Makes the image circular */
+            object-fit: cover; /* Ensures the image covers the entire area */
+            border: 2px solid #ccc; /* Optional: Add a border */
+            margin-bottom: 20px; /* Add some margin for spacing */
+            margin-left: 160px; /* Add some margin for spacing */ 
+            margin-top: 20px; /* Add some margin for spacing */
+        }
+        .btn-container {
+            display: flex;
+            justify-content: center;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body data-spy="scroll" data-target=".fixed-top">
-    
-    <!-- Preloader -->
-	<div class="spinner-wrapper">
-        <div class="spinner">
-            <div class="bounce1"></div>
-            <div class="bounce2"></div>
-            <div class="bounce3"></div>
-        </div>
-    </div>
-    <!-- end of preloader -->
+
     <!-- Navbar -->
     <nav class="navbar navbar-expand-md navbar-dark navbar-custom fixed-top">
-        <!-- Text Logo - Use this if you don't have a graphic logo -->
-        <!-- <a class="navbar-brand logo-text page-scroll" href="index.html">Aria</a> -->
-
-        <!-- Image Logo -->
         <a class="navbar-brand logo-image" href="{% url 'welcome' %}">
-            <img src="{% static 'images/logo1.png' %}"  alt="alternative" >
+            <img src="{% static 'images/logo1.png' %}" alt="alternative">
         </a>
-        <!-- Mobile Menu Toggle Button -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-awesome fas fa-bars"></span>
             <span class="navbar-toggler-awesome fas fa-times"></span>
         </button>
-        <!-- end of mobile menu toggle button -->
-
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <a class="nav-link page-scroll" href="{% url 'welcome' %}">HOME <span class="sr-only">(current)</span></a>
                 </li>
             </ul>
-            
         </div>
-    </nav> <!-- end of navbar -->
+    </nav>
     <!-- end of navbar -->
-    <!-- Call Me -->
-    <div id="callMe" class="form-1">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="text-container">
-                        <div class="section-title">CALL ME</div>
-						<div class="profile-image mx-auto">
-							<!-- Replace this with your profile image -->
-							<img src="path_to_your_profile_image.jpg" alt="Profile Image" class="rounded-circle">
-						</div>
-						<div class="form-group">
-							<label for="limage">Upload Profile Image:</label>
-							<input type="file" class="form-control-file" id="limage" name="profile_image">
-							<div class="help-block with-errors"></div>
-						</div>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 form-container">
+               
+                <form id="profileForm" method="post" action="{% url 'update_profile' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-field">
+                        {% if customer.profile_picture %}
+                            <img id="profile-image-display" class="profile-image" src="{{ customer.profile_picture.url }}" alt="Profile Image">
+                        {% else %}
+                            <img id="profile-image-display" class="profile-image" src="{% static 'images/default-profile.png' %}" alt="Profile Image">
+                        {% endif %}
                     </div>
-                </div> <!-- end of col -->
+            
+                    <div class="form-group">
+                        <label for="first_name">First Name:</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ customer.first_name }}" required onkeyup="validateFirstName(this)"disabled>
+                        <div id="first_name-error" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ customer.last_name }}" required onkeyup="validateLastName(this)"disabled>
+                        <div id="last_name-error" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ customer.email }}" required onkeyup="validateEmail(this)"disabled>
+                        <div id="email-error" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone_number">Phone Number:</label>
+                        <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ customer.phone }}" required onkeyup="validatePhoneNumber(this)"disabled>
+                        <div id="phone_number-error" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address:</label>
+                        <textarea class="form-control" id="address" name="address" rows="3" required onkeyup="validateAddress(this)"disabled>{{ customer.address }}</textarea>
+                        <div id="address-error" class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile_picture">Upload Profile Image:</label>
+                        <input type="file" class="form-control-file" id="profile_picture" name="profile_picture" onchange="validateProfilePicture(this)"disabled>
+                        <div id="profile_picture-error" class="error-message"></div>
+                    </div>
+                    <div class="form-group text-center btn-container">
+                        <button type="button" id="editButton" class="btn btn-custom">Edit Profile</button>
+                        <button type="submit" id="updateButton" class="btn btn-custom hidden">Update Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- end of main content -->
 
-				
-                <div class="col-lg-6">
-                   
-                    <!-- Call Me Form -->
-                    <!-- Call Me Form -->
-<form id="callMeForm" data-toggle="validator" data-focus="false" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="form-group">
-        <label for="fname">First Name:</label>
-        <input type="text" class="form-control-input" id="fname" name="first_name" required>
-        <div class="help-block with-errors"></div>
-    </div>
-    <div class="form-group">
-        <label for="lname">Last Name:</label>
-        <input type="text" class="form-control-input" id="lname" name="last_name" required>
-        <div class="help-block with-errors"></div>
-    </div>
-    <div class="form-group">
-        <label for="lemail">Email:</label>
-        <input type="email" class="form-control-input" id="lemail" name="email" required>
-        <div class="help-block with-errors"></div>
-    </div>
-    <div class="form-group">
-        <label for="lphone">Phone Number:</label>
-        <input type="text" class="form-control-input" id="lphone" name="phone_number" required>
-        <div class="help-block with-errors"></div>
-    </div>
-    <div class="form-group">
-        <label for="laddress">Address:</label>
-        <textarea class="form-control-textarea" id="laddress" name="address" rows="3" required></textarea>
-        <div class="help-block with-errors"></div>
-    </div>
-    
-    <div class="form-group">
-		<button  type="submit" class="form-control-submit-button" disabled>Edit Profile</button>
-<br><br>
-        <button type="submit" class="form-control-submit-button">Update Profile</button>
-    </div>
-    <div class="form-message">
-        <div id="lmsgSubmit" class="h3 text-center hidden"></div>
-    </div>
-</form>
-<!-- end of call me form -->
-
-                    <!-- end of call me form -->
-                    
-                </div> <!-- end of col -->
-            </div> <!-- end of row -->
-        </div> <!-- end of container -->
-    </div> <!-- end of form-1 -->
-    <!-- end of call me -->
     <!-- Footer -->
-	<div class="footer" style="padding-top: 11rem !important;">
-		<div class="col-lg-12">
-			<p class="p-small">Copyright © 2020 <a href="https://inovatik.com">Template by Inovatik</a></p>
-		</div>
+    <div class="footer">
+        <p class="p-small">&copy; 2024 TBSC. All rights reserved.</p>
+    </div>
+    <!-- end of footer -->
 
-	</div>
- <!-- Scripts -->
-<script src="{% static 'js1/jquery.min.js' %}"></script> <!-- jQuery for Bootstrap's JavaScript plugins -->
-<script src="{% static 'js1/popper.min.js' %}"></script> <!-- Popper tooltip library for Bootstrap -->
-<script src="{% static 'js1/bootstrap.min.js' %}"></script> <!-- Bootstrap framework -->
-<script src="{% static 'js1/jquery.easing.min.js' %}"></script> <!-- jQuery Easing for smooth scrolling between anchors -->
-<script src="{% static 'js1/swiper.min.js' %}"></script> <!-- Swiper for image and text sliders -->
-<script src="{% static 'js1/jquery.magnific-popup.js' %}"></script> <!-- Magnific Popup for lightboxes -->
-<script src="{% static 'js1/morphext.min.js' %}"></script> <!-- Morphtext rotating text in the header -->
-<script src="{% static 'js1/isotope.pkgd.min.js' %}"></script> <!-- Isotope for filter -->
-<script src="{% static 'js1/validator.min.js' %}"></script> <!-- Validator.js - Bootstrap plugin that validates forms -->
-<script src="{% static 'js1/scripts.js' %}"></script> <!-- Custom scripts -->
+    <!-- Scripts -->
+    <script src="{% static 'js1/jquery.min.js' %}"></script>
+    <script src="{% static 'js1/popper.min.js' %}"></script>
+    <script src="{% static 'js1/bootstrap.min.js' %}"></script>
+    <script>
+        const form = document.getElementById('profileForm');
+        const editButton = document.getElementById('editButton');
+        const updateButton = document.getElementById('updateButton');
+        const cancelButton = document.getElementById('cancelButton');
+        const inputs = form.querySelectorAll('input, textarea');
+        const profileImageInput = document.getElementById('profile_picture');
+        const profileImageDisplay = document.getElementById('profile-image-display');
+        let originalValues = {};
 
+        function toggleEditMode(editable) {
+            inputs.forEach(input => {
+                input.disabled = !editable;
+                if (editable) {
+                    originalValues[input.name] = input.value;
+                } else {
+                    input.value = originalValues[input.name] || '';
+                }
+            });
+            editButton.style.display = editable ? 'none' : 'inline-block';
+            updateButton.style.display = editable ? 'inline-block' : 'none';
+            cancelButton.style.display = editable ? 'inline-block' : 'none';
+            profileImageInput.disabled = !editable;
+        }
+
+        editButton.addEventListener('click', () => toggleEditMode(true));
+        cancelButton.addEventListener('click', () => {
+            toggleEditMode(false);
+            profileImageDisplay.src = originalValues['profile_picture'] || "{% static 'images/default-profile.png' %}";
+        });
+
+        profileImageInput.addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    profileImageDisplay.src = e.target.result;
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+        function validateFirstName(input) {
+            const errorElement = document.getElementById('first_name-error');
+            if (input.value.trim() === '' || /\d/.test(input.value)) {
+                errorElement.textContent = 'First name is required and should not contain numbers.';
+                input.setCustomValidity('Invalid first name');
+            } else {
+                errorElement.textContent = '';
+                input.setCustomValidity('');
+            }
+        }
+
+        function validateLastName(input) {
+            const errorElement = document.getElementById('last_name-error');
+            if (input.value.trim() === '' || /\d/.test(input.value)) {
+                errorElement.textContent = 'Last name is required and should not contain numbers.';
+                input.setCustomValidity('Invalid last name');
+            } else {
+                errorElement.textContent = '';
+                input.setCustomValidity('');
+            }
+        }
+
+        function validateEmail(input) {
+            const errorElement = document.getElementById('email-error');
+            if (input.value.trim() === '' || !input.value.includes('@')) {
+                errorElement.text = 'Please enter a valid email address.';
+                input.setCustomValidity('Invalid email');
+            } else {
+                // Check if email already exists
+                fetch('{% url "check_email" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: 'email=' + encodeURIComponent(input.value)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists && input.value !== '{{ customer.email }}') {
+                        errorElement.text = 'This email is already taken.';
+                        input.setCustomValidity('Email already exists');
+                    } else {
+                        errorElement.textContent = '';
+                        input.setCustomValidity('');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        }
+
+        function validatePhoneNumber(input) {
+            const errorElement = document.getElementById('phone_number-error');
+            if (input.value.trim() === '' || !/^\d{10}$/.test(input.value)) {
+                errorElement.textContent = 'Please enter a valid 10-digit phone number.';
+                input.setCustomValidity('Invalid phone number');
+            } else {
+                errorElement.textContent = '';
+                input.setCustomValidity('');
+            }
+        }
+
+        function validateAddress(input) {
+            const errorElement = document.getElementById('address-error');
+            if (input.value.trim() === '') {
+                errorElement.textContent = 'Address is required.';
+                input.setCustomValidity('Invalid address');
+            } else {
+                errorElement.textContent = '';
+                input.setCustomValidity('');
+            }
+        }
+
+        function validateProfilePicture(input) {
+            const errorElement = document.getElementById('profile_picture-error');
+            if (input.files.length > 0) {
+                const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+                if (!allowedExtensions.exec(input.value)) {
+                    errorElement.textContent = 'Please upload an image file (jpg, jpeg, png, or gif).';
+                    input.setCustomValidity('Invalid file type');
+                } else {
+                    errorElement.textContent = '';
+                    input.setCustomValidity('');
+                }
+            } else {
+                errorElement.textContent = '';
+                input.setCustomValidity('');
+            }
+        }
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Perform final client-side validation
+            const inputs = form.querySelectorAll('input, textarea');
+            let isValid = true;
+            inputs.forEach(input => {
+                if (input.name !== 'profile_picture') {
+                    input.dispatchEvent(new Event('keyup'));
+                } else {
+                    validateProfilePicture(input);
+                }
+                if (!input.checkValidity()) {
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) {
+                return;
+            }
+
+            let formData = new FormData(this);
+
+            fetch('{% url "update_profile" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Profile updated successfully!');
+                    toggleEditMode(false);
+                    if (data.profile_picture_url) {
+                        profileImageDisplay.src = data.profile_picture_url + '?t=' + new Date().getTime();
+                    }
+                    // Update originalValues with new data
+                    Object.keys(data).forEach(key => {
+                        if (originalValues.hasOwnProperty(key)) {
+                            originalValues[key] = data[key];
+                        }
+                    });
+                } else {
+                    alert('Error updating profile: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the profile.');
+            });
+        });
+    </script>
 </body>
 </html>

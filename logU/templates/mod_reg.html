@@ -74,6 +74,42 @@
         input:valid {
             border-color: #28a745;
         }
+        .form-control.is-invalid {
+            border-color: #dc3545;
+            padding-right: calc(1.5em + 0.75rem);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(0.375em + 0.1875rem) center;
+            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        }
+        
+        .form-control.is-valid {
+            border-color: #28a745;
+            padding-right: calc(1.5em + 0.75rem);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(0.375em + 0.1875rem) center;
+            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        }
+        
+        .invalid-feedback {
+            display: block;
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 80%;
+            color: #dc3545;
+        }
+
+
+        .has-error .form-control {
+            border-color: #dc3545;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            font-size: 80%;
+            margin-top: 0.25rem;
+        }
     </style>
 </head>
 <body>
@@ -162,7 +198,213 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="{% static 'scripts.js' %}"></script>
     <script>
-       
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registrationForm');
+        
+            // Validation functions
+            const isValidName = (name) => /^[A-Za-z\s]+$/.test(name);
+            const isValidMobile = (mobile) => /^\d{10}$/.test(mobile);
+            const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            const isValidPassword = (password) => /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
+            const isValidGST = (gst) => /^\d{15}$/.test(gst);
+            const isValidPAN = (pan) => /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan);
+            const isValidAadhar = (aadhar) => /^\d{12}$/.test(aadhar.replace(/\s/g, ''));
+            const isValidCompanyCity = (name) => /^[A-Za-z\s]+$/.test(name);
+        
+            // Helper function to show error
+            const showError = (input, message) => {
+                const formGroup = input.closest('.form-group');
+                formGroup.classList.add('has-error');
+                const error = formGroup.querySelector('.error-message') || document.createElement('div');
+                error.className = 'error-message text-danger';
+                error.textContent = message;
+                if (!formGroup.querySelector('.error-message')) {
+                    formGroup.appendChild(error);
+                }
+            };
+        
+            // Helper function to clear error
+            const clearError = (input) => {
+                const formGroup = input.closest('.form-group');
+                formGroup.classList.remove('has-error');
+                const error = formGroup.querySelector('.error-message');
+                if (error) {
+                    error.remove();
+                }
+            };
+        
+            // Validation for each field
+            form.fname.addEventListener('input', function() {
+                if (!isValidName(this.value)) {
+                    showError(this, 'Please enter a valid first name (letters only)');
+                } else {
+                    clearError(this);
+                }
+            });
+        
+            form.l_name.addEventListener('input', function() {
+                if (!isValidName(this.value)) {
+                    showError(this, 'Please enter a valid last name (letters only)');
+                } else {
+                    clearError(this);
+                }
+            });
+        
+            form.mobile.addEventListener('input', function() {
+                if (!isValidMobile(this.value)) {
+                    showError(this, 'Please enter a valid 10-digit mobile number');
+                } else {
+                    clearError(this);
+                }
+            });
+        
+            form.email.addEventListener('input', function() {
+                if (!isValidEmail(this.value)) {
+                    showError(this, 'Please enter a valid email address');
+                } else {
+                    clearError(this);
+                }
+            });
+        
+            form.password.addEventListener('input', function() {
+                if (!isValidPassword(this.value)) {
+                    showError(this, 'Password must be at least 8 characters long, contain one uppercase letter, one number, and one special character');
+                } else {
+                    clearError(this);
+                }
+            });
+        
+            form.password_confirm.addEventListener('input', function() {
+                if (this.value !== form.password.value) {
+                    showError(this, 'Passwords do not match');
+                } else {
+                    clearError(this);
+                }
+            });
+        
+            form.cv_file.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file && !file.name.toLowerCase().endsWith('.pdf')) {
+                    showError(this, 'Please upload a PDF file only');
+                } else {
+                    clearError(this);
+                }
+            });
+        
+            form.gst.addEventListener('input', function() {
+                if (this.value && !isValidGST(this.value)) {
+                    showError(this, 'Please enter a valid 15-digit GST number');
+                } else {
+                    clearError(this);
+                }
+            });
+        
+            form.pan.addEventListener('input', function() {
+                if (this.value && !isValidPAN(this.value)) {
+                    showError(this, 'Please enter a valid PAN number (e.g., ABCDE1234F)');
+                } else {
+                    clearError(this);
+                }
+            });
+        
+            form.pan_name.addEventListener('input', function() {
+                if (!isValidName(this.value)) {
+                    showError(this, 'Please enter a valid PAN name (letters only)');
+                } else {
+                    clearError(this);
+                }
+            });
+        
+            form.aadhar.addEventListener('input', function() {
+                if (this.value && !isValidAadhar(this.value)) {
+                    showError(this, 'Please enter a valid 12-digit Aadhar number');
+                } else {
+                    clearError(this);
+                }
+                // Format Aadhar number with spaces
+                this.value = this.value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
+            });
+        
+            form.company.addEventListener('input', function() {
+                if (!isValidCompanyCity(this.value)) {
+                    showError(this, 'Please enter a valid company name (letters and spaces only)');
+                } else {
+                    clearError(this);
+                }
+            });
+        
+            form.city.addEventListener('input', function() {
+                if (!isValidCompanyCity(this.value)) {
+                    showError(this, 'Please enter a valid city name (letters and spaces only)');
+                } else {
+                    clearError(this);
+                }
+            });
+        
+            // Form submission
+            form.addEventListener('submit', function(event) {
+                let isValid = true;
+                
+                // Validate all fields
+                if (!isValidName(form.fname.value)) {
+                    showError(form.fname, 'Please enter a valid first name');
+                    isValid = false;
+                }
+                if (!isValidName(form.l_name.value)) {
+                    showError(form.l_name, 'Please enter a valid last name');
+                    isValid = false;
+                }
+                if (!isValidMobile(form.mobile.value)) {
+                    showError(form.mobile, 'Please enter a valid 10-digit mobile number');
+                    isValid = false;
+                }
+                if (!isValidEmail(form.email.value)) {
+                    showError(form.email, 'Please enter a valid email address');
+                    isValid = false;
+                }
+                if (!isValidPassword(form.password.value)) {
+                    showError(form.password, 'Password must be at least 8 characters long, contain one uppercase letter, one number, and one special character');
+                    isValid = false;
+                }
+                if (form.password.value !== form.password_confirm.value) {
+                    showError(form.password_confirm, 'Passwords do not match');
+                    isValid = false;
+                }
+                if (form.cv_file.files.length > 0 && !form.cv_file.files[0].name.toLowerCase().endsWith('.pdf')) {
+                    showError(form.cv_file, 'Please upload a PDF file only');
+                    isValid = false;
+                }
+                if (form.gst.value && !isValidGST(form.gst.value)) {
+                    showError(form.gst, 'Please enter a valid 15-digit GST number');
+                    isValid = false;
+                }
+                if (form.pan.value && !isValidPAN(form.pan.value)) {
+                    showError(form.pan, 'Please enter a valid PAN number');
+                    isValid = false;
+                }
+                if (form.pan_name.value && !isValidName(form.pan_name.value)) {
+                    showError(form.pan_name, 'Please enter a valid PAN name');
+                    isValid = false;
+                }
+                if (form.aadhar.value && !isValidAadhar(form.aadhar.value)) {
+                    showError(form.aadhar, 'Please enter a valid 12-digit Aadhar number');
+                    isValid = false;
+                }
+                if (form.company.value && !isValidCompanyCity(form.company.value)) {
+                    showError(form.company, 'Please enter a valid company name');
+                    isValid = false;
+                }
+                if (form.city.value && !isValidCompanyCity(form.city.value)) {
+                    showError(form.city, 'Please enter a valid city name');
+                    isValid = false;
+                }
+                
+                // Prevent form submission if validation fails
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+        });
     </script>
 </body>
 </html>

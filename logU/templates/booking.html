@@ -10,127 +10,128 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Custom CSS -->
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-        }
-        .navbar-custom {
-            background-color: #0a3d62;
-        }
-        .navbar-custom .navbar-brand,
-        .navbar-custom .navbar-nav .nav-link {
-            color: white;
-        }
-        .hero-section {
-            background-image: url('{% static "images/busbg.jpg" %}');
-            background-size: cover;
-            background-position: center;
-            height: 600px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .booking-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 800px;
-        }
-        .nav-tabs {
-            border: none;
-        }
-        .nav-tabs .nav-link {
-            border: none;
-            background-color: #f8f9fa;
-            color: #495057;
-            margin-right: 5px;
-            border-radius: 5px 5px 0 0;
-            padding: 10px 20px;
-        }
-        .nav-tabs .nav-link.active {
-            background-color: #dc3545;
-            color: white;
-        }
-        .form-control {
-            margin-bottom: 15px;
-        }
-        .btn-search {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 18px;
-        }
-        .btn-search:hover {
-            background-color: #c82333;
-        }
-        footer {
-            background-color: #0a3d62;
-            color: white;
-            padding: 20px 0;
-        }
+   
+ <style>
+    body {
+        font-family: 'Arial', sans-serif;
+    }
+    .navbar-custom {
+        background-color: #0a3d62;
+    }
+    .navbar-custom .navbar-brand,
+    .navbar-custom .navbar-nav .nav-link {
+        color: white;
+    }
+    .hero-section {
+        background-image: url('{% static "images/busbg.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        height: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .booking-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 800px;
+    }
+    .nav-tabs {
+        border: none;
+    }
+    .nav-tabs .nav-link {
+        border: none;
+        background-color: #f8f9fa;
+        color: #495057;
+        margin-right: 5px;
+        border-radius: 5px 5px 0 0;
+        padding: 10px 20px;
+    }
+    .nav-tabs .nav-link.active {
+        background-color: #dc3545;
+        color: white;
+    }
+    .form-control {
+        margin-bottom: 15px;
+    }
+    .btn-search {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 18px;
+    }
+    .btn-search:hover {
+        background-color: #c82333;
+    }
+    footer {
+        background-color: #0a3d62;
+        color: white;
+        padding: 20px 0;
+    }
 
-        /* Styling for the logo and company name */
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-        }
+    /* Styling for the logo and company name */
+    .navbar-brand {
+        display: flex;
+        align-items: center;
+    }
 
-        .navbar-brand .logo-image {
-            max-height: 40px; /* Adjust this value to control the height of the logo */
-            margin-right: 10px; /* Adjust this value to control the space between the logo and the text */
-        }
+    .navbar-brand .logo-image {
+        max-height: 40px; /* Adjust this value to control the height of the logo */
+        margin-right: 10px; /* Adjust this value to control the space between the logo and the text */
+    }
 
-        .navbar-brand .company-name {
-            font-size: 1.5rem; /* Adjust this value to control the font size of the company name */
-            font-weight: bold; /* Adjust this value for desired font weight */
-        }
-        .travel-blogs {
-            background-color: #f8f9fa;
-            padding: 50px 0;
-        }
+    .navbar-brand .company-name {
+        font-size: 1.5rem; /* Adjust this value to control the font size of the company name */
+        font-weight: bold; /* Adjust this value for desired font weight */
+    }
+    .travel-blogs {
+        background-color: #f8f9fa;
+        padding: 50px 0;
+    }
 
-        .blog-card {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            transition: transform 0.3s ease;
-        }
+    .blog-card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        transition: transform 0.3s ease;
+    }
 
-        .blog-card:hover {
-            transform: translateY(-5px);
-        }
+    .blog-card:hover {
+        transform: translateY(-5px);
+    }
 
-        .blog-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-        }
+    .blog-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
 
-        .blog-card .card-body {
-            padding: 20px;
-        }
+    .blog-card .card-body {
+        padding: 20px;
+    }
 
-        .blog-card .card-title {
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
+    .blog-card .card-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
 
-        .blog-card .card-text {
-            color: #6c757d;
-            margin-bottom: 15px;
-        }
+    .blog-card .card-text {
+        color: #6c757d;
+        margin-bottom: 15px;
+    }
 
-        .blog-card .btn-link {
-            color: #007bff;
-            text-decoration: none;
-        }
-    </style>
+    .blog-card .btn-link {
+        color: #007bff;
+        text-decoration: none;
+    }
+</style>
 </head>
 <body>
     <!-- Header -->
@@ -149,7 +150,7 @@
                         <a class="nav-link" href="{% url 'welcome' %}">HOME</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">LOGOUT</a>
+                        <a class="nav-link" href="{% url 'signout' %}">LOGOUT</a>
                     </li>
                 </ul>
             </div>
@@ -164,24 +165,28 @@
                     <a class="nav-link active" href="#"><i class="fas fa-bus"></i> BUS</a>
                 </li>
             </ul>
-            <form>
+            <form method="post" action="{% url 'bus_list' %}">
+                {% csrf_token %}
                 <div class="row">
                     <div class="col-md-3">
-                        <input type="text" class="form-control" placeholder="Source" required>
+                        <input type="text" name="departure_location" class="form-control" placeholder="Source" required>
                     </div>
                     <div class="col-md-3">
-                        <input type="text" class="form-control" placeholder="Destination" required>
+                        <input type="text" name="destination_location" class="form-control" placeholder="Destination" required>
                     </div>
                     <div class="col-md-3">
-                        <input type="date" class="form-control" required>
+                        <input type="date" name="date" class="form-control" required>
                     </div>
                     <div class="col-md-3">
                         <button type="submit" class="btn btn-search w-100">SEARCH BUS</button>
                     </div>
+                    
                 </div>
             </form>
         </div>
     </section>
+
+
 
     <section class="travel-blogs">
         <h2 class="text-center mb-4">TRAVEL BLOGS</h2>
@@ -196,7 +201,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="mt-5">
+    <footer class="mt-5">   
         <div class="container">
             <div class="row">
                 <div class="col-md-4">

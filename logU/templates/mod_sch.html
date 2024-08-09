@@ -3,29 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Moderators Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <style>
         body {
             background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
         }
-        .sidebar {
-            background-color: #212529;
-            color: #fff;
-            height: 100vh;
-            padding-top: 20px;
-        }
-        .sidebar .nav-link {
-            color: #adb5bd;
-        }
-        .sidebar .nav-link.active {
-            color: #fff;
-            background-color: #0d6efd;
-        }
+        
+
         .main-content {
             padding: 20px;
         }
+
         .stat-card {
             background-color: #fff;
             border-radius: 10px;
@@ -33,103 +28,513 @@
             margin-bottom: 20px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
+
         .stat-icon {
             font-size: 2rem;
             margin-bottom: 10px;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-nav .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem;
+            margin-right: 15px; /* Adjust spacing between items */
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .header-nav .nav-link.active {
+            background-color: rgba(0, 123, 255, 0.1); /* Light blue background */
+            color: #007bff; /* Blue text color */
+        }
+
+        .header-nav .nav-link.active::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 123, 255, 0.2); /* Semi-transparent overlay */
+            z-index: -1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        header .d-flex {
+            margin-left: auto; /* Pushes the header content to the right */
+        }
+
+        .alert {
+            display: flex;
+            align-items: center;
+            padding-right: 500px;
+        }
+        .form-container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+            margin-left:400px;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .col-md-6 {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+        }
+
+        .form-group input, 
+        .form-group textarea, 
+        .form-group select {
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            padding: 10px;
+            width: 100%;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        .form-group button {
+            width: 100%;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+            margin-top: 5px;
+        }
+        .has-error input, .has-error select, .has-error textarea {
+            border-color: red;
         }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
-            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-                <div class="position-sticky">
-                    <h5 class="px-3 mb-3">Connect Plus</h5>
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">
-                                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="fas fa-palette me-2"></i> UI Elements
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="fas fa-icons me-2"></i> Icons
-                            </a>
-                        </li>
-                        <!-- Add more sidebar items as needed -->
-                    </ul>
-                </div>
-            </nav>
-
             <!-- Main content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+            <main class="col-md-12 px-md-4 main-content">
                 <!-- Header -->
                 <header class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
-                    <div class="d-flex align-items-center">
-                        <input type="text" class="form-control" placeholder="Search products">
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <span class="me-3">Reports</span>
-                        <span class="me-3">Projects</span>
-                        <span class="me-3">English</span>
+                    <div class="d-flex align-items-center dropdown">
                         <img src="https://via.placeholder.com/40" alt="User" class="rounded-circle">
+                        <span class="me-3 dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">{{ first_name }} {{ last_name }}</span>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'buses_added_by_moderator' %}">Buses Added by You</a></li>                            
+                            <li><a class="dropdown-item" href="#">Logout</a></li>
+                        </ul>
                     </div>
                 </header>
 
-                <div class="alert alert-light" role="alert">
-                    Like what you see? Check out our premium version for more.
-                    <button class="btn btn-sm btn-primary float-end">Upgrade To Pro</button>
+                <div class="alert alert-light d-flex justify-content-end align-items-center" role="alert">
+                    <nav class="header-nav">
+                        <a class="nav-link" href="{% url 'mod_home' %}">
+                            <i class="fas fa-home me-2"></i> Home
+                        </a>
+                        <a class="nav-link" href="{% url 'mod_sch' %}">
+                            <i class="fas fa-bus me-2"></i> Schedule Buses
+                        </a>
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-list-alt me-2"></i> Report List
+                        </a>
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-icons me-2"></i> Icons
+                        </a>
+                    </nav>
                 </div>
-
-                <h2 class="mb-4">Overview dashboard</h2>
-
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="stat-card">
-                            <i class="fas fa-shopping-cart stat-icon text-primary"></i>
-                            <h3>932.00</h3>
-                            <p>Orders</p>
-                            <small>Completed: 5443</small>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stat-card">
-                            <i class="fas fa-users stat-icon text-success"></i>
-                            <h3>756.00</h3>
-                            <p>Unique Visitors</p>
-                            <small>Increased since yesterday: 50%</small>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stat-card">
-                            <i class="fas fa-eye stat-icon text-warning"></i>
-                            <h3>100,38</h3>
-                            <p>Impressions</p>
-                            <small>Increased since yesterday: 35%</small>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stat-card">
-                            <i class="fas fa-heart stat-icon text-danger"></i>
-                            <h3>4250k</h3>
-                            <p>Followers</p>
-                            <small>Decreased since yesterday: 25%</small>
-                        </div>
-                    </div>
-                </div>
+                
             </main>
+            
+            <div class="form-container">
+                <h2>Add New Bus</h2>
+                <form id="busForm" method="post" action="{% url 'add_bus' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="bus_name">Bus Name</label>
+                                <input type="text" id="bus_name" name="bus_name" class="form-control" required>
+                                <div class="error-message" id="bus_name_error"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="bus_number">Bus Number</label>
+                                <input type="text" id="bus_number" name="bus_number" class="form-control" required>
+                                <div class="error-message" id="bus_number_error"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="bus_type">Bus Type</label>
+                                <select id="bus_type" name="bus_type" class="form-control" required>
+                                    <option value="">Select Bus Type</option>
+                                    <option value="sleeper">Sleeper</option>
+                                    <option value="semi-sleeper">Semi-Sleeper</option>
+                                </select>
+                                <div class="error-message" id="bus_type_error"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="seating_capacity">Seating Capacity</label>
+                                <input type="number" id="seating_capacity" name="seating_capacity" class="form-control" value="48" readonly required>
+                                <div class="error-message" id="seating_capacity_error"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="departure_location">Departure Location</label>
+                                <input type="text" id="departure_location" name="departure_location" class="form-control" required>
+                                <div class="error-message" id="departure_location_error"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="destination_location">Destination Location</label>
+                                <input type="text" id="destination_location" name="destination_location" class="form-control" required>
+                                <div class="error-message" id="destination_location_error"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="departure_time">Departure Time</label>
+                                <input type="time" id="departure_time" name="departure_time" class="form-control" required>
+                                <div class="error-message" id="departure_time_error"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="arrival_time">Arrival Time</label>
+                                <input type="time" id="arrival_time" name="arrival_time" class="form-control" required>
+                                <div class="error-message" id="arrival_time_error"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="arrival_date"> Date</label>
+                                <input type="date" id="date" name="date" class="form-control" required>
+                                <div class="error-message" id="date_error"></div>
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="stops">Stops</label>
+                                <textarea id="stops" name="stops" class="form-control" rows="4"></textarea>
+                                <div class="error-message" id="stops_error"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="ticket_price">Ticket Price</label>
+                                <input type="number" step="0.01" id="ticket_price" name="ticket_price" class="form-control" required>
+                                <div class="error-message" id="ticket_price_error"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact_number">Contact Number</label>
+                                <input type="text" id="contact_number" name="contact_number" class="form-control" required>
+                                <div class="error-message" id="contact_number_error"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email_address">Email Address</label>
+                                <input type="email" id="email_address" name="email_address" class="form-control" required>
+                                <div class="error-message" id="email_address_error"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="bus_image">Bus Image</label>
+                                <input type="file" id="bus_image" name="bus_image" class="form-control" required>
+                                <div class="error-message" id="bus_image_error"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="driver_information">Driver Information</label>
+                                <textarea id="driver_information" name="driver_information" class="form-control" rows="4"></textarea>
+                                <div class="error-message" id="driver_information_error"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="status">Status</label>
+                                <select id="status" name="status" class="form-control" required>
+                                    <option value="active">Active</option>
+                                    <option value="under_maintenance">Under Maintenance</option>
+                                </select>
+                                <div class="error-message" id="status_error"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="moderator_id" value="{{ moderator.id }}">
+                        <button type="submit" class="btn btn-primary">Add Bus</button>
+                    </div>
+                </form>
+            </div>
+            
+
+
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Add any custom JavaScript here
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('busForm');
+
+            // Validation functions
+            const isValidName = (name) => /^[A-Za-z\s]+$/.test(name);
+            const isValidBusNumber = (number) => /^[A-Za-z0-9\s]+$/.test(number);
+            const isValidType = (type) => ['sleeper', 'semi-sleeper'].includes(type);
+            const isValidLocation = (location) => /^[A-Za-z\s]+$/.test(location);
+            const isValidTime = (time) => /^([01]\d|2[0-3]):?([0-5]\d)$/.test(time);
+            const isValidStops = (stops) => stops.length > 0;
+            const isValidTicketPrice = (price) => price > 0;
+            const isValidContactNumber = (number) => /^\d{10}$/.test(number);
+            const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            const isValidImage = (file) => file && file.name.toLowerCase().endsWith('.jpg') || file.name.toLowerCase().endsWith('.jpeg') || file.name.toLowerCase().endsWith('.png');
+            const isValidDriverInfo = (info) => info.length > 0;
+            const isValidStatus = (status) => ['active', 'under_maintenance'].includes(status);
+            const isValidDate = (date) => {
+                const selectedDate = new Date(date);
+                const currentDate = new Date();
+                return selectedDate >= currentDate;
+            };
+            // Helper function to show error
+            const showError = (input, message) => {
+                const formGroup = input.closest('.form-group');
+                formGroup.classList.add('has-error');
+                const error = formGroup.querySelector('.error-message') || document.createElement('div');
+                error.className = 'error-message';
+                error.textContent = message;
+                if (!formGroup.querySelector('.error-message')) {
+                    formGroup.appendChild(error);
+                }
+            };
+
+            // Helper function to clear error
+            const clearError = (input) => {
+                const formGroup = input.closest('.form-group');
+                formGroup.classList.remove('has-error');
+                const error = formGroup.querySelector('.error-message');
+                if (error) {
+                    error.remove();
+                }
+            };
+
+            // Validation for each field
+            form.bus_name.addEventListener('input', function() {
+                if (!isValidName(this.value)) {
+                    showError(this, 'Please enter a valid bus name (letters only)');
+                } else {
+                    clearError(this);
+                }
+            });
+
+            form.bus_number.addEventListener('input', function() {
+                if (!isValidBusNumber(this.value)) {
+                    showError(this, 'Please enter a valid bus number');
+                } else {
+                    clearError(this);
+                }
+            });
+
+            form.bus_type.addEventListener('change', function() {
+                if (!isValidType(this.value)) {
+                    showError(this, 'Please select a valid bus type');
+                } else {
+                    clearError(this);
+                }
+            });
+
+            form.seating_capacity.addEventListener('input', function() {
+                if (this.value <= 0) {
+                    showError(this, 'Please enter a valid seating capacity');
+                } else {
+                    clearError(this);
+                }
+            });
+
+            form.departure_location.addEventListener('input', function() {
+                if (!isValidLocation(this.value)) {
+                    showError(this, 'Please enter a valid departure location (letters only)');
+                } else {
+                    clearError(this);
+                }
+            });
+
+            form.destination_location.addEventListener('input', function() {
+                if (!isValidLocation(this.value)) {
+                    showError(this, 'Please enter a valid destination location (letters only)');
+                } else {
+                    clearError(this);
+                }
+            });
+
+            form.departure_time.addEventListener('input', function() {
+                if (!isValidTime(this.value)) {
+                    showError(this, 'Please enter a valid departure time');
+                } else {
+                    clearError(this);
+                }
+            });
+
+            form.arrival_time.addEventListener('input', function() {
+                if (!isValidTime(this.value)) {
+                    showError(this, 'Please enter a valid arrival time');
+                } else {
+                    clearError(this);
+                }
+            });
+
+            form.date.addEventListener('input', function() {
+                if (!isValidDate(this.value)) {
+                    showError(this, 'Please select a date today or in the future');
+                } else {
+                    clearError(this);
+                }
+            });
+
+            form.stops.addEventListener('input', function() {
+                if (!isValidStops(this.value)) {
+                    showError(this, 'Please enter valid stops');
+                } else {
+                    clearError(this);
+                }
+            });
+
+            form.ticket_price.addEventListener('input', function() {
+                if (!isValidTicketPrice(this.value)) {
+                    showError(this, 'Please enter a valid ticket price');
+                } else {
+                    clearError(this);
+                }
+            });
+
+            form.contact_number.addEventListener('input', function() {
+                if (!isValidContactNumber(this.value)) {
+                    showError(this, 'Please enter a valid 10-digit contact number');
+                } else {
+                    clearError(this);
+                }
+            });
+
+            form.email_address.addEventListener('input', function() {
+                if (!isValidEmail(this.value)) {
+                    showError(this, 'Please enter a valid email address');
+                } else {
+                    clearError(this);
+                }
+            });
+
+            form.bus_image.addEventListener('change', function() {
+                const file = this.files[0];
+                if (!isValidImage(file)) {
+                    showError(this, 'Please upload a valid image file (jpg, jpeg, png)');
+                } else {
+                    clearError(this);
+                }
+            });
+
+            form.driver_information.addEventListener('input', function() {
+                if (!isValidDriverInfo(this.value)) {
+                    showError(this, 'Please enter valid driver information');
+                } else {
+                    clearError(this);
+                }
+            });
+
+            form.status.addEventListener('change', function() {
+                if (!isValidStatus(this.value)) {
+                    showError(this, 'Please select a valid status');
+                } else {
+                    clearError(this);
+                }
+            });
+
+            // Form submission
+            form.addEventListener('submit', function(event) {
+                let isValid = true;
+
+                // Validate all fields
+                if (!isValidName(form.bus_name.value)) {
+                    showError(form.bus_name, 'Please enter a valid bus name');
+                    isValid = false;
+                }
+                if (!isValidBusNumber(form.bus_number.value)) {
+                    showError(form.bus_number, 'Please enter a valid bus number');
+                    isValid = false;
+                }
+                if (!isValidType(form.bus_type.value)) {
+                    showError(form.bus_type, 'Please select a valid bus type');
+                    isValid = false;
+                }
+                if (form.seating_capacity.value <= 0) {
+                    showError(form.seating_capacity, 'Please enter a valid seating capacity');
+                    isValid = false;
+                }
+                if (!isValidLocation(form.departure_location.value)) {
+                    showError(form.departure_location, 'Please enter a valid departure location');
+                    isValid = false;
+                }
+                if (!isValidLocation(form.destination_location.value)) {
+                    showError(form.destination_location, 'Please enter a valid destination location');
+                    isValid = false;
+                }
+                if (!isValidTime(form.departure_time.value)) {
+                    showError(form.departure_time, 'Please enter a valid departure time');
+                    isValid = false;
+                }
+                if (!isValidTime(form.arrival_time.value)) {
+                    showError(form.arrival_time, 'Please enter a valid arrival time');
+                    isValid = false;
+                }
+                if (!isValidDate(form.date.value)) {
+                    showError(form.date, 'Please select a valid date');
+                    isValid = false;
+                }
+                if (!isValidStops(form.stops.value)) {
+                    showError(form.stops, 'Please enter valid stops');
+                    isValid = false;
+                }
+                if (!isValidTicketPrice(form.ticket_price.value)) {
+                    showError(form.ticket_price, 'Please enter a valid ticket price');
+                    isValid = false;
+                }
+                if (!isValidContactNumber(form.contact_number.value)) {
+                    showError(form.contact_number, 'Please enter a valid contact number');
+                    isValid = false;
+                }
+                if (!isValidEmail(form.email_address.value)) {
+                    showError(form.email_address, 'Please enter a valid email address');
+                    isValid = false;
+                }
+                if (form.bus_image.files.length > 0 && !isValidImage(form.bus_image.files[0])) {
+                    showError(form.bus_image, 'Please upload a valid image file');
+                    isValid = false;
+                }
+                if (!isValidDriverInfo(form.driver_information.value)) {
+                    showError(form.driver_information, 'Please enter valid driver information');
+                    isValid = false;
+                }
+                if (!isValidStatus(form.status.value)) {
+                    showError(form.status, 'Please select a valid status');
+                    isValid = false;
+                }
+
+                // Prevent form submission if validation fails
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+        });
     </script>
 </body>
 </html>
