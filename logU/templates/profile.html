@@ -50,6 +50,8 @@
         .btn-custom {
             background-color: #FFD700;
             color: #103C4A;
+            margin-left: 20px;
+
         }
         .footer {
             background-color: #103C4A;
@@ -79,9 +81,31 @@
             font-size: 0.9em;
             margin-top: 5px;
         }
+        .notification {
+            position: fixed;
+            top: 80px; /* Adjust this value based on your navbar height */
+            right: 20px;
+            padding: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            display: none;
+            z-index: 9999; /* Ensure it's above other elements */
+            animation: fadeInOut 5s ease-in-out;
+            min-width: 200px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-20px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
     </style>
 </head>
 <body data-spy="scroll" data-target=".fixed-top">
+    <div id="notification" class="notification"></div>
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-md navbar-dark navbar-custom fixed-top">
@@ -107,7 +131,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-6 form-container">
                
-                <form id="profileForm" method="post" action="{% url 'update_profile' %}" enctype="multipart/form-data">
+                <form id="profileForm" method="post" action="{% url 'profile' %}" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-field">
                         {% if customer.profile_picture %}
@@ -129,8 +153,8 @@
                     </div>
                     <div class="form-group">
                         <label for="email">Email:</label>
-                        <input type="email" class="form-control" id="email" name="email" value="{{ customer.email }}" required onkeyup="validateEmail(this)"disabled>
-                        <div id="email-error" class="error-message"></div>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ customer.email }}" required onkeyup="validateEmail(this)" disabled>
+                        <div id="email-error" class="error-message" style="color: red; font-size: 0.9em; margin-top: 5px;"></div>
                     </div>
                     <div class="form-group">
                         <label for="phone_number">Phone Number:</label>
@@ -150,6 +174,7 @@
                     <div class="form-group text-center btn-container">
                         <button type="button" id="editButton" class="btn btn-custom">Edit Profile</button>
                         <button type="submit" id="updateButton" class="btn btn-custom hidden">Update Profile</button>
+                        <button type="button" id="cancelButton" class="btn btn-custom hidden">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -184,6 +209,11 @@
                     originalValues[input.name] = input.value;
                 } else {
                     input.value = originalValues[input.name] || '';
+                    // Clear error messages when disabling edit mode
+                    const errorElement = document.getElementById(input.name + '-error');
+                    if (errorElement) {
+                        errorElement.textContent = '';
+                    }
                 }
             });
             editButton.style.display = editable ? 'none' : 'inline-block';
@@ -233,7 +263,7 @@
         function validateEmail(input) {
             const errorElement = document.getElementById('email-error');
             if (input.value.trim() === '' || !input.value.includes('@')) {
-                errorElement.text = 'Please enter a valid email address.';
+                errorElement.textContent = 'Please enter a valid email address.';
                 input.setCustomValidity('Invalid email');
             } else {
                 // Check if email already exists
@@ -248,7 +278,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.exists && input.value !== '{{ customer.email }}') {
-                        errorElement.text = 'This email is already taken.';
+                        errorElement.textContent = 'This email is already taken.';
                         input.setCustomValidity('Email already exists');
                     } else {
                         errorElement.textContent = '';
@@ -333,27 +363,55 @@
             })
             .then(response => response.json())
             .then(data => {
+                console.log('Response received:', data);
                 if (data.success) {
-                    alert('Profile updated successfully!');
+                    console.log('Showing success notification');
+                    showNotification('Profile updated successfully!');
                     toggleEditMode(false);
                     if (data.profile_picture_url) {
                         profileImageDisplay.src = data.profile_picture_url + '?t=' + new Date().getTime();
                     }
-                    // Update originalValues with new data
+                    // Update originalValues and form fields with new data
                     Object.keys(data).forEach(key => {
                         if (originalValues.hasOwnProperty(key)) {
                             originalValues[key] = data[key];
+                            const input = form.querySelector(`[name="${key}"]`);
+                            if (input) {
+                                input.value = data[key];
+                            }
                         }
                     });
                 } else {
-                    alert('Error updating profile: ' + data.error);
+                    console.log('Showing error notification');
+                    showNotification('Error updating profile: ' + (data.errors ? Object.values(data.errors).join(', ') : 'Unknown error'), 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error occurred while updating the profile.');
+                showNotification('An error occurred while updating the profile.', 'error');
             });
         });
+
+        function showNotification(message, type = 'success') {
+            console.log('showNotification called:', message, type);
+            const notification = document.getElementById('notification');
+            console.log('Notification element:', notification);
+            notification.textContent = message;
+            notification.style.backgroundColor = type === 'success' ? '#4CAF50' : '#f44336';
+            notification.style.display = 'block';
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateY(0)';
+            
+            console.log('Notification style:', notification.style.cssText);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 500);
+            }, 4500);
+        }
     </script>
 </body>
 </html>

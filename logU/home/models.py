@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.signals import user_logged_out
 from django.dispatch import receiver
+from django.core.validators import FileExtensionValidator
 
 class Users(AbstractUser):
     USER_TYPE_CHOICES = [
@@ -119,14 +120,24 @@ class Bus(models.Model):
 class Location(models.Model):
     location_id = models.AutoField(primary_key=True)
     source = models.CharField(max_length=100)
+    source_code = models.CharField(max_length=4, default='-')
     destination = models.CharField(max_length=100)
-    route_stops = models.TextField()  # More descriptive name for stops
+    destination_code = models.CharField(max_length=4, default='-')
+    stops = models.TextField()
+
+    class Meta:
+        unique_together = ['source', 'source_code', 'destination', 'destination_code', 'stops']
 
     def __str__(self):
-        return f"{self.source} to {self.destination}"
+        return f"{self.source} ({self.source_code}) to {self.destination} ({self.destination_code})"
 
     def get_stops_list(self):
-        return [stop.strip() for stop in self.route_stops.split(',') if stop.strip()]  # Using comma as separator
+        return [stop.strip() for stop in self.stops.split(',') if stop.strip()]
 
-    def set_stops_list(self, stops_list):
-        self.route_stops = ','.join(stops_list)  # Using comma as separator
+    def save(self, *args, **kwargs):
+        self.source = self.source.strip()
+        self.source_code = self.source_code.strip() or '-'
+        self.destination = self.destination.strip()
+        self.destination_code = self.destination_code.strip() or '-'
+        self.stops = ','.join(stop.strip() for stop in self.stops.split(',') if stop.strip())
+        super().save(*args, **kwargs)

@@ -42,27 +42,31 @@
           <div class="col-md-7 py-5">
             <h3>Register</h3>
             <p class="mb-4">Register to continue.</p>
+            <div id="form-errors" class="alert alert-danger" style="display: none;"></div>
             <form action="{% url 'signup' %}" method="POST" id="signup-form">
-              {% csrf_token %}
+              <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group first">
                     <label for="fname">First Name</label>
                     <input type="text" class="form-control" placeholder="First Name" id="fname" name="f_name">
+                    <div id="fname-error" class="error-message"></div>
                   </div>    
                 </div>
                 <div class="col-md-6">
                   <div class="form-group first">
                     <label for="lname">Last Name</label>
                     <input type="text" class="form-control" placeholder="Last Name" id="lname" name="l_name">
+                    <div id="lname-error" class="error-message"></div>
                   </div>    
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-12">
                   <div class="form-group first">
-                    <label for="email">Address</label>
+                    <label for="address">Address</label>
                     <input type="text" class="form-control" placeholder="Address" id="address" name="address">
+                    <div id="address-error" class="error-message"></div>
                   </div>    
                 </div>
               </div>
@@ -71,12 +75,14 @@
                   <div class="form-group first">
                     <label for="phone">Phone Number</label>
                     <input type="text" class="form-control" placeholder="+00 0000 000 0000" id="phone" name="phone">
+                    <div id="phone-error" class="error-message"></div>
                   </div>    
                 </div>
                 <div class="col-md-6">
                   <div class="form-group first">
                     <label for="email">Email</label>
                     <input type="text" class="form-control" placeholder="Email" id="email" name="email">
+                    <div id="email-error" class="error-message"></div>
                   </div>    
                 </div>
               </div>
@@ -86,6 +92,7 @@
                   <div class="form-group last mb-3">
                     <label for="password">Password</label>
                     <input type="password" class="form-control" placeholder="Your Password" id="password" name="password">
+                    <div id="password-error" class="error-message"></div>
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -93,6 +100,7 @@
                   <div class="form-group last mb-3">
                     <label for="re-password">Re-type Password</label>
                     <input type="password" class="form-control" placeholder="Your Password" id="re-password" name="password_confirm">
+                    <div id="re-password-error" class="error-message"></div>
                   </div>
                 </div>
               </div>
@@ -120,6 +128,138 @@
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
-    <script src="{% static 'js/signup-validation.js' %}"></script>
+    <script>
+    $(document).ready(function() {
+        function validateField(field, errorField, validationFunction) {
+            var value = field.val().trim();
+            var isValid = validationFunction(value);
+            if (isValid) {
+                field.removeClass('is-invalid');
+                errorField.hide();
+            } else {
+                field.addClass('is-invalid');
+                errorField.show();
+            }
+            return isValid;
+        }
+
+        function validateFirstName(value) {
+            if (value === '' || /^\s/.test(value) || /\d/.test(value)) {
+                $('#fname-error').text('First Name is required and should not contain numbers or start with spaces');
+                return false;
+            }
+            return true;
+        }
+
+        function validateLastName(value) {
+            if (value === '' || /^\s/.test(value) || /\d/.test(value)) {
+                $('#lname-error').text('Last Name is required and should not contain numbers or start with spaces');
+                return false;
+            }
+            return true;
+        }
+
+        function validateAddress(value) {
+            if (value === '' || /\s{2,}/.test(value)) {
+                $('#address-error').text('Address is required and should not contain consecutive spaces');
+                return false;
+            }
+            return true;
+        }
+
+        function validatePhone(value) {
+            if (!(/^\+?[0-9]{10,12}$/.test(value) && (value.length === 10 || (value.startsWith('+') && value.length === 12)))) {
+                $('#phone-error').text('Phone number should be 10 digits, or 12 digits with country code (including +)');
+                return false;
+            }
+            return true;
+        }
+
+        function validateEmail(value) {
+            var emailRegex = /^(?!.*\.{2})[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
+            if (!emailRegex.test(value)) {
+                $('#email-error').text('Please enter a valid email address');
+                return false;
+            }
+            return true;
+        }
+
+        function validatePassword(value) {
+            var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+            if (!passwordRegex.test(value)) {
+                $('#password-error').text('Password must be at least 8 characters long, include uppercase and lowercase letters, numbers, and special characters');
+                return false;
+            }
+            return true;
+        }
+
+        function validatePasswordConfirmation() {
+            var password = $('#password').val();
+            var rePassword = $('#re-password').val();
+            if (password !== rePassword) {
+                $('#re-password-error').text('Passwords do not match').show();
+                $('#re-password').addClass('is-invalid');
+                return false;
+            } else {
+                $('#re-password-error').hide();
+                $('#re-password').removeClass('is-invalid');
+                return true;
+            }
+        }
+
+        // Attach onkeyup event listeners
+        $('#fname').on('keyup', function() { validateField($(this), $('#fname-error'), validateFirstName); });
+        $('#lname').on('keyup', function() { validateField($(this), $('#lname-error'), validateLastName); });
+        $('#address').on('keyup', function() { validateField($(this), $('#address-error'), validateAddress); });
+        $('#phone').on('keyup', function() { validateField($(this), $('#phone-error'), validatePhone); });
+        $('#email').on('keyup', function() { validateField($(this), $('#email-error'), validateEmail); });
+        $('#password').on('keyup', function() { 
+            validateField($(this), $('#password-error'), validatePassword);
+            validatePasswordConfirmation();
+        });
+        $('#re-password').on('keyup', validatePasswordConfirmation);
+
+        // Email existence check
+        $('#email').on('blur', function() {
+            var email = $(this).val();
+            $.ajax({
+                url: '{% url "check_email" %}',
+                method: 'POST',
+                data: {
+                    'email': email,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.exists) {
+                        $('#email').addClass('is-invalid');
+                        $('#email-error').text('This email is already registered.').show();
+                    } else {
+                        $('#email').removeClass('is-invalid');
+                        $('#email-error').hide();
+                    }
+                },
+                error: function() {
+                    console.error('An error occurred while checking email availability.');
+                }
+            });
+        });
+
+        // Form submission
+        $('#signup-form').on('submit', function(e) {
+            var isValid = true;
+            isValid = validateField($('#fname'), $('#fname-error'), validateFirstName) && isValid;
+            isValid = validateField($('#lname'), $('#lname-error'), validateLastName) && isValid;
+            isValid = validateField($('#address'), $('#address-error'), validateAddress) && isValid;
+            isValid = validateField($('#phone'), $('#phone-error'), validatePhone) && isValid;
+            isValid = validateField($('#email'), $('#email-error'), validateEmail) && isValid;
+            isValid = validateField($('#password'), $('#password-error'), validatePassword) && isValid;
+            isValid = validatePasswordConfirmation() && isValid;
+
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+    });
+    </script>
   </body>
 </html>

@@ -206,12 +206,16 @@
                             
                             <div class="form-group">
                                 <label for="departure_location">Departure Location</label>
-                                <input type="text" id="departure_location" name="departure_location" class="form-control" required>
+                                <select id="departure_location" name="departure_location" class="form-control" required>
+                                    <option value="">Select Departure Location</option>
+                                </select>
                                 <div class="error-message" id="departure_location_error"></div>
                             </div>
                             <div class="form-group">
                                 <label for="destination_location">Destination Location</label>
-                                <input type="text" id="destination_location" name="destination_location" class="form-control" required>
+                                <select id="destination_location" name="destination_location" class="form-control" required disabled>
+                                    <option value="">Select Destination Location</option>
+                                </select>
                                 <div class="error-message" id="destination_location_error"></div>
                             </div>
                             <div class="form-group">
@@ -234,8 +238,8 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="stops">Stops</label>
-                                <textarea id="stops" name="stops" class="form-control" rows="4"></textarea>
-                                <div class="error-message" id="stops_error"></div>
+                                <input type="text" id="stops" name="stops" class="form-control" readonly disabled>
+                                <div id="stops_message" class="error-message"></div>
                             </div>
                             <div class="form-group">
                                 <label for="ticket_price">Ticket Price</label>
@@ -286,8 +290,62 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        console.log("Locations data:", JSON.parse('{{ locations|safe|escapejs }}'));
+
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('busForm');
+            const departureSelect = document.getElementById('departure_location');
+            const destinationSelect = document.getElementById('destination_location');
+            const stopsInput = document.getElementById('stops');
+            const stopsMessage = document.getElementById('stops_message');
+
+            let locations = JSON.parse('{{ locations|safe|escapejs }}');
+            console.log("Parsed locations:", locations);
+
+            // Populate departure locations
+            const uniqueSources = [...new Set(locations.map(loc => loc.source))];
+            uniqueSources.forEach(source => {
+                const option = document.createElement('option');
+                option.value = source;
+                option.textContent = source;
+                departureSelect.appendChild(option);
+            });
+
+            departureSelect.addEventListener('change', function() {
+                const selectedDeparture = this.value;
+                destinationSelect.innerHTML = '<option value="">Select Destination Location</option>';
+                destinationSelect.disabled = true;
+                stopsInput.value = '';
+                stopsMessage.textContent = '';
+
+                if (selectedDeparture) {
+                    const availableDestinations = locations.filter(loc => loc.source === selectedDeparture);
+                    availableDestinations.forEach(dest => {
+                        const option = document.createElement('option');
+                        option.value = dest.destination;
+                        option.textContent = `${dest.destination} ${dest.destination_code ? `(${dest.destination_code})` : ''}`;
+                        destinationSelect.appendChild(option);
+                    });
+                    destinationSelect.disabled = false;
+                }
+            });
+
+            destinationSelect.addEventListener('change', function() {
+                const selectedDeparture = departureSelect.value;
+                const selectedDestination = this.value;
+                stopsInput.value = '';
+                stopsMessage.textContent = '';
+
+                if (selectedDeparture && selectedDestination) {
+                    const route = locations.find(loc => loc.source === selectedDeparture && loc.destination === selectedDestination);
+                    if (route && route.stops) {
+                        stopsInput.value = route.stops;
+                    } else {
+                        stopsMessage.textContent = 'No stops available for this route.';
+                        stopsMessage.style.color = 'red';
+                    }
+                }
+            });
 
             // Validation functions
             const isValidName = (name) => /^[A-Za-z\s]+$/.test(name);
@@ -526,6 +584,13 @@
                 }
                 if (!isValidStatus(form.status.value)) {
                     showError(form.status, 'Please select a valid status');
+                    isValid = false;
+                }
+
+                // Ensure stops are included in form submission
+                const stopsTextarea = document.getElementById('stops');
+                if (!stopsTextarea.value.trim()) {
+                    showError(stopsTextarea, 'Please select a valid route with stops');
                     isValid = false;
                 }
 

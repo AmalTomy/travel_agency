@@ -109,6 +109,7 @@
     </style>
 </head>
 <body class="bg-light">
+    {% csrf_token %}
     <div class="d-flex">
         <!-- Sidebar -->
         <nav id="sidebar" class="bg-dark text-light">
@@ -175,6 +176,12 @@
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLocationModal">
                     Add New Location
                 </button>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#uploadExcelModal">
+                    Upload Excel File
+                </button>
+                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#viewLocationsModal">
+                    View Added Locations
+                </button>
             </div>
 
             <!-- Add Location Modal -->
@@ -187,13 +194,25 @@
                         </div>
                         <div class="modal-body">
                             <form id="addLocationForm">
-                                <div class="mb-3">
-                                    <label for="source" class="form-label">Source</label>
-                                    <input type="text" class="form-control" id="source" name="source" required>
+                                <div class="mb-3 d-flex">
+                                    <div class="me-2">
+                                        <label for="source" class="form-label">Source</label>
+                                        <input type="text" class="form-control" id="source" name="source" required>
+                                    </div>
+                                    <div>
+                                        <label for="source_code" class="form-label">Source Code</label>
+                                        <input type="text" class="form-control" id="source_code" name="source_code" maxlength="4" style="width: 80px;" required>
+                                    </div>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="destination" class="form-label">Destination</label>
-                                    <input type="text" class="form-control" id="destination" name="destination" required>
+                                <div class="mb-3 d-flex">
+                                    <div class="me-2">
+                                        <label for="destination" class="form-label">Destination</label>
+                                        <input type="text" class="form-control" id="destination" name="destination" required>
+                                    </div>
+                                    <div>
+                                        <label for="destination_code" class="form-label">Destination Code</label>
+                                        <input type="text" class="form-control" id="destination_code" name="destination_code" maxlength="4" style="width: 80px;" required>
+                                    </div>
                                 </div>
                                 <div class="mb-3">
                                     <label for="stops" class="form-label">Stops</label>
@@ -213,14 +232,109 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Upload Excel Modal -->
+            <div class="modal fade" id="uploadExcelModal" tabindex="-1" aria-labelledby="uploadExcelModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="uploadExcelModalLabel">Upload Excel File</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="uploadExcelForm" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="excelFile" class="form-label">Select Excel File</label>
+                                    <input type="file" class="form-control" id="excelFile" name="excelFile" accept=".xlsx, .xls" required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" form="uploadExcelForm" class="btn btn-primary">Upload</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View Locations Modal -->
+            <div class="modal fade" id="viewLocationsModal" tabindex="-1" aria-labelledby="viewLocationsModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewLocationsModalLabel">Added Locations</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Source</th>
+                                            <th>Source Code</th>
+                                            <th>Destination</th>
+                                            <th>Destination Code</th>
+                                            <th>Stops</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="locationsTableBody">
+                                        <!-- Table rows will be dynamically added here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto" id="toastTitle">Notification</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toastMessage">
+            </div>
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function () {
+            // Setup CSRF token for AJAX requests
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            const csrftoken = getCookie('csrftoken');
+
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+
             $('#sidebarCollapse').on('click', function () {
                 $('#sidebar').toggleClass('active');
             });
@@ -231,7 +345,110 @@
                 stopCount++;
                 $('#stopsContainer').append('<input type="text" class="form-control mb-2" id="stop' + stopCount + '" name="stops[]" placeholder="Stop ' + stopCount + '">');
             });
+
+            // Manual location addition
+            $('#addLocationForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                // Trim all input values
+                $(this).find('input[type="text"]').each(function() {
+                    $(this).val($.trim($(this).val()));
+                });
+                
+                $.ajax({
+                    url: '{% url "add_locations" %}',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            alert(response.message);
+                            $('#addLocationModal').modal('hide');
+                            $('#addLocationForm')[0].reset();
+                        } else {
+                            alert('Error: ' + response.message);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('AJAX error:', textStatus, errorThrown);
+                        alert('An error occurred while adding the location: ' + textStatus);
+                    }
+                });
+            });
+
+            // Excel file upload
+            $('#uploadExcelForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                var formData = new FormData(this);
+                
+                $.ajax({
+                    url: '{% url "upload_excel" %}',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            alert(response.message);
+                            $('#uploadExcelModal').modal('hide');
+                            $('#uploadExcelForm')[0].reset();
+                        } else {
+                            alert('Error: ' + response.message);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('AJAX error:', textStatus, errorThrown);
+                        alert('An error occurred while uploading the Excel file: ' + textStatus);
+                    }
+                });
+            });
+
+            // View Locations functionality
+            $('#viewLocationsModal').on('show.bs.modal', function (e) {
+                $.ajax({
+                    url: '{% url "get_locations" %}',
+                    type: 'GET',
+                    success: function(response) {
+                        if (response.success) {
+                            let tableBody = $('#locationsTableBody');
+                            tableBody.empty();
+                            response.locations.forEach(function(location, index) {
+                                tableBody.append(`
+                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td>${location.source}</td>
+                                        <td>${location.source_code}</td>
+                                        <td>${location.destination}</td>
+                                        <td>${location.destination_code}</td>
+                                        <td>${location.stops}</td>
+                                    </tr>
+                                `);
+                            });
+                        } else {
+                            alert('Error: ' + response.message);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('AJAX error:', textStatus, errorThrown);
+                        alert('An error occurred while fetching locations: ' + textStatus);
+                    }
+                });
+            });
         });
+
+        function showNotification(title, message, isSuccess) {
+            const toast = new bootstrap.Toast(document.getElementById('liveToast'));
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMessage').textContent = message;
+            const toastElement = document.getElementById('liveToast');
+            toastElement.classList.remove('bg-success', 'bg-danger', 'text-white');
+            if (isSuccess) {
+                toastElement.classList.add('bg-success', 'text-white');
+            } else {
+                toastElement.classList.add('bg-danger', 'text-white');
+            }
+            toast.show();
+        }
     </script>
 </body>
 </html>

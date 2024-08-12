@@ -6,7 +6,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    
     path('', views.index, name="index"),
     path('signup', views.signup, name="signup"),
     path('login', views.loginn, name="login"),
@@ -22,9 +21,9 @@ urlpatterns = [
     path('moderator_details/', views.moderator_details, name='moderator_details'),
     path('add_bus/', views.add_bus, name='add_bus'),
     path('profile/', views.profile, name='profile'),
-    path('update-profile/', views.update_profile, name='update_profile'),
+    path('update_profile/', views.update_profile, name='update_profile'),
     path('booking/', views.booking_page, name='booking_page'),
-    path('check-email/', views.check_email, name='check_email'),
+    path('check_email/', views.check_email, name='check_email'),
     path('pending-registration/', views.pending_registration, name='pending_registration'),
     path('mod_req_details/', views.mod_req_details, name='mod_req_details'),
     path('buses-added/', views.buses_added_by_moderator, name='buses_added_by_moderator'),
@@ -37,6 +36,11 @@ urlpatterns = [
     path('deactivate-customer/<int:customer_id>/', views.deactivate_customer, name='deactivate_customer'),
     path('check_email/', views.check_email, name='check_email'),
     path('add_locations/', views.add_locations, name='add_locations'),
+    path('upload_excel/', views.upload_excel, name='upload_excel'),
+    path('get_locations/', views.get_locations, name='get_locations'),
+    path('get_stops/', views.get_stops, name='get_stops'),
+    path('check-email/', views.check_email, name='check_email'),
+
 
 
 

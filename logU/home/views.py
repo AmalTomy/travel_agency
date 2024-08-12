@@ -1,33 +1,37 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from django.contrib.auth import authenticate, logout
+from django.contrib.auth import authenticate, logout, login as auth_login, logout as auth_logout
 from django.contrib.auth import get_user_model
-from .models import Users,Moderator
-from .models import Users, Customers
-from django.contrib.auth.hashers import make_password
-from .forms import BusForm
-from .forms import CustomerProfileForm
-from django.http import JsonResponse
-from django.core.files.base import ContentFile
-from django.conf import settings
-import os
-from django.views.decorators.cache import never_cache
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.csrf import csrf_exempt
-import traceback
-from django.db import transaction
 from django.contrib.auth.decorators import login_required
-from .models import Bus
-from django.core.exceptions import ObjectDoesNotExist
-from datetime import date, datetime
-from django.db import IntegrityError
+from django.contrib.auth.hashers import make_password
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.core.mail import send_mail
-from django.contrib.auth import login as auth_login, logout as auth_logout
-from .models import Location
+from django.core.validators import validate_email
+from django.conf import settings
+from django.db import transaction, IntegrityError
+from django.http import JsonResponse
+from django.views.decorators.cache import never_cache
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.urls import reverse
+from django.db.models import Q, F
 
+from .models import Users, Moderator, Customers, Bus, Location
+from .forms import BusForm, CustomerProfileForm
+
+import os
+import re
+import json
+import logging
+import pandas as pd
+from datetime import date, datetime
+
+from django.core.serializers.json import DjangoJSONEncoder
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 user = get_user_model()
 
@@ -44,6 +48,7 @@ def deactivate_customer(request, customer_id):
         messages.success(request, f"Customer {customer.first_name} {customer.last_name} has been deactivated and removed from the system.")
     
     return redirect('customer_details')
+
 def index(request):
     return render(request, 'index.html')
 
@@ -162,37 +167,79 @@ def mod_req_details(request):
 
     return render(request, 'mod_req_details.html', {'pending_moderators': pending_moderators})
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 def signup(request):
     if request.method == "POST":
+        logger.info(f"Received POST data: {request.POST}")
         fname = request.POST.get('f_name')
         lname = request.POST.get('l_name')
         address = request.POST.get('address')
         phone = request.POST.get('phone')
         email = request.POST.get('email')
         password = request.POST.get('password')
+        password_confirm = request.POST.get('password_confirm')
+
+        errors = []
+
+        if not all([fname, lname, address, phone, email, password, password_confirm]):
+            errors.append("All fields are required.")
 
         try:
-            user = Users.objects.create_user(username=email, email=email, first_name=fname, last_name=lname,password=password, user_type='customers')
+            validate_email(email)
+        except ValidationError:
+            errors.append("Invalid email format.")
+
+        if len(password) < 8:
+            errors.append("Password must be at least 8 characters long.")
+
+        if password != password_confirm:
+            errors.append("Passwords do not match.")
+
+        if Customers.objects.filter(email=email).exists():
+            errors.append("This email is already registered.")
+
+        if errors:
+            return render(request, 'signup.html', {'errors': errors})
+
+        try:
+            user = Users.objects.create_user(
+                username=email, 
+                email=email, 
+                first_name=fname, 
+                last_name=lname,
+                password=password, 
+                user_type='customers'
+            )
 
             # Create customer profile in Customers table
-            customer = Customers(user=user, email=email, first_name=fname, last_name=lname, address=address, phone=phone)
+            customer = Customers(
+                user=user, 
+                email=email, 
+                first_name=fname, 
+                last_name=lname, 
+                address=address, 
+                phone=phone
+            )
             customer.save()
 
             messages.success(request, 'User created successfully')
             return redirect('login')
         except Exception as e:
-            # logger.error(f"Error during user signup: {e}")
             messages.error(request, f"Error: {str(e)}")
     
+    else:
+        logger.info("Received GET request for signup page")
     return render(request, 'signup.html')
 
 @require_POST
 @csrf_protect
 def check_email(request):
     email = request.POST.get('email')
-    is_taken_customer = Customers.objects.filter(email=email).exists()
-    is_taken_moderator = Moderator.objects.filter(email=email).exists()
-    return JsonResponse({'available': not (is_taken_customer or is_taken_moderator)})
+    exists = Customers.objects.filter(email=email).exists() or Moderator.objects.filter(email=email).exists()
+    return JsonResponse({'exists': exists})
 
 def signout(request):
     if request.user.is_authenticated:
@@ -214,7 +261,25 @@ def mod_reg(request):
     return render(request, 'mod_reg.html')
 
 def mod_sch(request):
-    return render(request, 'mod_sch.html')
+    locations = Location.objects.all().order_by('source', 'destination').values('source', 'source_code', 'destination', 'destination_code', 'stops')
+    print("Number of locations:", locations.count())
+    locations_json = json.dumps(list(locations), cls=DjangoJSONEncoder)
+    print("Locations data:", locations_json)  # Add this line for debugging
+    context = {
+        'locations': locations_json,
+    }
+    return render(request, 'mod_sch.html', context)
+
+def get_stops(request):
+    departure = request.GET.get('departure')
+    destination = request.GET.get('destination')
+    
+    try:
+        location = Location.objects.get(source=departure, destination=destination)
+        stops = location.get_stops_list()
+        return JsonResponse({'success': True, 'stops': stops})
+    except Location.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'No routes currently available for the selected locations. Please select other locations.'})
 
 def signup_moderator(request):
     if request.method == "POST":
@@ -231,9 +296,16 @@ def signup_moderator(request):
         company = request.POST.get('company', '')
         city = request.POST.get('city', '')
         
+        errors = {}
+
         if password != password_confirm:
-            messages.error(request, 'Passwords do not match')
-            return render(request, 'mod_reg.html')
+            errors['password'] = 'Passwords do not match'
+        
+        if Moderator.objects.filter(email=email).exists():
+            errors['email'] = 'This email is already registered'
+
+        if errors:
+            return render(request, 'mod_reg.html', {'errors': errors})
         
         try:
             with transaction.atomic():
@@ -272,7 +344,8 @@ def signup_moderator(request):
             messages.success(request, 'Moderator created successfully')
             return redirect('login')
         except Exception as e:
-            messages.error(request, f"Error: {str(e)}")
+            errors['general'] = f"Error: {str(e)}"
+            return render(request, 'mod_reg.html', {'errors': errors})
     
     return render(request, 'mod_reg.html')
 
@@ -335,93 +408,84 @@ def add_bus(request):
 
     return render(request, 'mod_sch.html', {'form': form})
 
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
-import re
-
 @require_POST
-@csrf_exempt
-def check_email(request):
-    email = request.POST.get('email')
-    exists = Customers.objects.filter(email=email).exists()
-    return JsonResponse({'available': not exists})
-
 def update_profile(request):
-    if request.method == 'POST':
-        try:
-            customer = Customers.objects.get(email=request.user.email)
+    try:
+        customer = Customers.objects.get(email=request.user.email)
 
-            # Server-side validation
-            first_name = request.POST.get('first_name').strip()
-            last_name = request.POST.get('last_name').strip()
-            email = request.POST.get('email').strip()
-            phone_number = request.POST.get('phone_number').strip()
-            address = request.POST.get('address').strip()
+        # Server-side validation
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone_number = request.POST.get('phone_number', '').strip()
+        address = request.POST.get('address', '').strip()
 
-            errors = []
+        errors = {}
 
-            if not first_name or re.search(r'\d', first_name):
-                errors.append("First name is required and should not contain numbers.")
-            if not last_name or re.search(r'\d', last_name):
-                errors.append("Last name is required and should not contain numbers.")
-            if not email:
-                errors.append("Email is required.")
-            else:
-                try:
-                    validate_email(email)
-                    # Check if email already exists for another user
-                    if Customers.objects.exclude(email=request.user.email).filter(email=email).exists():
-                        errors.append("This email is already taken.")
-                except ValidationError:
-                    errors.append("Please enter a valid email address.")
-            if not phone_number or not phone_number.isdigit() or len(phone_number) != 10:
-                errors.append("Please enter a valid 10-digit phone number.")
-            if not address:
-                errors.append("Address is required.")
+        if not first_name or re.search(r'\d', first_name):
+            errors['first_name'] = "First name is required and should not contain numbers."
+        if not last_name or re.search(r'\d', last_name):
+            errors['last_name'] = "Last name is required and should not contain numbers."
+        if not email:
+            errors['email'] = "Email is required."
+        else:
+            try:
+                validate_email(email)
+                # Check if email already exists for another user
+                if Customers.objects.exclude(email=request.user.email).filter(email=email).exists():
+                    errors['email'] = "This email is already taken."
+            except ValidationError:
+                errors['email'] = "Please enter a valid email address."
+        if not phone_number or not phone_number.isdigit() or len(phone_number) != 10:
+            errors['phone_number'] = "Please enter a valid 10-digit phone number."
+        if not address:
+            errors['address'] = "Address is required."
 
-            # Validate profile picture
-            if 'profile_picture' in request.FILES:
-                file = request.FILES['profile_picture']
-                if not file.name.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
-                    errors.append("Please upload an image file (jpg, jpeg, png, or gif).")
+        # Validate profile picture
+        if 'profile_picture' in request.FILES:
+            file = request.FILES['profile_picture']
+            if not file.name.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+                errors['profile_picture'] = "Please upload an image file (jpg, jpeg, png, or gif)."
 
-            if errors:
-                return JsonResponse({'success': False, 'error': ' '.join(errors)})
+        if errors:
+            return JsonResponse({'success': False, 'errors': errors})
 
-            customer.first_name = first_name
-            customer.last_name = last_name
-            customer.email = email
-            customer.phone = phone_number
-            customer.address = address
+        customer.first_name = first_name
+        customer.last_name = last_name
+        customer.email = email
+        customer.phone = phone_number
+        customer.address = address
 
-            if 'profile_picture' in request.FILES:
-                file = request.FILES['profile_picture']
-                file_name = default_storage.save(os.path.join('profile_pictures', file.name), ContentFile(file.read()))
-                customer.profile_picture = file_name
+        profile_picture_url = None
+        if 'profile_picture' in request.FILES:
+            file = request.FILES['profile_picture']
+            file_name = default_storage.save(os.path.join('profile_pictures', file.name), ContentFile(file.read()))
+            customer.profile_picture = file_name
+            profile_picture_url = customer.profile_picture.url
 
-            customer.save()
+        customer.save()
 
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'success': True,
-                    'profile_picture_url': customer.profile_picture.url if customer.profile_picture else None
-                })
+        # Update the associated User model
+        user = customer.user
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        user.save()
 
-            return redirect('profile')
+        return JsonResponse({
+            'success': True,
+            'first_name': customer.first_name,
+            'last_name': customer.last_name,
+            'email': customer.email,
+            'phone_number': customer.phone,
+            'address': customer.address,
+            'profile_picture_url': profile_picture_url
+        })
 
-        except Customers.DoesNotExist:
-            error = "Customer profile not found."
-            print("Customer profile not found.")
-        except Exception as e:
-            error = str(e)
-            print("Error: ", e)
-
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({'success': False, 'error': error})
-
-        return redirect('profile')
-
-    return redirect('profile')
+    except Customers.DoesNotExist:
+        return JsonResponse({'success': False, 'errors': {'general': "Customer profile not found."}})
+    except Exception as e:
+        return JsonResponse({'success': False, 'errors': {'general': str(e)}})
 
 def booking_page(request):
     return render(request, 'booking.html')
@@ -485,11 +549,6 @@ def bus_list(request):
     else:
         return render(request, 'bus_list.html')
 
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib import messages
-from django.db import transaction
-from .models import Moderator, Bus
-
 @transaction.atomic
 def deactivate_moderator(request, moderator_id):
     if request.method == 'POST':
@@ -509,14 +568,95 @@ def deactivate_moderator(request, moderator_id):
 
 
 def add_locations(request):
+    if request.method == 'POST':
+        try:
+            source = request.POST.get('source')
+            source_code = request.POST.get('source_code')
+            destination = request.POST.get('destination')
+            destination_code = request.POST.get('destination_code')
+            stops = request.POST.getlist('stops[]')
+
+            # Check if a similar location already exists
+            existing_location = Location.objects.filter(
+                Q(source=source, source_code=source_code) &
+                Q(destination=destination, destination_code=destination_code)
+            ).first()
+
+            if existing_location:
+                return JsonResponse({'success': False, 'message': 'This location already exists in the database.'})
+            else:
+                location = Location.objects.create(
+                    source=source,
+                    source_code=source_code,
+                    destination=destination,
+                    destination_code=destination_code,
+                    stops=','.join(stops)
+                )
+                return JsonResponse({'success': True, 'message': 'Location added successfully'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': f'Error adding location: {str(e)}'})
+    
     return render(request, 'add_locations.html')
 
-def add_location(request):
-    if request.method == 'POST':
-        source = request.POST.get('source')
-        destination = request.POST.get('destination')
-        stops = request.POST.getlist('stops[]')
+@require_POST
+def upload_excel(request):
+    if 'excelFile' not in request.FILES:
+        return JsonResponse({'success': False, 'message': 'No file was uploaded'})
+
+    excel_file = request.FILES['excelFile']
+    
+    try:
+        # Save the uploaded file temporarily
+        file_name = default_storage.save('temp_excel_upload.xlsx', ContentFile(excel_file.read()))
+        file_path = default_storage.path(file_name)
         
-        location = Location(source=source, destination=destination)
-        location.set_stops_list(stops)
-        location.save()
+        # Process the Excel file
+        df = pd.read_excel(file_path)
+        
+        # Check if required columns exist
+        required_columns = ['source', 'source_code', 'destination', 'destination_code', 'stops']
+        missing_columns = [col for col in required_columns if col not in df.columns]
+        if missing_columns:
+            raise ValueError(f"Missing columns in Excel file: {', '.join(missing_columns)}")
+        
+        locations_added = 0
+        locations_skipped = 0
+        for index, row in df.iterrows():
+            # Check if a similar location already exists
+            existing_location = Location.objects.filter(
+                source=row['source'],
+                source_code=row['source_code'],
+                destination=row['destination'],
+                destination_code=row['destination_code']
+            ).first()
+            
+            if existing_location:
+                locations_skipped += 1
+                logger.info(f"Skipped duplicate location: {row['source']} to {row['destination']}")
+            else:
+                Location.objects.create(
+                    source=row['source'],
+                    source_code=row['source_code'],
+                    destination=row['destination'],
+                    destination_code=row['destination_code'],
+                    stops=row['stops']
+                )
+                locations_added += 1
+                logger.info(f"Added new location: {row['source']} to {row['destination']}")
+        
+        # Delete the temporary file
+        default_storage.delete(file_name)
+        
+        message = f'{locations_added} locations added successfully. {locations_skipped} duplicate locations skipped.'
+        logger.info(message)
+        return JsonResponse({'success': True, 'message': message})
+    except Exception as e:
+        logger.error(f"Error processing Excel file: {str(e)}")
+        return JsonResponse({'success': False, 'message': f'Error processing Excel file: {str(e)}'})
+
+def get_locations(request):
+    try:
+        locations = Location.objects.all().values('source', 'destination')
+        return JsonResponse({'success': True, 'locations': list(locations)})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'Error fetching locations: {str(e)}'})

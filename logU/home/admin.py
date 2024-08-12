@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Users, Moderator, Customers
-from .models import Bus
+from .models import Users, Moderator, Customers, Bus, Location
 from django.utils.html import format_html
 
 
@@ -27,9 +26,17 @@ class UsersAdmin(admin.ModelAdmin):
 class BusAdmin(admin.ModelAdmin):
     list_display = ('bus_id', 'moderator_id', 'bus_name', 'bus_number', 'bus_type', 'seating_capacity', 'departure_location', 'destination_location', 'departure_time', 'arrival_time', 'date','status')
     search_fields = ('bus_name', 'bus_number', 'departure_location', 'destination_location')
-   
+
+class LocationAdmin(admin.ModelAdmin):
+    list_display = ('location_id', 'source', 'source_code', 'destination', 'destination_code', 'display_stops')
+    search_fields = ('source', 'destination', 'source_code', 'destination_code')
     
+    def display_stops(self, obj):
+        return ", ".join(obj.get_stops_list())
+    display_stops.short_description = 'Stops'
+
 admin.site.register(Customers, CustomersAdmin)
 admin.site.register(Moderator, ModeratorAdmin)
 admin.site.register(Users, UsersAdmin)
 admin.site.register(Bus, BusAdmin)
+admin.site.register(Location, LocationAdmin)
