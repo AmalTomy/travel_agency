@@ -35,7 +35,7 @@
 
   <div class="d-lg-flex half">
     <div class="bg order-1 order-md-2" style="background-image: url('{% static 'images/bg1.jpg' %}');"></div>
-    <div class="contents order-2 order-md-1">
+        <div class="contents order-2 order-md-1">
 
       <div class="container">
         <div class="row align-items-center justify-content-center">
@@ -43,52 +43,58 @@
             <h3>Register</h3>
             <p class="mb-4">Register to continue.</p>
             <div id="form-errors" class="alert alert-danger" style="display: none;"></div>
-            <form action="{% url 'signup' %}" method="POST" id="signup-form">
-              <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-              <div class="row">
+            <form id="signup-form" action="{% url 'signup' %}" method="POST">
+              {% csrf_token %}
+              <div class="row mb-3">
                 <div class="col-md-6">
-                  <div class="form-group first">
-                    <label for="fname">First Name</label>
-                    <input type="text" class="form-control" placeholder="First Name" id="fname" name="f_name">
-                    <div id="fname-error" class="error-message"></div>
-                  </div>    
+                  <label for="fname">First Name</label>
+                  <input type="text" class="form-control" id="fname" name="f_name" placeholder="First Name">
+                  <div id="fname-error" class="error-message"></div>
                 </div>
                 <div class="col-md-6">
-                  <div class="form-group first">
-                    <label for="lname">Last Name</label>
-                    <input type="text" class="form-control" placeholder="Last Name" id="lname" name="l_name">
-                    <div id="lname-error" class="error-message"></div>
-                  </div>    
+                  <label for="lname">Last Name</label>
+                  <input type="text" class="form-control" id="lname" name="l_name" placeholder="Last Name">
+                  <div id="lname-error" class="error-message"></div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="phone">Phone Number</label>
+                  <input type="text" class="form-control" id="phone" name="phone" placeholder="+00 0000 000 0000">
+                  <div id="phone-error" class="error-message"></div>
+                </div>
+                <div class="col-md-6">
+                  <label for="email">Email</label>
+                  <input type="text" class="form-control" id="email" name="email" placeholder="Email">
+                  <div id="email-error" class="error-message"></div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="address">Address Details</label>
+                  <input type="text" class="form-control" id="address" name="address" placeholder="House name, Street, etc.">
+                  <div id="address-error" class="error-message"></div>
+                </div>
+                <div class="col-md-6">
+                  <label for="city">City</label>
+                  <input type="text" class="form-control" id="city" name="city" placeholder="City">
+                  <div id="city-error" class="error-message"></div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="district">District</label>
+                  <input type="text" class="form-control" id="district" name="district" placeholder="District">
+                  <div id="district-error" class="error-message"></div>
+                </div>
+                <div class="col-md-6">
+                  <label for="postal_code">Postal Code</label>
+                  <input type="text" class="form-control" id="postal_code" name="postal_code" placeholder="Postal Code">
+                  <div id="postal_code-error" class="error-message"></div>
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group first">
-                    <label for="address">Address</label>
-                    <input type="text" class="form-control" placeholder="Address" id="address" name="address">
-                    <div id="address-error" class="error-message"></div>
-                  </div>    
-                </div>
-              </div>
-              <div class="row">
                 <div class="col-md-6">
-                  <div class="form-group first">
-                    <label for="phone">Phone Number</label>
-                    <input type="text" class="form-control" placeholder="+00 0000 000 0000" id="phone" name="phone">
-                    <div id="phone-error" class="error-message"></div>
-                  </div>    
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group first">
-                    <label for="email">Email</label>
-                    <input type="text" class="form-control" placeholder="Email" id="email" name="email">
-                    <div id="email-error" class="error-message"></div>
-                  </div>    
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-              
                   <div class="form-group last mb-3">
                     <label for="password">Password</label>
                     <input type="password" class="form-control" placeholder="Your Password" id="password" name="password">
@@ -96,7 +102,6 @@
                   </div>
                 </div>
                 <div class="col-md-6">
-              
                   <div class="form-group last mb-3">
                     <label for="re-password">Re-type Password</label>
                     <input type="password" class="form-control" placeholder="Your Password" id="re-password" name="password_confirm">
@@ -107,10 +112,7 @@
               
               <div class="d-flex mb-5 mt-4 align-items-center">
                 <div class="d-flex align-items-center">
-
                   <input type="submit" value="Register" class="btn px-5 btn-primary">
-
-
                   <label class="control control--checkbox mb-0">
                     <span class="caption">Already have an account? <a href="{% url 'login' %}">Sign In</a>.</span>
                   </label>
@@ -207,6 +209,30 @@
             }
         }
 
+        function validateCity(value) {
+            if (value === '' || /^\s/.test(value) || /\d/.test(value)) {
+                $('#city-error').text('City is required and should not contain numbers or start with spaces');
+                return false;
+            }
+            return true;
+        }
+
+        function validateDistrict(value) {
+            if (value === '' || /^\s/.test(value) || /\d/.test(value)) {
+                $('#district-error').text('District is required and should not contain numbers or start with spaces');
+                return false;
+            }
+            return true;
+        }
+
+        function validatePostalCode(value) {
+            if (value.trim() === '' || !/^\d{6}$/.test(value)) {
+                $('#postal_code-error').text('Please enter a valid 6-digit postal code');
+                return false;
+            }
+            return true;
+        }
+
         // Attach onkeyup event listeners
         $('#fname').on('keyup', function() { validateField($(this), $('#fname-error'), validateFirstName); });
         $('#lname').on('keyup', function() { validateField($(this), $('#lname-error'), validateLastName); });
@@ -218,6 +244,9 @@
             validatePasswordConfirmation();
         });
         $('#re-password').on('keyup', validatePasswordConfirmation);
+        $('#city').on('keyup', function() { validateField($(this), $('#city-error'), validateCity); });
+        $('#district').on('keyup', function() { validateField($(this), $('#district-error'), validateDistrict); });
+        $('#postal_code').on('keyup', function() { validateField($(this), $('#postal_code-error'), validatePostalCode); });
 
         // Email existence check
         $('#email').on('blur', function() {
@@ -254,6 +283,9 @@
             isValid = validateField($('#email'), $('#email-error'), validateEmail) && isValid;
             isValid = validateField($('#password'), $('#password-error'), validatePassword) && isValid;
             isValid = validatePasswordConfirmation() && isValid;
+            isValid = validateField($('#city'), $('#city-error'), validateCity) && isValid;
+            isValid = validateField($('#district'), $('#district-error'), validateDistrict) && isValid;
+            isValid = validateField($('#postal_code'), $('#postal_code-error'), validatePostalCode) && isValid;
 
             if (!isValid) {
                 e.preventDefault();
@@ -262,4 +294,5 @@
     });
     </script>
   </body>
+</html>
 </html>

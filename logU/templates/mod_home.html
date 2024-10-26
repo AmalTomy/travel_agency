@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,7 +73,7 @@
         .alert {
             display: flex;
             align-items: center;
-            padding-right: 500px;
+            padding-right: 177px;
         }
 
         /* Centering the welcome message */
@@ -101,6 +102,182 @@
                 transform: translateY(0);
             }
         }
+
+        .chat-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #3f51b5;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1000;
+            animation: pulse 2s infinite;
+        }
+
+        .chat-icon i {
+            color: white;
+            font-size: 24px;
+        }
+
+        .chat-box {
+            display: none;
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: opacity 0.3s ease-in-out;
+            border: 1px solid #2C3E50;
+        }
+
+        .chat-box.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #2C3E50;
+            color: #ffffff;
+        }
+
+        .chat-header h5 {
+            margin: 0;
+            font-size: 16px;
+            color: #f0f0f0;
+        }
+
+        .close-chat {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 18px;
+            max-width: 80%;
+        }
+
+        .message.sent {
+            background-color: #3f51b5;
+            color: #ffffff;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .message.received {
+            background-color: #f0f0f0;
+            color: #2C3E50;
+            align-self: flex-start;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #2C3E50;
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+            border: 1px solid #2C3E50;
+            border-radius: 20px;
+            padding: 8px 15px;
+            margin-right: 10px;
+        }
+
+        .chat-input button {
+            background-color: #3f51b5;
+            color: #ffffff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .chat-input button:hover {
+            background-color: #1ABC9C;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .chat-users {
+            max-height: 200px;
+            overflow-y: auto;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .chat-user {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .chat-user:hover {
+            background-color: #f0f0f0;
+        }
+
+        .chat-user-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+
+        .chat-user-name {
+            font-size: 14px;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+        }
+
+        #chat-header-title {
+            flex-grow: 1;
+        }
     </style>
 </head>
 <body>
@@ -111,11 +288,12 @@
                 <!-- Header -->
                 <header class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
                     <div class="d-flex align-items-center dropdown">
-                        <img src="https://via.placeholder.com/40" alt="User" class="rounded-circle">
-                        <span class="me-3 dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">{{ first_name }} {{ last_name }}</span>
+                        <img src="{% static 'images/spy.gif' %}" alt="User" class="rounded-circle" style="width: 40px; height: 40px; border: 2px solid #007bff;">
+                        <span class="me-3 dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ first_name }} {{ last_name }}
+                        </span>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li><a class="dropdown-item" href="#">Profile</a></li>
-                            <li><a class="dropdown-item" href="{% url 'buses_added_by_moderator' %}">Buses Added by You</a></li>                            
+                            <li><a class="dropdown-item" href="{% url 'mod_profile' %}">Profile</a></li>
                             <li><a class="dropdown-item" href="{% url 'signout' %}">Logout</a></li>
                         </ul>
                     </div>
@@ -129,16 +307,24 @@
                         <a class="nav-link" href="{% url 'mod_sch' %}">
                             <i class="fas fa-bus me-2"></i> Schedule Buses
                         </a>
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{% url 'notifications_report' %}">
                             <i class="fas fa-list-alt me-2"></i> Report List
                         </a>
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-icons me-2"></i> Icons
+                        <a class="nav-link" href="{% url 'mod_agentlist' %}">
+                            <i class="fas fa-users me-2"></i> Agents
+                        </a>
+                        <a class="nav-link" href="{% url 'moderator_job_requests' %}">
+                            <i class="fas fa-briefcase me-2"></i> Agent Job Requests
+                        </a>
+                        <a class="nav-link" href="{% url 'buses_added_by_moderator' %}">
+                            <i class="fas fa-plus-circle me-2"></i> Bus Added
+                        </a>
+                        <a class="nav-link " href="{% url 'view_bus_bookings' %}">
+                            <i class="fas fa-book me-2"></i> Bus Bookings
                         </a>
                     </nav>
                 </div>
                 
-
                 <div class="welcome-container">
                     <p class="welcome-message">Welcome, {{ first_name }} {{ last_name }}</p>
                 </div>
@@ -147,41 +333,48 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="stat-card">
-                            <i class="fas fa-shopping-cart stat-icon text-primary"></i>
-                            <h3>932.00</h3>
-                            <p>Orders</p>
-                            <small>Completed: 5443</small>
+                            <i class="fas fa-bus stat-icon text-primary"></i>
+                            <h3>{{ total_buses }}</h3>
+                            <p>Buses</p>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="stat-card">
                             <i class="fas fa-users stat-icon text-success"></i>
-                            <h3>756.00</h3>
-                            <p>Unique Visitors</p>
-                            <small>Increased since yesterday: 50%</small>
+                            <h3>{{ total_agents }}</h3>
+                            <p>Agents</p>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="stat-card">
-                            <i class="fas fa-eye stat-icon text-warning"></i>
-                            <h3>100,38</h3>
-                            <p>Impressions</p>
-                            <small>Increased since yesterday: 35%</small>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stat-card">
-                            <i class="fas fa-heart stat-icon text-danger"></i>
-                            <h3>4250k</h3>
-                            <p>Followers</p>
-                            <small>Decreased since yesterday: 25%</small>
-                        </div>
-                    </div>
+                    
                 </div>
             </main>
         </div>
     </div>
 
+    <!-- Chat Icon -->
+    <div id="chat-icon" class="chat-icon">
+        <i class="fas fa-comments"></i>
+    </div>
+
+    <!-- Chat Box -->
+    <div id="chat-box" class="chat-box hidden">
+        <div class="chat-header">
+            <button id="back-to-users" class="back-button" style="display: none;">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h5 id="chat-header-title">Chat with Agents</h5>
+            <img id="chat-header-avatar" src="" alt="" style="display: none; width: 30px; height: 30px; border-radius: 50%; margin-left: 10px;">
+            <button id="close-chat" class="close-chat">&times;</button>
+        </div>
+        <div id="chat-users" class="chat-users"></div>
+        <div id="chat-messages" class="chat-messages" style="display: none;"></div>
+        <div class="chat-input" style="display: none;">
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <button id="send-message">Send</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -193,6 +386,186 @@
                     this.classList.add('active');
                 });
             });
+
+            // Animate welcome message
+            const welcomeMessage = document.querySelector('.welcome-message');
+            if (welcomeMessage) {
+                welcomeMessage.style.opacity = '0';
+                welcomeMessage.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    welcomeMessage.style.transition = 'opacity 1s, transform 1s';
+                    welcomeMessage.style.opacity = '1';
+                    welcomeMessage.style.transform = 'translateY(0)';
+                }, 100);
+            }
+
+            // Animate stat cards
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s, transform 0.5s';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100 + 100);
+            });
+        });
+
+        $(document).ready(function() {
+            const chatIcon = $('#chat-icon');
+            const chatBox = $('#chat-box');
+            const closeChat = $('#close-chat');
+            const chatUsers = $('#chat-users');
+            const chatMessages = $('#chat-messages');
+            const messageInput = $('#message-input');
+            const sendMessage = $('#send-message');
+            const backToUsers = $('#back-to-users');
+            const chatHeaderTitle = $('#chat-header-title');
+            const chatHeaderAvatar = $('#chat-header-avatar');
+            let currentRecipientId = null;
+            let lastMessageId = 0;
+            let pollingInterval;
+
+            chatIcon.click(function() {
+                chatBox.toggleClass('hidden');
+                if (!chatBox.hasClass('hidden')) {
+                    loadChatUsers();
+                }
+            });
+
+            closeChat.click(function() {
+                chatBox.addClass('hidden');
+            });
+
+            function loadChatUsers() {
+                $.get('{% url "get_chat_users" %}', function(data) {
+                    if (data.status === 'success') {
+                        chatUsers.empty();
+                        data.users.forEach(user => {
+                            const avatarUrl = user.avatar_url || '{% static "images/default_avatar.png" %}';
+                            chatUsers.append(`
+                                <div class="chat-user" data-user-id="${user.id}" data-user-name="${user.name}" data-avatar-url="${avatarUrl}">
+                                    <img src="${avatarUrl}" alt="${user.name}" class="chat-user-avatar">
+                                    <span class="chat-user-name">${user.name} (${user.role})</span>
+                                </div>
+                            `);
+                        });
+                    }
+                });
+            }
+
+            chatUsers.on('click', '.chat-user', function() {
+                currentRecipientId = $(this).data('user-id');
+                const userName = $(this).data('user-name');
+                const avatarUrl = $(this).data('avatar-url');
+
+                chatHeaderTitle.text(userName);
+                chatHeaderAvatar.attr('src', avatarUrl).show();
+                backToUsers.show();
+
+                chatUsers.hide();
+                chatMessages.show();
+                $('.chat-input').show();
+
+                loadChatMessages(currentRecipientId);
+                stopPolling();
+                startPolling();
+            });
+
+            backToUsers.click(function() {
+                chatHeaderTitle.text('Chat with Agents');
+                chatHeaderAvatar.hide();
+                backToUsers.hide();
+
+                chatUsers.show();
+                chatMessages.hide();
+                $('.chat-input').hide();
+
+                currentRecipientId = null;
+                stopPolling();
+            });
+
+            function startPolling() {
+                pollingInterval = setInterval(fetchNewMessages, 5000); // Poll every 5 seconds
+            }
+
+            function stopPolling() {
+                clearInterval(pollingInterval);
+            }
+
+            function fetchNewMessages() {
+                if (!currentRecipientId) return;
+
+                $.get('{% url "get_new_messages" %}', {
+                    other_user_id: currentRecipientId,
+                    last_message_id: lastMessageId
+                }, function(data) {
+                    if (data.status === 'success') {
+                        data.messages.forEach(msg => {
+                            const messageClass = msg.sender_id === {{ request.user.id }} ? 'sent' : 'received';
+                            chatMessages.append(`<div class="message ${messageClass}">${msg.content}</div>`);
+                            lastMessageId = msg.id;
+                        });
+                        if (data.messages.length > 0) {
+                            scrollToBottom();
+                        }
+                    }
+                });
+            }
+
+            function loadChatMessages(userId) {
+                $.get('{% url "get_chat_messages" %}', { other_user_id: userId }, function(data) {
+                    if (data.status === 'success') {
+                        chatMessages.empty();
+                        data.messages.forEach(msg => {
+                            const messageClass = msg.sender_id === {{ request.user.id }} ? 'sent' : 'received';
+                            chatMessages.append(`<div class="message ${messageClass}">${msg.content}</div>`);
+                            lastMessageId = msg.id;
+                        });
+                        scrollToBottom();
+                    }
+                });
+            }
+
+            sendMessage.click(sendChatMessage);
+
+            messageInput.keypress(function(e) {
+                if (e.which == 13) {
+                    sendChatMessage();
+                }
+            });
+
+            function sendChatMessage() {
+                const content = messageInput.val().trim();
+                if (content && currentRecipientId) {
+                    $.post('{% url "send_chat_message" %}', {
+                        content: content,
+                        recipient_id: currentRecipientId,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    }, function(data) {
+                        if (data.status === 'success') {
+                            messageInput.val('');
+                            const newMessage = $(`<div class="message sent">${content}</div>`);
+                            chatMessages.append(newMessage);
+                            scrollToBottom();
+                            lastMessageId = data.message_id;
+                        } else {
+                            console.error('Error sending message:', data.message);
+                            alert('Failed to send message. Please try again.');
+                        }
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        console.error('AJAX error:', textStatus, errorThrown);
+                        alert('An error occurred while sending the message. Please try again.');
+                    });
+                } else {
+                    console.log('No content or recipient selected');
+                }
+            }
+
+            function scrollToBottom() {
+                chatMessages.scrollTop(chatMessages[0].scrollHeight);
+            }
         });
     </script>
 </body>

@@ -1,1246 +1,323 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-    <title>Bus-Availability</title>
-    <script src="https://kit.fontawesome.com/792b524030.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="#">
-    <style>
-                /*============ Utility CSS =========== */
-          .center {
-              text-align: center;
-          }
-
-          .bold {
-              font-weight: bold;
-          }
-
-          body {
-              margin: 0px;
-              padding: 0px;
-              font: 100% Helvetica, sans-serif;
-              height: 100%;
-              /* font-family: Montserrat; */
-              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-              background-color: #ffffff;
-              color: #525267;
-          }
-          #container{
-            position: relative;
-          }
-
-          /*============ Navbar CSS =========== */
-          /* .nav_cover{
-            position: relative;
-            top: 0px;
-            left: 0px;
-            height:50px;
-          } */
-          /* nav {
-              height: 50px;
-            
-              color: white;
-              width:100%;
-              display: flex;
-              justify-content: space-around;
-              align-items: center;
-              overflow: hidden;
-              
-              top: 0px;
-              left: 0px;
-              z-index: 1;
-          } */
-          #header{
-              z-index: 2;
-          }
-          main {
-              display: grid;
-              grid-template-columns: 2fr 8fr;
-
-          }
-          #header_cover{
-            position: relative;
-            top: 0px;
-            left: 0px;
-            
-
-          }
-          #headerDet {
-            display: flex;
-            padding: 0px 20px;
-            align-items: center;
-            border-bottom: 1px solid grey;
-            background-color: rgba(255, 255, 255, 0.971);
-            /* width: 100%; */
-            /* position: fixed; */
-            /* left: 0px; */
-            /* z-index: 1; */
-            /* background-color: yellow; */
-          }
-
-          #headerDet p {
-            font-size: 20px;
-            font-weight: bold;
-            margin-right: 10px;
-          }
-
-          hr{
-            border: 0.5px solid #dddddd;
-          }
-          #headerDet{
-
-              display: flex;
-              padding: 0px 20px;
-              align-items: center;
-              border-bottom: 1px solid #dddddd;
-              background-color: rgba(255, 255, 255, 0.971);
-              
-              
-              /* width: 100%; */
-              /* position: fixed; */
-            /* left: 0px; */
-            /* z-index: 1; */
-              /* background-color: yellow; */
-          }
-
-
-          #headerDet p {
-              font-size: 14px;
-              font-weight: 700;
-              color: #3e3e52;
-              /* margin-right: 10px; */
-
-          /* #headerDet p {
-              font-size: 20px;
-              font-weight: bold;
-              margin-right: 10px; */
-
-          }
-          .left_section #p{
-            font-size: 15px;
-            font-weight: 700; 
-            color: #525267;   
-          }
-          .left_section #p1{
-            font-size: 12px;
-            font-weight: 600; 
-            color: #525267;   
-          }
-          .filter_div #p2{
-            font-size: 12px;
-            font-weight: 600;
-            color: #3e3e52;
-          }
-          #modify_btn {
-            height: 28px;
-            width: 98px;
-            border: 1px solid #3e3e52;
-            color: #3e3e52;
-            border-radius: 5px;
-          }
-
-          /*============ Filter Section CSS =========== */
-
-          .left_section {
-              padding: 18px;
-              height: 900px;
-              /* position: fixed; */
-              left: 0px;
-          }
-          .left_section #p{
-            font-size: 12px;
-            font-weight: 700;
-            color: #3e3e52;
-          }
-          .filter_div {
-              display: flex;
-              flex-direction: column;
-              /* padding: 15px; */
-          }
-
-          .filter_div h6 {
-              margin-bottom: 13px;
-          }
-
-          .filter_div>label {
-              font-size: small;
-              opacity: 0.6;
-          }
-
-          .filter_div label input {
-              cursor: pointer;
-          }
-
-          .points_div input {
-              border: 0px;
-          }
-
-          .points_div label i {
-              opacity: 0.3;
-          }
-
-          .points_div label {
-              display: flex;
-              border: 1px solid gray;
-              border-radius: 2px;
-              padding: 3px 10px;
-              border-radius: 2px;
-          }
-          .points_div #p3{
-            font-size: 12px;
-            font-weight: 600;
-            color: #3e3e52;
-          }
-          .amenties {
-              list-style: none;
-              margin-left: -38px;
-          }
-
-          .amenties>li {
-              border: 1px solid black;
-              margin-top: 5px;
-              opacity: 0.6;
-              border-radius: 9px;
-              padding: 1px 9px;
-          }
-
-          #heading_line {
-              margin: -15px 0px;
-          }
-
-          /*============ Bus Details Section CSS =========== */
-          .right_section {
-              padding: 0px 5px;
-          }
-
-          #header_images {
-              margin-top: 20px;
-              padding: 0px;
-          }
-
-          #header_images img {
-              width: 183px;
-              height: 120px;
-              margin-left: 20px;
-              margin-right: 15px;
-              cursor: pointer;
-          }
-
-          #heading_line #p4 {
-              font-size: 14px;
-              font-weight: 700;
-              color: #616175;
-              margin-top: 30px;
-              margin-bottom: 30px;
-          }
-
-          #no_of_buses{
-              font-size: small;
-          }
-          .right_section .heading_hr {
-              margin-top: -9px;
-          }
-          #details_sorting_heading #p-span{
-            width: 200px;
-          }
-          #details_sorting_heading {
-            
-              margin-top: 20px;
-              display: grid;
-              grid-template-columns: 1fr 1.4fr 1.7fr 1.2fr 1.5fr 1.5fr 1.3fr 1fr;
-          }
-          #details_sorting_heading .p{
-            font-size: 14px;
-            color: #3e3e52;
-            font-weight: bold;
-
-          }
-          #details_sorting_heading #span{
-          font-size: 14px;
-          font-weight: 400;
-          color: #3e3e52;
-          }
-          #details_sorting_heading p:hover{
-              cursor: pointer;
-              font-size:15px;
-          }
-
-          /*========== Bus details box ========== */
-          .bus_card {
-              padding-right: 10px;
-          border: 1px solid rgb(216, 208, 208);
-              border-radius: 8px;
-              width: 100%;
-              margin-bottom: 20px;
-              margin-right: 10px;
-          }
-
-          .bus_info {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              font-size: small;
-          }
-
-          .operator_logo {
-              width: 85px;
-              margin-bottom: -20px;
-          }
-
-          i {
-              margin: 0px 5px;
-              opacity: 0.6;
-          }
-
-          .bus_info table tr td {
-              padding: 7px 30px;
-          }
-
-          tr td:nth-child(1) {
-              width: 250px;
-              /* background-color: yellow; */
-          }
-
-          .members {
-              font-size: 15px;
-              /* background-color: yellow; */
-          }
-
-          .font {
-              font-size: 14px;
-          }
-
-          .rating {
-              background-color: #38b87c;
-              color: #ffffff;
-            font-weight: 400;
-              padding: 4px 0px;
-              padding-left: -8px;
-              border-radius: 3px;
-              text-align: center;
-          }
-
-          .rating i,
-          p {
-              font-size: 14px;
-              font-weight: bold;
-          }
-
-          .price_nd_seat_div {
-              margin-top: 20px;
-              margin-right: 15px;
-              display: flex;
-              /* flex-direction: column; */
-              gap: 80px;
-              justify-content: center;
-          }
-
-          .price_nd_seat_div p {
-
-              font-size: 16px;
-          }
-          #Bus_price{
-              font-size: 18px;
-              margin-left: 10px;
-          }
-          .see_setails_sml_screen{
-            display: none;
-          }
-          .extra_features_row {
-              display: grid;
-              grid-template-columns: 1fr 2fr 2fr 7fr;
-              gap: 40px;
-              align-items: center;
-              width: 100%;
-          }
-
-          .facility_icons {
-              display: flex;
-              list-style: none;
-              padding: 0px;
-          }
-
-          .facility_icons li {
-              margin-left: 15px;
-          }
-
-          #see_seat_btn_div{
-            position: relative;
-          }
-          .view_seat_btn{
-              background-color: #d84355;
-              color: white;
-              width: 112px;
-              height: 29px;
-              border: none;
-              font-size: 15px;
-              padding: 4px 0px;
-              position: absolute;
-              
-              right: 0;
-              margin-right: 9px;
-              margin-bottom: -22px;
-              cursor: pointer;
-          }
-
-          .view_seat_btn:hover {
-              background-color: #d84355;
-          }
-
-          /*===Initial message POP-UP style === */
-          #pop_up_div {
-              background-color: rgb(25, 23, 23);
-          }
-
-
-          /* /=========== select Seats Pop_up ===============/ */
-          #bg-modal {
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.7);
-            position: absolute;
-            top: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            display: none;
-          }
-
-          .pop-up_box {
-            width: 55%;
-            position: absolute;
-            background-color: white;
-            display: flex;
-            flex-direction: column;
-            border-radius: 15px;
-            padding: 9px;
-          }
-
-          .cross {
-            font-size: 40px;
-            transform: rotate(45deg);
-            position: absolute;
-            top: 3px;
-            right: 5px;
-            margin-top: -10px;
-            font-weight: bold;
-            cursor: pointer;
-          }
-          #pop_line{
-            /* color: white; */
-            /* background-color: rgb(172, 77, 77); */
-            border-radius: 3px;
-            margin-top: 10px;
-            margin-left: 7px;
-            margin-right: 10px;
-            padding-right: -20px;
-            width: 70%;
-          }
-          #seats_contents{
-            display: grid;
-            grid-template-columns: 7fr 5fr;
-            gap: 30px;
-            padding: 0px;
-            margin: 0px;
-            width: 100%;
-            height: 70%;
-          }
-          #seats_contents_left{
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
-            padding: 0px 10px;
-          }
-          #seats_contents_left{
-            /* background-color: yellow; */
-            padding: 0px 9px;
-          }
-          #seats_contents_left img{
-            width: 70%;
-            height: 60%;
-            }
-
-          #upper_deck_box{
-            padding: 12px 7px;
-            width: 100%; 
-            /* background-color: bisque; */
-            background-color: #ffffff;
-            display: grid;
-            grid-template-columns: repeat(10,1fr);
-            border-radius: 7px;
-          }
-          #lower_deck_box{
-            padding: 12px 7px;
-            width: 100%; 
-            /* background-color:  bisque; */
-            background-color: #ffffff;
-            display: grid;
-            grid-template-columns: repeat(10,1fr);
-            border-radius: 7px;
-          }
-          .seat{
-            border: 1px solid black;
-            display: inline;
-            padding: 2px 7px;
-            margin: 3px;
-            background-color: white;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: bold;
-
-          }
-          /* .seat:hover{
-          } */
-          #seats_contents_right{
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            /* display: none; */
-          }
-          #seats_contents_right h6{
-            background-color: #d84355;
-            color: wheat;
-            padding: 2px 5px;
-            border-radius: 5px;
-          }
-          #seat_legends{
-          display: grid;
-          /* background-color: yellow; */
-          grid-template-columns: 1fr 1fr;
-          gap: 20px;
-          
-          }
-          #seat_legends p span{
-            display: inline;
-            padding: 0px 16px;
-            margin-right: 6px;
-
-          }
-          #avl_seat{
-            border: 1px solid rgb(195, 191, 191);
-            background-color: white;
-          }
-          #unavl_seat{
-            border: 1px solid rgb(195, 191, 191);
-            background-color: #d84355;
-          }
-          #fem_seat{
-            background-color: white;
-            border: 2px solid #d84355;
-          }
-          #male_seat{
-            border: 1px solid rgb(195, 191, 191);
-            background-color: white;
-          }
-          .btn{
-            background-color: #d84355;
-            color: #ffffff;
-            border: 0px;
-            border-radius: 9px;
-            padding: 5px 15px;
-            margin: auto;
-            cursor: pointer;
-          }
-          .btn:hover{
-            background-color: #d84355;
-          }
-
-
-          /* <!--========= After selected the seat ======== --> */
-
-          #seats_contents_right-2{
-          border: 1px solid rgb(195, 191, 191);
-          display: flex;
-          justify-content: center;
-          flex-direction: column;
-          margin-top: 15px;
-          border-radius: 9px;
-          display: none;
-          }
-          #confirm_points{
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-          }
-          .points_heading{
-            border: 1px solid #d84355;
-            border-radius: 5px;
-            width: 100%;
-            text-align: center;
-            cursor: pointer;
-          }
-          #boardPoint_div p{
-          font-size: 16px;
-          font-weight: 400;
-          }
-          #dropPoint_div p{
-            font-size: 16px;
-          font-weight: 400;
-          }
-          .points_heading:hover{
-            background-color: #d84355;
-            color: white;
-          }
-
-          .boarding-points >div,.dropping-points>div{
-            margin-top: 7px;
-            display: flex;
-            flex-direction: row;
-          }
-          .boarding-points >div>p,.dropping-points>div>p{
-            margin: 7px 7px;
-          }
-
-          /* <!--========= After contnue of points ======== --> */
-
-          #confirm_booiking_box{
-            display: none;
-            flex-direction: column;
-            border: 2px solid #d84355;
-            border-radius: 12px;
-            padding: 5px 9px;
-          }
-          /* #drop_time{
-            font-size: 5px;
-          } */
-
-
-
-
-
-
-          @media screen and (min-width:830px) and ( max-width:1180px) {  
-            #details_sorting_heading,#header_images,#tr1{
-                display: none;
-            }
-            .extra_features_row ul,.extra_features_row p{
-                display: none;
-            }
-            tr td:nth-child(1) {
-                width: 100px;
-            }
-            .extra_features_row{
-              display: flex;
-              justify-content: flex-end;
-            }
-
-            /*==== POP Screen === */
-            .bg-modal{
-                width: 100%;
-            }
-            #pop-up_box{
-                width: 80%;
-                /* height: 100%; */
-                scroll-behavior: auto;
-            }
-            #upper_deck_box,#lower_deck_box{
-                grid-template-columns: repeat(10,1fr);
-            }
-            .seat{
-                text-align: center;
-            }
-
-          }
-
-          @media screen and (min-width:200px) and ( max-width:830px) {
-            nav{
-                display: none;
-            }
-            #headerDet{
-                display: flex;
-                padding: 0px 5px;
-                font-size: 15px;
-                width: 100vw;
-            }
-            #headerDet p{
-                font-size: 15px;
-            }
-            #headerDet button{
-                height: 20px;
-                background-color: brown;
-                color: white;
-                border: 0px;
-                border-radius: 5px;
-            }
-            .hide {
-                display: none;
-            }
-
-            .left_section{
-                display: none;
-            }
-            .right_section{
-                width: 100vw;
-            }
-
-            #details_sorting_heading,#header_images,#tr1,#pickup_point,#icon, #duration,#dept_point{
-                display: none;
-            }
-            .extra_features_row ul,.extra_features_row p{
-                display: none;
-            }
-            .extra_features_row{
-                display: flex;
-                justify-content: flex-end;
-              }
-
-            tr td:nth-child(1) {
-                width: 100px;
-            }
-            tr{
-                display: flex;
-                flex-direction: column;
-            }
-            .bus_card{
-                font-size: xx-small;
-            }
-            .price_nd_seat_div{
-              margin-left: -20px;
-            }
-            .extra_features_row {
-                grid-template-columns: 1fr 1fr 1fr 1fr;
-            }
-
-
-            /*==== POP Screen === */
-            .bg-modal{
-                width: 100%;
-                
-            }
-            #pop-up_box{
-                width: 80%;
-                /* height: 100%; */
-                scroll-behavior: auto;
-            }
-            #pop_line{
-                display: none;
-            }
-            .seat{
-                padding: 0px;
-                text-align: center;
-            }
-            #seats_contents{
-                display: flex;
-                flex-direction: column;
-            }
-            #upper_deck_box,#lower_deck_box{
-                grid-template-columns: repeat(8,1fr);
-            }
-
-            
-          }
-
-    </style>
+    <title>Bus List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'css/busstyle.css' %}" rel="stylesheet">
 </head>
-
 <body>
-    <div id="container">
-        <div class="nav_cover"> 
-            <div id="header"> </div>
-        </div>
-        <div id="header_cover">
-            <div id="headerDet">
-                <p id="pickup_point">{{ source }}</p>
-                <p><i class="fa-solid fa-right-long"></i></p>
-                <p id="desti_point">{{ destination }}</p>
-                <p class="hide"><i class="fa-solid fa-angle-left"></i></p>
-                <p id="date">{{ date|date:"d M" }}</p>
-                <a href="{% url 'booking' %}"><button id="modify_btn">Modify</button></a>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2C3E50;">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'welcome' %}">
+                <img src="{% static 'images/airplane.gif' %}" alt="TBSC Logo" class="navbar-logo">
+            </a>            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'welcome' %}" style="padding-left: 1050px; color: #ffffff;">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'your_bookings' %}" style="color: #ffffff;">My Bookings</a>
+                    </li>
+                    
+                </ul>
             </div>
         </div>
-        
+    </nav>
 
-        <!--============= Seat POP-UP code ============= -->
-        <div id="bg-modal">
-            <!-- ... (rest of the code remains unchanged) ... -->
-        </div>
-    </div>
-
-    <script>
-        // ... (rest of the code remains unchanged) ...
-    </script>
-</body>
-
-</html>
-</div>
+    <!-- Main Content -->
     <main>
-        <!-- <div id="left_section_coverDiv"> -->
-            <div class="left_section">
-                <h6 id="p">FILTER</h6>
-                <hr>
-                <div id="heading_line" class="filter_div">
-                    <P id="p1">Live Tracking (15)</P>
-                </div>
-                <hr>
-                <div class="filter_div">
-                    <p id="p2">DEPARTURE TIME</p>
-                    <label for=""><input type="checkbox" value="" id="before-6am">Before 6 am (<span id="span1">0</span>)</label>
-                    <label for=""><input type="checkbox" value="" id="morning">6 am to 12 pm (<span id="span2">0</span>)</label>
-                    <label for=""><input type="checkbox" value="" id="evening">12 pm to 6 pm (<span id="span3">0</span>)</label>
-                    <label for=""><input type="checkbox" value="">After 6 pm (0)</label>
-                </div>
-                <div class="filter_div">
-                    <p id="p2">BUS TYPES</p>
-                    <label for=""><input type="checkbox" value="" id="seater">SEATER (<span id="span4">0</span>)</label>
-                    <label for=""><input type="checkbox" value="" id="sleeper">SLEEPER (<span id="span5">0</span>)</label>
-                    <label for=""><input type="checkbox" value="" id="ac">AC (23)</label>
-                </div>
-                <div class="filter_div">
-                    <p id="p2">SEAT AVAILABILITY</p>
-                    <label for=""><input type="checkbox" value="">Single Seats (9)</label>
-                </div>
-                <div class="filter_div">
-                    <p id="p2">ARRIVAL TIME</p>
-                    <label for="" ><input type="checkbox" value="" >Before 6 am (5)</label>
-                    <label for=""><input type="checkbox" value="">6 am to 12 pm (18)</label>
-                    <label for=""><input type="checkbox" value="">12 pm to 6 pm (0)</label>
-                    <label for=""><input type="checkbox" value="">After 6 pm (0)</label>
-                </div>
-                <!-- <div class="points_div">
-                    <p id="p3">BOARDING POINT</p>
-                    <label for=""><i class="fa-solid fa-magnifying-glass"></i><input type="text" name="" id=""
-                            placeholder="BOARDING POINT"></label>
-                </div>
-                <div class="points_div">
-                    <p id="p3">DROPPING POINT</p>
-                    <label for=""><i class="fa-solid fa-magnifying-glass"></i><input type="text" name="" id=""
-                            placeholder="DROPPING POINT"></label>
-                </div>
-                <div class="points_div">
-                    <p id="p3">OPERATOR</p>
-                    <label for=""><i class="fa-solid fa-magnifying-glass"></i><input type="text" name="" id=""
-                            placeholder="OPERATOR"></label>
-                </div> -->
-                <!-- <div class="points_div">
-                    <p id="p3">AMENITIES</p>
-                    <ul class="amenties">
-                        <li>WIFI (23)</li>
-                        <li>Water Bottle (23)</li>
-                        <li>Blankets (4)</li>
-                        <li>Charging Point (4)</li>
-                        <li>Movie (0)</li>
-                        <li>Track My Bus (4)</li>
-                        <li>Emergency Contact Nu... (1)</li>
-                        <li>Toilet (1)</li>
-                    </ul>
-                </div> -->
+        <div class="left_section">
+            <div class="search-bar">
+                <input type="text" id="filter-search" placeholder="Search Buses...">
+                <span class="separator">|</span>
+                <span class="search-icon">&#128269;</span>
             </div>
+            <div class="filter_header">
+                <h6>FILTERS</h6>
+                <button id="reset_filters" class="reset_btn">RESET</button>
+              </div>
+            
+            <div class="filter_div">
+                <h6>DEPARTURE TIME</h6>
+                <div class="filter_option">
+                    <input type="checkbox" id="before_6am">
+                    <label for="before_6am"><i class="icon fl icon-morning"></i> Before 6 am (<span id="before_6am_count">0</span>)</label>
+                </div>
+                <div class="filter_option">
+                    <input type="checkbox" id="6am_to_12pm">
+                    <label for="6am_to_12pm"><i class="far fa-clock"></i> 6 am to 12 pm (<span id="6am_to_12pm_count">0</span>)</label>
+                </div>
+                <div class="filter_option">
+                    <input type="checkbox" id="12pm_to_6pm">
+                    <label for="12pm_to_6pm"><i class="far fa-clock"></i> 12 pm to 6 pm (<span id="12pm_to_6pm_count">0</span>)</label>
+                </div>
+                <div class="filter_option">
+                    <input type="checkbox" id="after_6pm">
+                    <label for="after_6pm"><i class="far fa-clock"></i> After 6 pm (<span id="after_6pm_count">0</span>)</label>
+                </div>
+            </div>
+            <div class="filter_div">
+                <h6>BUS TYPES</h6>
+                <div class="filter_option">
+                    <input type="checkbox" id="sleeper">
+                    <label for="sleeper"><i class="fas fa-bed"></i> SLEEPER (<span id="sleeper_count">0</span>)</label>
+                </div>
+                <div class="filter_option">
+                    <input type="checkbox" id="ac">
+                    <label for="ac"><i class="fas fa-snowflake"></i> SEMI-SLEEPER (<span id="semi_sleeper_count">0</span>)</label>
+                </div>
+            </div>
+            <div class="filter_div">
+                <h6>ARRIVAL TIME</h6>
+                <div class="filter_option">
+                    <input type="checkbox" id="arrival_before_6am">
+                    <label for="arrival_before_6am"><i class="far fa-sun"></i> Before 6 am (<span id="arrival_before_6am_count">0</span>)</label>
+                </div>
+                <div class="filter_option">
+                    <input type="checkbox" id="arrival_6am_to_12pm">
+                    <label for="arrival_6am_to_12pm"><i class="far fa-clock"></i> 6 am to 12 pm (<span id="arrival_6am_to_12pm_count">0</span>)</label>
+                </div>
+                <div class="filter_option">
+                    <input type="checkbox" id="arrival_12pm_to_6pm">
+                    <label for="arrival_12pm_to_6pm"><i class="far fa-clock"></i> 12 pm to 6 pm (<span id="arrival_12pm_to_6pm_count">0</span>)</label>
+                </div>
+                <div class="filter_option">
+                    <input type="checkbox" id="arrival_after_6pm">
+                    <label for="arrival_after_6pm"><i class="far fa-clock"></i> After 6 pm (<span id="arrival_after_6pm_count">0</span>)</label>
+                </div>
+            </div>
+        </div>
         <div class="right_section">
-            <ul id="header_images">
-                <img src="https://st.redbus.in/Images//ReddealsCards/IND/primo1_MainCard.png" alt="">
-                <img src="https://s3.rdbuz.com/Images/ReddealsCards/IND/Returnonward_MainCard.png" alt="">
-                <img src="https://s3.rdbuz.com/Images/ReddealsCards/IND/FlexiTicket_MainCard.png" alt="">
-                <img src="https://s3.rdbuz.com/Images/ReddealsCards/IND/2_10_MainCard.png" alt="">
-                <img src="https://s3.rdbuz.com/Images/ReddealsCards/IND/4_10_MainCard.png" alt="">
-            </ul>
-            <div id="heading_line">
-                <p id="p4"><i class="fa-solid fa-shield-virus"></i>All bus ratings include safety as a major factor</p>
-                <hr class="heading_hr">
+            <div class="header-bar">
+                <span class="location">{{ source|default:"Source" }}</span>
+                <i class="fas fa-arrow-right arrow"></i>
+                <span class="location">{{ destination|default:"Destination" }}</span>
+                <span class="date">{{ date|date:"d M"|default:"Date" }} <span>{{ date|date:"D"|default:"Day" }}</span></span>
+                <a href="{% url 'booking' %}"><button class="modify-btn">Modify</button></a>
             </div>
-            <div id="details_sorting_heading">
-                <p id="p-span" ><span id="no_of_buses" class="bold">0 </span> Buses <span id="span" class="bold" >found</span> </p>
-                <p class="bold">SORT BY:</p>
-                <p id="departure" class="p sortable" data-sort="departure_time">Departure <span id="order_departure_icon" class="p"></span></p>
-                <p id="duration" class="p sortable" data-sort="duration">Duration</p>
-                <p id="arrival" class="p sortable" data-sort="arrival_time">Arrival</p>
-                <p id="rating" class="p sortable" data-sort="rating">Ratings</p>
-                <p id="price" class="p sortable" data-sort="ticket_price">Fare</p>
-                <p id="seat" class="p sortable" data-sort="seating_capacity">Seats Available</p>
-                <hr>
+            
+            <div id="header_images">
+              <img src="https://st.redbus.in/Images//ReddealsCards/IND/primo1_MainCard.png" alt="">
+              <img src="https://s3.rdbuz.com/Images/ReddealsCards/IND/Returnonward_MainCard.png" alt="">
+              <img src="https://s3.rdbuz.com/Images/ReddealsCards/IND/FlexiTicket_MainCard.png" alt="">
+              <img src="https://s3.rdbuz.com/Images/ReddealsCards/IND/2_10_MainCard.png" alt="">
+              <img src="https://s3.rdbuz.com/Images/ReddealsCards/IND/4_10_MainCard.png" alt="">
             </div>
-            <div id="bus_details_section">
-                {% for bus in buses %}
-                <div class="bus_card" data-departure="{{ bus.departure_time|time:'Hi'|default:'0' }}" data-arrival="{{ bus.arrival_time|time:'Hi'|default:'0' }}" data-price="{{ bus.ticket_price|default_if_none:'0' }}" data-seats="{{ bus.seating_capacity|default_if_none:'0' }}">
-                    <div class="bus_info">
-                        <table>
-                            <tr id="tr1">
-                                <td class="bold"><img class="operator_logo" src="https://www.redbus.in/images/reviews/primo_logo.svg" alt=""></td>
-                            </tr>
-                            <tr id="tr2">
-                                <td class="bold">{{ bus.bus_name|default_if_none:"N/A" }}</td>
-                                <td id="in_time" class="bold">{% if bus.departure_time %}{{ bus.departure_time|time:"H:i" }}{% else %}N/A{% endif %}</td>
-                                <td id="duration" class="font">
-                                    {% if bus.departure_time and bus.arrival_time %}
-                                      {{ bus.departure_time|time:"H:i" }}-{{ bus.arrival_time|time:"H:i" }} 
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td id="out_time">{% if bus.arrival_time %}{{ bus.arrival_time|time:"H:i" }}{% else %}N/A{% endif %}</td>
-                                <td>
-                                    <p class="rating"><i class="fa-regular fa-star"></i>{{ bus.rating|default_if_none:"N/A" }}</p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>{{ bus.bus_type|default_if_none:"N/A" }}</td>
-                                <td id="pickup_point">{{ bus.departure_location|default_if_none:"N/A" }}</td>  
-                                <td id="icon"><i class="fa-solid fa-arrow-right"></i></td>
-                                <td id="dept_point">{{ bus.destination_location|default_if_none:"N/A" }}</td>
-                                <td class="members"><i class="fa-solid fa-people-group"></i>{{ bus.seating_capacity|default_if_none:"N/A" }}</td>
-                            </tr>
-                        </table>
-                        <div class="price_nd_seat_div">
-                            <p>Starts from <span class="bold" id="Bus_price">INR {{ bus.ticket_price|default_if_none:"N/A" }}</span></p>
-                            <p>{{ bus.seating_capacity|default_if_none:"N/A" }} Seats available</p>
-                        </div>
-                    </div>
-                    <div class="extra_features_row">
-                        <ul class="facility_icons">
-                            <li title="Snacks"><i class=" fa-solid fa-cookie"></i></li>
-                            <li title="Water Bottle"><i class="fa-solid fa-bottle-water"></i></li>
-                            <li title="Charging Point"><i class="fa-solid fa-plug"></i></li>
-                            <li title="Toilet"><i class="fa-solid fa-restroom"></i></li>
-                        </ul>
-                        <p><i class="fa-solid fa-right-long"></i> Primo</p>
-                        <p><i class="fa-solid fa-map-location-dot"></i>Live Tracking</p>
-                        <div id="see_seat_btn_div">
-                            <button id="{{ bus.bus_id }}" class="view_seat_btn">view Seats</button>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
+            <table class="bus-list-table">
+                <thead>
+                    <tr>
+                        <th colspan="2"><span id="bus-count">{{ buses|length }} Bus{{ buses|length|pluralize:"es" }} found</span></th>
+                        <!-- <th>SORT BY:</th> -->
+                        <th>Departure</th>
+                        <th>Duration</th>
+                        <th>Arrival</th>
+                        <th>Ratings</th>
+                        <th>Fare</th>
+                        <th>Seats Available</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bus in buses %}
+                    <tr class="bus-info">
+                        <td colspan="9">
+                            <div class="bus-card">
+                                <div class="bus-card-content">
+                                    
+                                    <div class="bus-details">
+                                        <img class="operator_logo" src="https://www.redbus.in/images/reviews/primo_logo.svg" alt="Primo">
+                                        <div class="bus_details">
+                                            <p class="bold">{{ bus.bus_name|default:"Bus Name Not Available" }}</p>
+                                            <p>{{ bus.bus_type|default:"Bus Type Not Available" }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="departure">
+                                        <p class="bold">{{ bus.departure_time|time:"H:i"|default:"--:--" }}</p>
+                                        <p>{{ bus.departure_location|default:"Departure Location Not Available" }}</p>
+                                    </div>
+                                    <div class="duration">
+                                        <p>{{ bus.duration|default:"Duration Not Available" }}</p>
+                                    </div>
+                                    <div class="arrival">
+                                        <p class="bold">{{ bus.arrival_time|time:"H:i"|default:"--:--" }}</p>
+                                        <p>{{ bus.destination_location|default:"Destination Location Not Available" }}</p>
+                                    </div>
+                                    <div class="ratings">
+                                        <p class="rating"><i class="fa-regular fa-star"></i>{{ bus.avg_rating|default:"N/A" }}</p>
+                                    </div>
+                                    <div class="fare">
+                                        <p>Starts from</p>
+                                        <p class="bold">INR {{ bus.ticket_price|default:"N/A" }}</p>
+                                    </div>
+                                    <div class="seats">
+                                        <p id="available-seats-{{ bus.bus_id }}">{{ bus.available_seats }} Seats Available</p>
+                                    </div>
+                                </div>
+                                <div class="extra_features_row">
+                                    <ul class="facility_icons">
+                                        <li title="Snacks"><i class="fa-solid fa-cookie"></i></li>
+                                        <li title="Charging Point"><i class="fa-solid fa-plug"></i></li>
+                                        <li title="Toilet"><i class="fa-solid fa-restroom"></i></li>
+                                    </ul>
+                                     <div class="interactive-links">
+                                        <a href="#" class="feedback-btn" data-bus-id="{{ bus.bus_id }}">Feedbacks</a>
+                                        <a href="#" class="images-btn" data-bus-id="{{ bus.bus_id }}">Images</a>
+                                    </div>
+                                    <button class="view_seat_btn" data-bus-id="{{ bus.bus_id }}" data-ticket-price="{{ bus.ticket_price|default:'0' }}">View Seats</button>
+                                </div>
+                                <div class="feedback-section" id="feedback-section-{{ bus.bus_id }}" style="display: none;">
+                                    <div class="feedback-content">
+                                        <div class="rating-section">
+                                            <div class="average-rating">
+                                                <span class="rating-value">{{ bus.avg_rating|floatformat:1 }}</span>
+                                                <span class="rating-star">★</span>
+                                            </div>
+                                            <div class="rating-count">
+                                                {{ bus.feedbacks.count }} Rating{{ bus.feedbacks.count|pluralize }}
+                                            </div>
+                                            <div class="rating-bars">
+                                                {% for rating, percentage in bus.rating_distribution.items %}
+                                                <div class="rating-bar">
+                                                    <span class="rating-label">{{ rating }}</span>
+                                                    <div class="bar">
+                                                        <div class="fill" style="width: {{ percentage|floatformat:0 }}%;"></div>
+                                                    </div>
+                                                    <span class="percentage">{{ percentage|floatformat:0 }}%</span>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                            <h4>People Liked</h4>
+                                            <ul class="liked-features" id="liked-features-{{ bus.bus_id }}">
+                                                {% for feature, count in bus.liked_features %}
+                                                <li>{{ feature|title }} - {{ count }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                        <div class="feedback-list-section">
+                                            <h4>Customer Feedbacks</h4>
+                                            <div class="feedback-list" id="feedback-list-{{ bus.bus_id }}">
+                                                {% for feedback in bus.recent_feedbacks %}
+                                                <div class="feedback-item">
+                                                    <div class="feedback-header">
+                                                        <span class="user-icon">👤</span>
+                                                        <span class="user-name">{{ feedback.booking.customer.first_name }}</span>
+                                                        <span class="feedback-date">{{ feedback.created_at|date:"d-m-Y" }}</span>
+                                                        <span class="feedback-rating">★ {{ feedback.rating }}</span>
+                                                    </div>
+                                                    <p class="feedback-comment">{{ feedback.comment }}</p>
+                                                    {% if feedback.improvements %}
+                                                    <p class="feedback-improvements">Could Be Better: {{ feedback.improvements }}</p>
+                                                    {% endif %}
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                            <button class="view-all-reviews" data-bus-id="{{ bus.bus_id }}">View All Reviews ({{ bus.feedbacks.count }})</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Add this new section after the feedback-section -->
+                                <div class="images-section" id="images-section-{{ bus.bus_id }}" style="display: none;">
+                                    <div class="images-content">
+                                        <h4>Bus Images</h4>
+                                        <div class="image-gallery" id="image-gallery-{{ bus.bus_id }}">
+                                            <!-- Images will be dynamically added here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9">No buses found for this route.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </main>
 
-    <!--============= Seat POP-UP code ============= -->
-    <div id="bg-modal">
-        <div id="pop-up_box" class="pop-up_box">
-            <p class="cross">+</p>
-            <span id="pop_line">Click on an available seat to proceed with your transaction</span>
-            <div id="seats_contents">
-                <div id="seats_contents_left">
-                    <p>Upper Deck</p>
-                 <div id="upper_deck_box">
-                   <!-- Seats wiil be here  ===============-->
-                  <p class="seat"></p>
-                 </div>
-                    <p>Lower Deck</p>
-                 <div id="lower_deck_box">
-                </div>
-                </div>
-                <div id="seats_contents_right">
-                  <h6>SEAT LEGEND</h6>
-                  <div id="seat_legends">
-                  <p><span  id="avl_seat"></span>Available </p>
-                  <p><span id="unavl_seat"></span>Unailable </p>
-                  <p> <span id="fem_seat"></span>Female </p>
-                  <p><span id="male_seat"></span> Male  </p>
-                   </div>
-                   <h6>THIS BOOKING IS NON REFUNDABLE</h6>
-                </div>
- 
-                <!--========= After selected the seat ======== -->
-                <div id="seats_contents_right-2">
-                  <div id="confirm_points">
-                    <div id="boardPoint_div" class="points_heading">
-                        <p>BOADING POINT</p>
+    <!-- Footer -->
+    <footer style="background-color: #2C3E50; color: #ffffff;">
+        <div class="container">
+            <p>&copy; 2023 Bus Booking System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Add this at the end of the body -->
+    <div class="overlay"></div>
+    <div class="seat-modal">
+        <div class="seat-modal-header">
+            <h3>Select Seats</h3>
+            <button class="seat-modal-close">&times;</button>
+        </div>
+        <div class="seat-modal-content">
+            <div class="seat-map">
+                <div class="bus-layout">
+                    <div class="driver-area">
+                        <div class="driver-seat">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
                     </div>
-                    <div id="dropPoint_div" class="points_heading">
-                        <p>DROPPING POINT</p>
+                    <div class="seats-area">
+                        <!-- All 12 rows -->
+                        {% for row in "123456789ABC" %}
+                        <div class="row">
+                            {% for seat in "AB CD" %}
+                                {% if seat != " " %}
+                                <div class="seat {% if row in '123' %}front{% endif %}" 
+                                data-seat="{{ row }}{{ seat }}" 
+                                data-price="{{ bus.ticket_price }}">
+                                    <i class="fas fa-chair"></i>
+                                    <span class="seat-label">{{ row }}{{ seat }}</span>
+                                </div>
+                                {% else %}
+                                    <div class="aisle"></div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
-                <div id="boarding-points" class="boarding-points">
-                    <!-- <div>
-                        <input type="checkbox"><p class="bold" id="pick_time">23:00 </p><p class="bold" id="boarding-point"> Kashmiri Gate</p>
-                    </div>        -->
+                <div class="seat-info">
+                    <p>Selected seats: <span id="selected-seats"></span></p>
+                    <p>Total price: ₹<span id="total-price">0.00</span></p>
                 </div>
-                  <button id="continue_btn" class="btn">Continue</button>
-                </div>
-                
-                <!--========= After contnue of points ======== -->
-                <div id="confirm_booiking_box">
-                   
-                </div>      
+                <button class="confirm-btn" id="confirm-seats" disabled>Confirm Selection</button>
             </div>
-            <!-- <button id="confirm_btn">confirm</button> -->
         </div>
     </div>
-</div>
 
-    <!-- POP-UP , will make at last if have time -->
-  
-    <script type="module" src="./availabilty_nd_booking.js"></script>
-    <script type="module" src="../utilityFunctions/show_pop_up.js"></script>
-    <script>
-        import { show_popups } from "../utilityFunctions/show_pop_up.js";
-        import getData from "../utilityFunctions/getBus_data.js";
-        import { upperDeck, lowerDeck } from "../utilityFunctions/getSeats.js";
-        import checking_point from "../utilityFunctions/checking_points_popUp.js"
-        import { patchSeat_upper, patchSeat_lower } from "../utilityFunctions/patch_seatDetail.js";
-        import navbar from "../../Mohit Codes/akash code/navbarhome.js"
+    <div id="reviewModal" class="review-modal">
+      <div class="review-modal-content">
+        <span class="close-review-modal">&times;</span>
+        <h2>All Reviews</h2>
+        <div class="review-summary">
+          <div class="overall-rating">
+            <span class="rating-value">0</span>
+            <span class="rating-star">★</span>
+          </div>
+          <div class="rating-bars"></div>
+        </div>
+        <div class="review-list"></div>
+      </div>
+    </div>
 
+    <div id="max-seats-alert" class="alert alert-warning" style="display: none;">
+        You can only select up to 8 seats per booking.
+    </div>
 
-        document.getElementById("header").innerHTML = navbar();
-        init_busData();
-        async function init_busData() {
-          let data = await getData();
-          display_buses(data);
-        }
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/bus_list.js' %}"></script>
 
-      
-        // ================ Header section JS ======================
-        let input_obj = JSON.parse(localStorage.getItem("user_inputs"));
-        let pick = document.getElementById("piclup_point");
-        pick.innerText = input_obj.pickPoint;
-        document.getElementById("desti_point").innerText=input_obj.dropPoint;
-        document.getElementById("date").innerText=input_obj.date;
-        document.getElementById("modify_btn").addEventListener("click",()=>{
-          window.open("../Pages/landingPage.html", "_self");
-        });
-
-
-        //  display_buses function =================
-        function display_buses(data) {
-          let no_of_buses = document.getElementById("no_of_buses");
-          let bus_details_section = document.getElementById("bus_details_section");
-          bus_details_section.innerHTML = "";
-          no_of_buses.innerHTML = `${data.length} `;
-          data.forEach((bus) => {
-            let bus_card = document.createElement("div");
-            bus_card.setAttribute("class", "bus_card");
-            let balance_avl_seats = bus.seat_available - bus.booked_seats.length;
-            if(balance_avl_seats== 0) balance_avl_seats="All Seats Booked";
-            bus_card.innerHTML = `
-            <div class="bus_info">
-                <table>
-                    <tr id="tr1">
-                        <td class="bold"><img class="operator_logo" src="https://www.redbus.in/images/reviews/primo_logo.svg" alt=""></td>
-                    </tr>
-                    <tr id="tr2">
-                        <td class="bold">${bus.company}</td>
-                        <td id="in_time" class="bold">${bus.time_in}</td>
-                        <td id="duration" class="font">07:30</td>
-                        <td id="out_time">${bus.time_out}</td>
-                        <td>
-                            <p class="rating"><i class="fa-regular fa-star"></i>${bus.rating}</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>${bus.bus_name}</td>
-                        <td id="pickup_point">${input_obj.pickPoint}</td>  
-                        <td id="icon"><i class="fa-solid fa-arrow-right"></i></td>
-                        <td id="dept_point">${input_obj.dropPoint}</td>
-                        <td class="members"><i class="fa-solid fa-people-group"></i>200</td>
-                    </tr>
-                </table>
-                <div class="price_nd_seat_div">
-                    <p>Starts from <span class="bold" id="Bus_price">INR ${bus.price}</span></p>
-                    <p>${balance_avl_seats} Seats available</p>
-
-                </div>
-            </div>
-            <div class="extra_features_row">
-                <ul class="facility_icons">
-                    <li title="Snacks"><i class=" fa-solid fa-cookie"></i></li>
-                    <li title="Water Bottle"><i class="fa-solid fa-bottle-water"></i></li>
-                    <li title="Charging Point"><i class="fa-solid fa-plug"></i></li>
-                    <li title="Toilet"><i class="fa-solid fa-restroom"></i></li>
-                </ul>
-                <p><i class="fa-solid fa-right-long"></i> Primo</p>
-                <p><i class="fa-solid fa-map-location-dot"></i>Live Tracking</p>
-                <div id="see_seat_btn_div">
-                <button id="${bus.id}" class="view_seat_btn">view Seats</button>
-                </div>
-            </div>
-            `;
-            bus_details_section.append(bus_card);
-
-            let view_seat_btn = document.getElementById(`${bus.id}`);
-            view_seat_btn.addEventListener("click", () => {
-              localStorage.setItem("selected_busID", bus.id);
-              window.scrollTo(0, 0);
-              show_popups();
-            });
-          });
-
-          // Sorting functionalities ===========================================
-          
-          document.getElementById("rating").addEventListener("click", () => {
-            sortData(data)
-          })
-
-          document.getElementById("price").addEventListener("click", () => {
-            sortPrice(data)
-          })
-          document.getElementById("departure").addEventListener("click", () => {
-            sortDepature(data)
-          })
-
-          document.getElementById("seat").addEventListener("click", () => {
-            sortSeat(data)
-          })
-
-          // Filtering functionalities ===========================================
-          
-          let selecter = document.getElementById("before-6am")
-          selecter.addEventListener("change", (e) => {
-            if (e.target.checked) {
-              let newData = data.filter(function (time) {
-                if (time.time_in > "6") {
-                  return true
-                }
-                else {
-                  return false;
-                }
-              })
-
-              let value = document.getElementById("span1")
-              value.innerHTML = ""
-              value.append(newData.length)
-              // console.log(newData.length)
-              display_buses(newData)
-
-            } else {
-              // displayData(data)
-              console.log("data2", data)
-            }
-
-          })
-
-          document.getElementById("morning").addEventListener("click", () => {
-            DisplayData(data)
-
-          })
-          document.getElementById("evening").addEventListener("click", () => {
-            DisplayEveData(data)
-
-          })
-
-          // bus type
-
-          document.getElementById("seater").addEventListener("click", () => {
-            seater(data)
-
-          })
-
-          document.getElementById("sleeper").addEventListener("click", () => {
-            sleeper(data)
-
-          })
-
-          document.getElementById("ac").addEventListener("click", () => {
-            AC(data)
-
-          })
-
-        }
-
-        const sortData = (data) => {
-          let sortType = data.sort((a, b) => {
-            return b.rating - a.rating
-          })
-          display_buses(sortType)
-        }
-
-        const sortPrice = (data) => {
-          let sortPrice = data.sort((a, b) => {
-            return a.price - b.price
-          })
-          display_buses(sortPrice)
-        }
-
-        const sortDepature = (data) => {
-          let sortDep = data.sort((a, b) => {
-            return b.time_in - a.time_in
-          })
-          display_buses(sortDep);
-        }
-
-        const sortSeat = (data) => {
-          // console.log(data)
-          let sortSea = data.sort((a, b) => {
-            return b.seat_available - a.seat_available
-          })
-          display_buses(sortSea)
-        }
-
-
-        function DisplayData(data) {
-          let newData1 = data.filter(function (time) {
-            if (time.time_in < "6" && time.time_in >= "12") {
-              return true
-            }
-            else {
-              return false;
-            }
-          })
-          let value1 = document.getElementById("span2")
-          value1.innerHTML = ""
-          value1.append(newData1.length)
-          display_buses(newData1)
-          // location.reload()
-        }
-
-
-        function DisplayEveData(data) {
-          let newData2 = data.filter(function (time) {
-            if (time.time_in <= "12") {
-              return true
-            }
-            else {
-              return false;
-            }
-          })
-          let value2 = document.getElementById("span3")
-          value2.innerHTML = ""
-          value2.append(newData2.length)
-          display_buses(newData2)
-          // location.reload()
-        }
-
-
-        function seater(data) {
-          let newData2 = data.filter(function (name) {
-            if (name.bus_name <= "Seater") {
-              return true
-            }
-            else {
-              return false;
-            }
-          })
-          let value3 = document.getElementById("span4")
-          value3.innerHTML = ""
-          value3.append(newData2.length)
-          display_buses(newData2)
-          // location.reload()
-        }
-
-
-        function sleeper(data) {
-          bus_details_section.innerHTML = "";
-          let newData2 = data.filter(function (name) {
-            if (name.bus_name <= "Sleeper") {
-              return true
-            }
-            else {
-              return false;
-            }
-          })
-          let value4 = document.getElementById("span5")
-          value4.innerHTML = ""
-          value4.append(newData2.length)
-          display_buses(newData2)
-          // location.reload()
-        }
-
-        function AC(data) {
-          let newData2 = data.filter(function (name) {
-            if (name.bus_name <= "A/C") {
-              return true
-            }
-            else {
-              return false;
-            }
-          })
-          display_buses(newData2)
-        }
-    </script>
 </body>
-
 </html>

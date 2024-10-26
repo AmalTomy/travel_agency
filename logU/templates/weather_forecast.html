@@ -1,0 +1,351 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="{% static 'css1/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css1/fontawesome-all.css' %}" rel="stylesheet">
+    <link href="{% static 'css1/styles.css' %}" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1e1e1e;
+            --card-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent-color: #3498db;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar-custom {
+            background-color: #2C3E50;
+            padding: 10px 20px;
+        }
+        .navbar-logo {
+            height: 40px;
+            width: auto;
+            border-radius: 50%;
+        }
+        .weather-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .search-bar {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        .search-bar input {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 25px 0 0 25px;
+            font-size: 16px;
+            background-color: #3d3d3d;
+            color: var(--text-color);
+        }
+        .search-bar button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 0 25px 25px 0;
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .search-bar button:hover {
+            background-color: #2980b9;
+        }
+        .city-name {
+            font-size: 2rem;
+            margin-bottom: 0;
+            color: #ffffff;
+        }
+        .current-date {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0;
+        }
+        .current-weather {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .temperature {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .weather-icon {
+            width: 60px;
+            height: 60px;
+        }
+        .temp-details {
+            display: flex;
+            flex-direction: column;
+        }
+        .unit-toggle {
+            display: flex;
+            margin-bottom: 5px;
+        }
+        .unit-toggle button {
+            background: none;
+            border: 1px solid var(--text-secondary);
+            color: var(--text-secondary);
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .unit-toggle button.active {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            border-color: var(--accent-color);
+        }
+        .unit-toggle button:first-child {
+            border-radius: 15px 0 0 15px;
+        }
+        .unit-toggle button:last-child {
+            border-radius: 0 15px 15px 0;
+        }
+        .high-low {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+        .weather-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            background-color: #3d3d3d;
+            border-radius: 15px;
+            padding: 10px;
+        }
+        .detail-item {
+            text-align: center;
+            flex: 1;
+        }
+        .detail-label {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+        .detail-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .forecast-graph {
+            background-color: #3d3d3d;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .forecast-tabs {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .forecast-tab {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        .forecast-tab.active {
+            color: var(--text-color);
+            border-bottom: 2px solid var(--accent-color);
+        }
+        .daily-forecast {
+            display: flex;
+            justify-content: space-around;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        .forecast-item {
+            text-align: center;
+            min-width: 70px;
+        }
+        .forecast-day {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        .forecast-icon {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+        .forecast-temp {
+            font-size: 0.9rem;
+        }
+        .forecast-temp .min {
+            color: var(--text-secondary);
+            margin-left: 5px;
+        }
+        .footer {
+            background-color: #2C3E50;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark navbar-custom">
+        <a class="navbar-brand" href="{% url 'welcome' %}">
+            <img src="{% static 'images/airplane.gif' %}" alt="TBSC Logo" class="navbar-logo">
+        </a>
+        <div class="navbar-nav ml-auto">
+            <a class="nav-link" href="{% url 'welcome' %}">HOME</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="weather-card">
+            <form class="search-bar" method="GET" action="{% url 'weather_forecast' %}">
+                <input type="text" name="city" placeholder="Enter city name..." value="{{ city|default:'' }}">
+                <button type="submit">Get Forecast</button>
+            </form>
+
+            {% if city_name %}
+                <div class="current-info">
+                    <h1 class="city-name">{{ city_name }}, {{ city_country }}</h1>
+                    <p class="current-date">{{ current_date|date:"l, M j" }}</p>
+                </div>
+                
+                <div class="current-weather">
+                    <div class="weather-icon-temp">
+                        <img src="http://openweathermap.org/img/wn/{{ icon }}@2x.png" alt="{{ description }}" class="weather-icon">
+                        <span class="temperature">{{ temp|floatformat:0 }}°</span>
+                    </div>
+                    <div class="temp-details">
+                        <p class="weather-description">{{ description }}</p>
+                        <div class="unit-toggle">
+                            <button class="active">C</button>
+                            <button>F</button>
+                        </div>
+                        <p class="high-low">H: {{ temp_max|floatformat:0 }}° L: {{ temp_min|floatformat:0 }}°</p>
+                    </div>
+                </div>
+                
+                <div class="weather-details">
+                    <div class="detail-item">
+                        <i class="fas fa-tint detail-icon"></i>
+                        <div class="detail-label">Humidity</div>
+                        <div class="detail-value">{{ humidity }}%</div>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-cloud-rain detail-icon"></i>
+                        <div class="detail-label">Precipitation</div>
+                        <div class="detail-value">{{ precipitation|floatformat:0 }}%</div>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-wind detail-icon"></i>
+                        <div class="detail-label">Wind</div>
+                        <div class="detail-value">{{ wind|floatformat:1 }} m/s</div>
+                    </div>
+                </div>
+                
+                <div class="forecast-graph">
+                    <div class="forecast-tabs">
+                        <button class="forecast-tab active">Temperature</button>
+                        <button class="forecast-tab">Precipitation</button>
+                        <button class="forecast-tab">Wind</button>
+                    </div>
+                    <canvas id="forecastChart"></canvas>
+                </div>
+                
+                <div class="daily-forecast">
+                    {% for day in daily_forecast %}
+                        <div class="forecast-item">
+                            <div class="forecast-day">{{ day.dt_txt|date:"D" }}</div>
+                            <img src="http://openweathermap.org/img/wn/{{ day.weather.0.icon }}@2x.png" alt="{{ day.weather.0.description }}" class="forecast-icon">
+                            <div class="forecast-temp">
+                                <span class="max">{{ day.main.temp_max|add:-273.15|floatformat:0 }}°</span>
+                                <span class="min">{{ day.main.temp_min|add:-273.15|floatformat:0 }}°</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% elif error %}
+                <div class="alert alert-danger mt-4">{{ error }}</div>
+            {% else %}
+                <div class="alert alert-info mt-4">Please enter a city to get the weather forecast.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p class="p-small">&copy; 2024 TBSC. All rights reserved.</p>
+    </div>
+
+    <script src="{% static 'js1/jquery.min.js' %}"></script>
+    <script src="{% static 'js1/popper.min.js' %}"></script>
+    <script src="{% static 'js1/bootstrap.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Chart.js code for temperature graph
+        const ctx = document.getElementById('forecastChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ chart_labels|safe }},
+                datasets: [{
+                    label: 'Temperature',
+                    data: {{ chart_data|safe }},
+                    borderColor: '#3498db',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

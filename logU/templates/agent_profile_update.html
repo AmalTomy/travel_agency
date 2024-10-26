@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% load static %}
+
+    <!-- Website Title -->
+    <title>Agent Safety Reports - TBSC</title>
+
+    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:500,700&display=swap&subset=latin-ext" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600&display=swap&subset=latin-ext" rel="stylesheet">
+    <link href="{% static 'css1/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css1/fontawesome-all.css' %}" rel="stylesheet">
+    <link href="{% static 'css1/styles.css' %}" rel="stylesheet">
+
+    <!-- Favicon  -->
+    <link rel="icon" href="{% static 'images/logo1.png' %}">
+    <style>
+        body {
+            background-color: #f4f7f6;
+            color: #333333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar-custom {
+            background-color: #2C3E50;
+            padding: 10px 0;
+        }
+        .navbar-logo, .agent-logo {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+        }
+        .agent-name {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .content {
+            padding-top: 100px;
+            padding-bottom: 80px; /* Add padding to account for footer height */
+            flex: 1 0 auto;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 700px; /* Slightly reduce max-width */
+            margin: 0 auto 40px; /* Add bottom margin */
+        }
+        .card-header {
+            background-color: #2C3E50;
+            color: #ffffff;
+            border-bottom: none;
+            padding: 20px;
+        }
+        .card-body {
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        .form-control {
+            border-radius: 20px;
+            border: 1px solid #ced4da;
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
+            border-color: #2C3E50;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #2C3E50;
+            margin-bottom: 5px;
+        }
+        .btn-primary {
+            background-color: #2C3E50;
+            border-color: #2C3E50;
+            border-radius: 20px;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #34495e;
+            border-color: #34495e;
+        }
+        .btn-success {
+            background-color: #27ae60;
+            border-color: #27ae60;
+            border-radius: 20px;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+        .btn-success:hover {
+            background-color: #2ecc71;
+            border-color: #2ecc71;
+        }
+        .form-control-file {
+            border: 1px solid #ced4da;
+            border-radius: 20px;
+            padding: 10px 15px;
+            background-color: #ffffff;
+        }
+        .profile-image-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+        .footer {
+            background-color: #2C3E50;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        /* Modal styles */
+        .modal-content {
+            border: none;
+            border-radius: 15px;
+        }
+
+        /* Tick mark animation styles */
+        .tick-mark-container {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+        }
+        .tick-mark {
+            width: 100%;
+            height: 100%;
+        }
+        .tick-mark__circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: #7ac142;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        .tick-mark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            stroke-width: 3;
+            stroke: #7ac142;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+        @keyframes stroke {
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        /* Add some responsive adjustments */
+        @media (max-width: 768px) {
+            .content {
+                padding-top: 80px;
+                padding-bottom: 60px;
+            }
+            .card {
+                margin-bottom: 20px;
+            }
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+        }
+
+        .is-invalid {
+            border-color: #dc3545;
+        }
+    </style>
+
+    <!-- Load jQuery first -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Then load Bootstrap JS (which depends on jQuery) -->
+    <script src="{% static 'js1/bootstrap.min.js' %}"></script>
+
+    <!-- Then load jQuery Validation plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'agent_welcome' %}">
+                <img src="{% static 'images/airplane.gif' %}" alt="TBSC Logo" class="navbar-logo mr-2">
+            </a>
+            <div class="ml-auto d-flex align-items-center">
+                {% if agent.profile_image %}
+                    <img src="{{ agent.profile_image.url }}" alt="Agent" class="agent-logo mr-2">
+                {% else %}
+                    <img src="{% static 'images/agent.gif' %}" alt="Agent" class="agent-logo mr-2">
+                {% endif %}
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="agent-name">{{ agent.first_name }} {{ agent.last_name }}</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'agent_welcome' %}
+                        "><i class="fas fa-tasks"></i> Home</a>
+                        <a class="dropdown-item" href="{% url 'safety_notification_report' %}"><i class="fas fa-user-cog"></i> Submit Safety Report</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'signout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- end of navbar -->
+
+    <!-- Main Content -->
+    <div class="container content">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="mb-0">Agent Profile</h2>
+            </div>
+            <div class="card-body">
+                <form id="profile-form" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="text-center mb-4">
+                        {% if agent.profile_image %}
+                            <img src="{{ agent.profile_image.url }}" alt="Profile Image" class="profile-image-preview" id="profile-image-preview">
+                        {% else %}
+                            <img src="{% static 'images/agent.gif' %}" alt="Default Profile Image" class="profile-image-preview" id="profile-image-preview">
+                        {% endif %}
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="first_name" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ agent.first_name }}" required disabled>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="last_name" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ agent.last_name }}" required disabled>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ agent.email }}" required disabled>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="mobile" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="mobile" name="mobile" value="{{ agent.mobile }}" required disabled>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="profile_image" class="form-label">Profile Image</label>
+                        <input type="file" class="form-control-file" id="profile_image" name="profile_image" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="address" name="address" value="{{ agent.address }}" disabled>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="city" class="form-label">City</label>
+                            <input type="text" class="form-control" id="city" name="city" value="{{ agent.city }}" disabled>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="district" class="form-label">District</label>
+                            <input type="text" class="form-control" id="district" name="district" value="{{ agent.district }}" disabled>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button type="button" id="edit-btn" class="btn btn-primary">Edit Profile</button>
+                        <button type="submit" id="update-btn" class="btn btn-success d-none">Update Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center py-5">
+                    <div class="tick-mark-container mb-4">
+                        <svg class="tick-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                            <circle class="tick-mark__circle" cx="26" cy="26" r="25" fill="none"/>
+                            <path class="tick-mark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                        </svg>
+                    </div>
+                    <h4>Profile Updated Successfully!</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $(document).ready(function() {
+        const form = $('#profile-form');
+        const editBtn = $('#edit-btn');
+        const updateBtn = $('#update-btn');
+        const formInputs = form.find('input, textarea');
+        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+
+        function validateField(field, errorField, validationFunction) {
+            var value = field.val().trim();
+            var isValid = validationFunction(value);
+            if (isValid) {
+                field.removeClass('is-invalid');
+                errorField.hide();
+            } else {
+                field.addClass('is-invalid');
+                errorField.show();
+            }
+            return isValid;
+        }
+
+        function validateFirstName(value) {
+            if (value.trim() === '' || /^\s/.test(value) || /\d/.test(value) || /[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+                $('#first_name-error').text('First Name is required and should not start with spaces, contain numbers, or special characters');
+                return false;
+            }
+            return true;
+        }
+
+        function validateLastName(value) {
+            if (value.trim() === '' || /^\s/.test(value) || /\d/.test(value) || /[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+                $('#last_name-error').text('Last Name is required and should not start with spaces, contain numbers, or special characters');
+                return false;
+            }
+            return true;
+        }
+
+        function validateAddress(value) {
+            if (value.trim() === '' || /^\s/.test(value) || /\s{2,}/.test(value)) {
+                $('#address-error').text('Address is required, should not start with spaces, and should not contain consecutive spaces');
+                return false;
+            }
+            return true;
+        }
+
+        function validatePhone(value) {
+            if (!/^\+?[0-9]{10,12}$/.test(value) || /^\s/.test(value) || (value.length !== 10 && !(value.startsWith('+') && value.length === 12))) {
+                $('#mobile-error').text('Phone number should be 10 digits, or 12 digits with country code (including +), and should not start with spaces');
+                return false;
+            }
+            return true;
+        }
+
+        function validateEmail(value) {
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(value) || /^\s/.test(value)) {
+                $('#email-error').text('Please enter a valid email address that does not start with spaces');
+                return false;
+            }
+            return true;
+        }
+
+        function validateCity(value) {
+            if (value.trim() === '' || /^\s/.test(value) || /\d/.test(value)) {
+                $('#city-error').text('City is required and should not start with spaces or contain numbers');
+                return false;
+            }
+            return true;
+        }
+
+        function validateDistrict(value) {
+            if (value.trim() === '' || /^\s/.test(value) || /\d/.test(value)) {
+                $('#district-error').text('District is required and should not start with spaces or contain numbers');
+                return false;
+            }
+            return true;
+        }
+
+        // Add error message elements after each input
+        formInputs.each(function() {
+            $(this).after('<div id="' + $(this).attr('id') + '-error" class="error-message" style="display:none; color: red;"></div>');
+        });
+
+        // Attach onkeyup event listeners
+        $('#first_name').on('keyup', function() { validateField($(this), $('#first_name-error'), validateFirstName); });
+        $('#last_name').on('keyup', function() { validateField($(this), $('#last_name-error'), validateLastName); });
+        $('#address').on('keyup', function() { validateField($(this), $('#address-error'), validateAddress); });
+        $('#mobile').on('keyup', function() { validateField($(this), $('#mobile-error'), validatePhone); });
+        $('#email').on('keyup', function() { validateField($(this), $('#email-error'), validateEmail); });
+        $('#city').on('keyup', function() { validateField($(this), $('#city-error'), validateCity); });
+        $('#district').on('keyup', function() { validateField($(this), $('#district-error'), validateDistrict); });
+
+        // Email existence check
+        $('#email').on('blur', function() {
+            var email = $(this).val();
+            if (email !== '{{ agent.email }}') {  // Only check if email has changed
+                $.ajax({
+                    url: '{% url "check_email" %}',
+                    method: 'POST',
+                    data: {
+                        'email': email,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if (response.exists) {
+                            $('#email').addClass('is-invalid');
+                            $('#email-error').text('This email is already registered.').show();
+                        } else {
+                            $('#email').removeClass('is-invalid');
+                            $('#email-error').hide();
+                        }
+                    },
+                    error: function() {
+                        console.error('An error occurred while checking email availability.');
+                    }
+                });
+            }
+        });
+
+        editBtn.click(function() {
+            formInputs.prop('disabled', false);
+            editBtn.addClass('d-none');
+            updateBtn.removeClass('d-none');
+        });
+
+        form.submit(function(e) {
+            e.preventDefault();
+            
+            var isValid = true;
+            isValid = validateField($('#first_name'), $('#first_name-error'), validateFirstName) && isValid;
+            isValid = validateField($('#last_name'), $('#last_name-error'), validateLastName) && isValid;
+            isValid = validateField($('#address'), $('#address-error'), validateAddress) && isValid;
+            isValid = validateField($('#mobile'), $('#mobile-error'), validatePhone) && isValid;
+            isValid = validateField($('#email'), $('#email-error'), validateEmail) && isValid;
+            isValid = validateField($('#city'), $('#city-error'), validateCity) && isValid;
+            isValid = validateField($('#district'), $('#district-error'), validateDistrict) && isValid;
+
+            // Check if email is valid (not already registered)
+            if ($('#email').hasClass('is-invalid')) {
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            const formData = new FormData(this);
+            
+            $.ajax({
+                url: '{% url "agent_profile_update" %}',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function(data) {
+                    if (data.success) {
+                        successModal.show();
+                        setTimeout(() => {
+                            successModal.hide();
+                            formInputs.prop('disabled', true);
+                            editBtn.removeClass('d-none');
+                            updateBtn.addClass('d-none');
+                        }, 2000);
+                    } else {
+                        alert('Error updating profile: ' + data.error);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while updating the profile.');
+                }
+            });
+        });
+
+        $('#profile_image').change(function(e) {
+            if (e.target.files && e.target.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#profile-image-preview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    });
+    </script>
+    <!-- end of main content -->
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="p-small">&copy; 2024 TBSC. All rights reserved.</p>
+    </footer>
+    <!-- end of footer -->
+
+</body>
+</html>

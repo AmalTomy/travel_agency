@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,102 +7,9 @@
     <title>Moderators Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .main-content {
-            padding: 20px;
-        }
-
-        .stat-card {
-            background-color: #fff;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .header-nav {
-            display: flex;
-            align-items: center;
-        }
-
-        .header-nav .nav-link {
-            position: relative;
-            padding: 0.5rem 1rem;
-            margin-right: 15px; /* Adjust spacing between items */
-            text-decoration: none;
-            color: #333;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .header-nav .nav-link.active {
-            background-color: rgba(0, 123, 255, 0.1); /* Light blue background */
-            color: #007bff; /* Blue text color */
-        }
-
-        .header-nav .nav-link.active::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 123, 255, 0.2); /* Semi-transparent overlay */
-            z-index: -1;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-        }
-
-        header .d-flex {
-            margin-left: auto; /* Pushes the header content to the right */
-        }
-
-        .alert {
-            display: flex;
-            align-items: center;
-            padding-right: 500px;
-        }
-
-        /* Centering the welcome message */
-        .welcome-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 50vh; /* Adjust height as needed */
-            text-align: center;
-        }
-
-        /* Fade-in writing animation */
-        .welcome-message {
-            font-size: 2rem;
-            opacity: 0;
-            animation: fadeInWrite 3s forwards;
-        }
-
-        @keyframes fadeInWrite {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/buses_added_by_moderator.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 <body>
     <div class="container-fluid">
@@ -111,12 +19,11 @@
                 <!-- Header -->
                 <header class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
                     <div class="d-flex align-items-center dropdown">
-                        <img src="https://via.placeholder.com/40" alt="User" class="rounded-circle">
+                        <img src="{% static 'images/spy.gif' %}" alt="User" class="rounded-circle" style="width: 40px; height: 40px; border: 2px solid #007bff;">
                         <span class="me-3 dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">{{ first_name }} {{ last_name }}</span>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li><a class="dropdown-item" href="#">Profile</a></li>
-                            <li><a class="dropdown-item" href="#">Buses Added by You</a></li>
-                            <li><a class="dropdown-item" href="#">Logout</a></li>
+                            <li><a class="dropdown-item" href="{% url 'mod_profile' %}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'signout' %}">Logout</a></li>
                         </ul>
                     </div>
                 </header>
@@ -129,58 +36,98 @@
                         <a class="nav-link" href="{% url 'mod_sch' %}">
                             <i class="fas fa-bus me-2"></i> Schedule Buses
                         </a>
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{% url 'notifications_report' %}">
                             <i class="fas fa-list-alt me-2"></i> Report List
                         </a>
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-icons me-2"></i> Icons
+                        <a class="nav-link" href="{% url 'mod_agentlist' %}">
+                            <i class="fas fa-users me-2"></i> Agents
+                        </a>
+                        <a class="nav-link" href="{% url 'moderator_job_requests' %}">
+                            <i class="fas fa-briefcase me-2"></i> Agent Job Requests
+                        </a>
+                        <a class="nav-link" href="{% url 'buses_added_by_moderator' %}">
+                            <i class="fas fa-plus-circle me-2"></i> Bus Added
+                        </a>
+                        <a class="nav-link " href="{% url 'view_bus_bookings' %}">
+                            <i class="fas fa-book me-2"></i> Bus Bookings
                         </a>
                     </nav>
                 </div>
                 
                 <!-- Begin block content -->
                 {% block content %}
-                <h1>Buses Added by You</h1>
-
-                {% if buses %}
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Bus Name</th>
-                                <th>Bus Number</th>
-                                <th>Type</th>
-                                <th>Departure</th>
-                                <th>Destination</th>
-                                <th>Departure Time</th>
-                                <th>Arrival Time</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for bus in buses %}
-                            <tr>
-                                <td>{{ bus.bus_name }}</td>
-                                <td>{{ bus.bus_number }}</td>
-                                <td>{{ bus.bus_type }}</td>
-                                <td>{{ bus.departure_location }}</td>
-                                <td>{{ bus.destination_location }}</td>
-                                <td>{{ bus.departure_time }}</td>
-                                <td>{{ bus.arrival_time }}</td>
-                                <td>{{ bus.get_status_display }}</td>
-                                <td>
-                                    <a href="{% url 'edit_bus' bus.bus_id %}" class="btn btn-sm btn-primary">Edit</a>
-                                    <a href="{% url 'delete_bus' bus.bus_id %}" class="btn btn-sm btn-danger">Delete</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                {% else %}
-                    <p>You haven't added any buses yet.</p>
-                {% endif %}
-
-                <a href="{% url 'mod_sch' %}" class="btn btn-success">Add New Bus</a>
+                <div class="card shadow-sm" >
+                    <div class="card-header text-white" style="background-color: #c5c8cb;">
+                        <h2 class="mb-0">Buses Added by You</h2>
+                    </div>
+                    <div class="card-body">
+                        <!-- Add this before the bus cards section -->
+                        <div class="filter-sort-container animated">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <h5><i class="fas fa-filter me-2"></i>Filter by Status:</h5>
+                                    <div class="btn-group" role="group">
+                                        <a href="{% url 'buses_added_by_moderator' %}" class="btn btn-outline-primary {% if not current_status %}active{% endif %}">All</a>
+                                        <a href="{% url 'buses_added_by_moderator' %}?status=active{% if current_sort %}&sort_by={{ current_sort }}{% endif %}" class="btn btn-outline-primary {% if current_status == 'active' %}active{% endif %}">Active</a>
+                                        <a href="{% url 'buses_added_by_moderator' %}?status=under_maintenance{% if current_sort %}&sort_by={{ current_sort }}{% endif %}" class="btn btn-outline-primary {% if current_status == 'under_maintenance' %}active{% endif %}">Under Maintenance</a>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5><i class="fas fa-sort me-2"></i>Sort by:</h5>
+                                    <div class="btn-group" role="group">
+                                        <a href="{% url 'buses_added_by_moderator' %}{% if current_status %}?status={{ current_status }}&{% else %}?{% endif %}sort_by=status" class="btn btn-outline-secondary {% if current_sort == 'status' or not current_sort %}active{% endif %}">Status</a>
+                                        <a href="{% url 'buses_added_by_moderator' %}{% if current_status %}?status={{ current_status }}&{% else %}?{% endif %}sort_by=date" class="btn btn-outline-secondary {% if current_sort == 'date' %}active{% endif %}">Date</a>
+                                        <a href="{% url 'buses_added_by_moderator' %}{% if current_status %}?status={{ current_status }}&{% else %}?{% endif %}sort_by=name" class="btn btn-outline-secondary {% if current_sort == 'name' %}active{% endif %}">Name</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- The rest of your existing HTML for displaying bus cards -->
+                        {% if buses %}
+                            <div class="row">
+                                {% for bus in buses %}
+                                <div class="col-md-6 col-lg-4 mb-4">
+                                    <div class="card mb-3 bus-card" id="bus-{{ bus.bus_id }}" data-arrival-date="{{ bus.arrival_date|date:'Y-m-d' }}">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ bus.bus_name }}</h5>
+                                            <h6 class="card-subtitle mb-2 text-muted">{{ bus.bus_number }}</h6>
+                                            <p class="card-text">
+                                                <strong>Type:</strong> {{ bus.bus_type }}<br>
+                                                <strong>From:</strong> {{ bus.departure_location }}<br>
+                                                <strong>To:</strong> {{ bus.destination_location }}<br>
+                                                <strong>Departure:</strong> {{ bus.date|date:"Y-m-d" }}<br>
+                                                <strong>Arrival:</strong> {{ bus.arrival_date|date:"Y-m-d" }}
+                                            </p>
+                                            <div class="status-badge mb-3">
+                                                <span class="badge {% if bus.status == 'active' %}bg-success{% else %}bg-warning{% endif %}"
+                                                      data-arrival-date="{{ bus.arrival_date|date:'Y-m-d' }}">
+                                                    {{ bus.get_status_display }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer bg-transparent">
+                                            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                                <button class="btn btn-sm btn-outline-secondary mb-2 reschedule-btn" data-bs-toggle="modal" data-bs-target="#rescheduleBusModal{{ bus.bus_id }}">
+                                                    <i class="fas fa-calendar-alt"></i> Reschedule
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-primary mb-2 toggle-status" data-bus-id="{{ bus.bus_id }}">Toggle Status</button>
+                                                <button class="btn btn-sm btn-outline-info mb-2 driver-info-btn" data-bs-toggle="modal" data-bs-target="#driverModal{{ bus.bus_id }}">Driver Info</button>
+                                                <button class="btn btn-sm btn-outline-warning mb-2 feedback-btn" data-bs-toggle="modal" data-bs-target="#feedbackModal{{ bus.bus_id }}">Feedback</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="card-text">You haven't added any buses yet.</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer bg-light">
+                        <a href="{% url 'mod_sch' %}" class="btn btn-success">Add New Bus</a>
+                    </div>
+                </div>
                 {% endblock %}
                 <!-- End block content -->
 
@@ -188,18 +135,229 @@
         </div>
     </div>
 
+    <!-- Add this modal for each bus -->
+    {% for bus in buses %}
+    <div class="modal fade" id="driverModal{{ bus.bus_id }}" tabindex="-1" aria-labelledby="driverModalLabel{{ bus.bus_id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="driverModalLabel{{ bus.bus_id }}">Driver Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% if bus.driver_info %}
+                        <div class="driver-info">
+                            <img src="{{ bus.driver_info.image.url }}" alt="Driver Image" class="driver-image">
+                            <div class="driver-details">
+                                <div class="driver-name">{{ bus.driver_info.name }}</div>
+                                <div class="driver-contact">{{ bus.driver_info.email }}</div>
+                                <div class="driver-contact">{{ bus.driver_info.contact_number }}</div>
+                                <a href="{{ bus.driver_info.license.url }}" target="_blank" class="license-btn">View License</a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p>No driver information available for this bus.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Feedback Modal -->
+    <div class="modal fade" id="feedbackModal{{ bus.bus_id }}" tabindex="-1" aria-labelledby="feedbackModalLabel{{ bus.bus_id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="feedbackModalLabel{{ bus.bus_id }}">Feedback for {{ bus.bus_name }} ({{ bus.bus_number }})</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Average Rating: {{ bus.avg_rating|default:"N/A" }}</p>
+                    <p>Total Feedback: {{ bus.feedback_count }}</p>
+                    {% if bus.feedbacks.all %}
+                        <div class="feedback-list">
+                            {% for feedback in bus.feedbacks.all %}
+                                <div class="feedback-item mb-3 p-3 border rounded">
+                                    <p><strong>Rating:</strong> {{ feedback.rating|default:"N/A" }}/5</p>
+                                    <p><strong>Comment:</strong> {{ feedback.comment|default:"No comment" }}</p>
+                                    <p><strong>Improvements:</strong> {{ feedback.improvements|default:"No suggestions" }}</p>
+                                    <p><strong>Recommend:</strong> {{ feedback.get_recommend_display }}</p>
+                                    <p><strong>Date:</strong> {{ feedback.created_at|date:"F d, Y" }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No feedback available for this bus.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reschedule Bus Modal -->
+    <div class="modal fade" id="rescheduleBusModal{{ bus.bus_id }}" tabindex="-1" aria-labelledby="rescheduleBusModalLabel{{ bus.bus_id }}" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rescheduleBusModalLabel{{ bus.bus_id }}">Reschedule Bus</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="rescheduleBusForm{{ bus.bus_id }}" method="post" action="{% url 'reschedule_bus' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="bus_id" value="{{ bus.bus_id }}">
+                        <div class="row">
+                            <div class="col-md-6 border-end">
+                                <h6 class="mb-3">Current Schedule (Not Editable)</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Bus Name</label>
+                                    <input type="text" class="form-control" value="{{ bus.bus_name }}" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Bus Number</label>
+                                    <input type="text" class="form-control" value="{{ bus.bus_number }}" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Seat Count</label>
+                                    <input type="text" class="form-control" value="48" readonly>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Departure Location</label>
+                                        <input type="text" class="form-control" value="{{ bus.departure_location }}" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Destination Location</label>
+                                        <input type="text" class="form-control" value="{{ bus.destination_location }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Departure Date</label>
+                                        <input type="text" class="form-control" value="{{ bus.date|date:'Y-m-d' }}" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Departure Time</label>
+                                        <input type="text" class="form-control" value="{{ bus.departure_time }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Arrival Date</label>
+                                        <input type="text" class="form-control" value="{{ bus.arrival_date|date:'Y-m-d' }}" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Arrival Time</label>
+                                        <input type="text" class="form-control" value="{{ bus.arrival_time }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Stops</label>
+                                    <input type="text" class="form-control" value="{{ bus.stops }}" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Ticket Price</label>
+                                    <input type="text" class="form-control" value="{{ bus.ticket_price }}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mb-3">New Schedule</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Bus Name</label>
+                                    <input type="text" class="form-control" name="bus_name" value="{{ bus.bus_name }}" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Bus Number</label>
+                                    <input type="text" class="form-control" name="bus_number" value="{{ bus.bus_number }}" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Seat Count</label>
+                                    <input type="text" class="form-control" name="seat_count" value="48" readonly>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="new_departure_location{{ bus.bus_id }}" class="form-label">Departure Location</label>
+                                        <select class="form-control" id="new_departure_location{{ bus.bus_id }}" name="departure_location" required>
+                                            <option value="">Select Departure Location</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="new_destination_location{{ bus.bus_id }}" class="form-label">Destination Location</label>
+                                        <select class="form-control" id="new_destination_location{{ bus.bus_id }}" name="destination_location" required disabled>
+                                            <option value="">Select Destination Location</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="new_departure_date{{ bus.bus_id }}" class="form-label">Departure Date</label>
+                                        <input type="date" class="form-control" id="new_departure_date{{ bus.bus_id }}" name="date" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="new_departure_time{{ bus.bus_id }}" class="form-label">Departure Time</label>
+                                        <input type="time" class="form-control" id="new_departure_time{{ bus.bus_id }}" name="departure_time" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="new_arrival_date{{ bus.bus_id }}" class="form-label">Arrival Date</label>
+                                        <input type="date" class="form-control" id="new_arrival_date{{ bus.bus_id }}" name="arrival_date" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="new_arrival_time{{ bus.bus_id }}" class="form-label">Arrival Time</label>
+                                        <input type="time" class="form-control" id="new_arrival_time{{ bus.bus_id }}" name="arrival_time" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="new_stops{{ bus.bus_id }}" class="form-label">Stops</label>
+                                    <select class="form-control" id="new_stops{{ bus.bus_id }}" name="stops" required disabled>
+                                        <option value="">Select Stops</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="new_ticket_price{{ bus.bus_id }}" class="form-label">Ticket Price</label>
+                                    <input type="number" class="form-control" id="new_ticket_price{{ bus.bus_id }}" name="ticket_price" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary">Reschedule</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% endfor %}
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const navLinks = document.querySelectorAll('.header-nav .nav-link');
-        
-            navLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    navLinks.forEach(link => link.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-        });
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script id="locations-data" type="application/json">
+        {{ locations_json|safe }}
     </script>
-</body>
+    <script>
+        console.log('Raw locations_json:', document.getElementById('locations-data').textContent);
+    </script>
+    <script src="{% static 'js/buses_added_by_moderator.js' %}"></script>
+
+    <!-- Add this modal for each bus -->
+    <div class="modal fade" id="rescheduleSuccessModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body text-center">
+            <div class="success-animation">
+              <div class="bus-icon">
+                <i class="fas fa-bus"></i>
+              </div>
+              <div class="checkmark-circle">
+                <div class="checkmark draw"></div>
+              </div>
+            </div>
+            <h3 class="mt-4">Bus Rescheduled Successfully!</h3>
+            <p class="reschedule-message"></p>
+          </div>
+        </div>
+      </div>
+    </div>
 </html>

@@ -38,12 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
-    
+    'django_apscheduler',
+
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+       
 ]
 AUTH_USER_MODEL = 'home.Users'
 
@@ -79,6 +81,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'logU.wsgi.application'
+
+
 
 
 # Database
@@ -152,7 +156,13 @@ DEFAULT_FROM_EMAIL = 'amaltomy321@gmail.com'
 
 SITE_ID = 1 
 
+TWILIO_ACCOUNT_SID = 'ACa7a2f6611c41f82d39f3cdcc9fc0a2fb'
+TWILIO_AUTH_TOKEN = '1d5c259c581172b354336a893ea3e8eb'
+TWILIO_PHONE_NUMBER = '+12089032893'
 
+# Add this to your existing settings
+
+OPENWEATHERMAP_API_KEY = '45b01a7f6a9893cc9370a6fd91f105fb'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -190,3 +200,7 @@ SOCIALACCOUNT_LOGIN_ON_GET=True
 
 
 SOCIALACCOUNT_LOGIN_ON_GET=True
+
+
+STRIPE_PUBLIC_KEY = 'pk_test_51OCkghSBuIxwYSiTmCNMdgc0IMrgQHhcAvocnizZpjj6MPVFZ4mYldxbWTAbEFcHN24niT2eQ3ZDMs77Uk5vcVpr00fEoozoND'
+STRIPE_SECRET_KEY = 'sk_test_51OCkghSBuIxwYSiTZeJkEXw2z2OjBvFdQQtmebhs1oIyw1Y3JIqtCQwit6fbirruGnlfnJyGxV17DivYqtK4LyI1000VP3scQg'

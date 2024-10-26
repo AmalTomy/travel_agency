@@ -1,0 +1,458 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moderator Job Requests</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .stat-card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-nav .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem;
+            margin-right: 15px;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .header-nav .nav-link.active {
+            background-color: rgba(0, 123, 255, 0.1);
+            color: #007bff;
+        }
+
+        .header-nav .nav-link.active::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 123, 255, 0.2);
+            z-index: -1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        header .d-flex {
+            margin-left: auto;
+        }
+
+        .alert {
+            display: flex;
+            align-items: center;
+            padding-right: 177px;
+        }
+
+        .checkmark-circle, .crossmark-circle {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            display: inline-block;
+            vertical-align: top;
+            margin: 0 auto 20px;
+        }
+        .checkmark-circle .background, .crossmark-circle .background {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            position: absolute;
+        }
+        .checkmark-circle .background {
+            background: #4CAF50;
+        }
+        .crossmark-circle .background {
+            background: #F44336;
+        }
+        .checkmark-circle .checkmark, .crossmark-circle .crossmark {
+            border-radius: 5px;
+        }
+        .checkmark-circle .checkmark:after {
+            content: "";
+            width: 40px;
+            height: 24px;
+            border: 4px solid #fff;
+            border-top: none;
+            border-right: none;
+            position: absolute;
+            top: 28px;
+            left: 20px;
+            transform: rotate(-45deg);
+            animation: checkmark-animation 0.3s ease-out forwards;
+        }
+        .crossmark-circle .crossmark:before, .crossmark-circle .crossmark:after {
+            content: "";
+            width: 40px;
+            height: 4px;
+            background-color: #fff;
+            position: absolute;
+            top: 38px;
+            left: 20px;
+        }
+        .crossmark-circle .crossmark:before {
+            transform: rotate(45deg);
+        }
+        .crossmark-circle .crossmark:after {
+            transform: rotate(-45deg);
+        }
+        @keyframes checkmark-animation {
+            0% {
+                height: 0;
+                width: 0;
+                opacity: 1;
+            }
+            100% {
+                height: 24px;
+                width: 40px;
+                opacity: 1;
+            }
+        }
+
+        .job-request-card {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .job-request-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .job-request-card .card-header {
+            background-color: #c5c8cb;
+            color: #fff;
+            padding: 15px;
+            font-weight: bold;
+        }
+
+        .job-request-card .card-body {
+            padding: 20px;
+        }
+
+        .job-request-table {
+            width: 100%;
+        }
+
+        .job-request-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            padding: 12px;
+        }
+
+        .job-request-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .job-request-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .status-approved {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .approve-button {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .reject-button {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .action-button:hover {
+            opacity: 0.8;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Main content -->
+            <main class="col-md-12 px-md-4 main-content">
+                <!-- Header -->
+                <header class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
+                    <div class="d-flex align-items-center dropdown">
+                        <img src="{% static 'images/spy.gif' %}" alt="User" class="rounded-circle" style="width: 40px; height: 40px; border: 2px solid #007bff;">
+                        {% if error_message %}
+                            <div class="alert alert-warning">{{ error_message }}</div>
+                        {% else %}
+                            <span class="me-3 dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                {% if moderator_name %}
+                                    {{ moderator_name }}
+                                {% else %}
+                                    Moderator Name Not Set
+                                {% endif %}
+                            </span>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'signout' %}">Logout</a></li>
+                            </ul>
+                        {% endif %}
+                    </div>
+                </header>
+
+                <div class="alert alert-light d-flex justify-content-end align-items-center" role="alert">
+                    <nav class="header-nav">
+                        <a class="nav-link" href="{% url 'mod_home' %}">
+                            <i class="fas fa-home me-2"></i> Home
+                        </a>
+                        <a class="nav-link" href="{% url 'mod_sch' %}">
+                            <i class="fas fa-bus me-2"></i> Schedule Buses
+                        </a>
+                        <a class="nav-link" href="{% url 'notifications_report' %}">
+                            <i class="fas fa-list-alt me-2"></i> Report List
+                        </a>
+                        <a class="nav-link" href="{% url 'mod_agentlist' %}">
+                            <i class="fas fa-users me-2"></i> Agents
+                        </a>
+                        <a class="nav-link" href="{% url 'moderator_job_requests' %}">
+                            <i class="fas fa-briefcase me-2"></i> Agent Job Requests
+                        </a>
+                        <a class="nav-link" href="{% url 'buses_added_by_moderator' %}">
+                            <i class="fas fa-plus-circle me-2"></i> Bus Added
+                        </a>
+                        <a class="nav-link " href="{% url 'view_bus_bookings' %}">
+                            <i class="fas fa-book me-2"></i> Bus Bookings
+                        </a>
+                    </nav>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="job-request-card fade-in">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h4>Job Requests</h4>
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {% if filter_type == 'approved' %}
+                                            Approved Job Requests
+                                        {% elif filter_type == 'pending' %}
+                                            Pending Job Requests
+                                        {% else %}
+                                            All Job Requests
+                                        {% endif %}
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                                        <li><a class="dropdown-item" href="#" data-filter="all">All Job Requests</a></li>
+                                        <li><a class="dropdown-item" href="#" data-filter="pending">Pending Job Requests</a></li>
+                                        <li><a class="dropdown-item" href="#" data-filter="approved">Approved Job Requests</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table class="job-request-table" id="jobRequestsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Agent Name</th>
+                                            <th>Bus Name</th>
+                                            <th>Selected Stop</th>
+                                            <th>Status</th>
+                                            <th>Date Assigned</th>
+                                            {% if filter_type != 'approved' %}
+                                                <th>Actions</th>
+                                            {% endif %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if job_requests %}
+                                            {% for request in job_requests %}
+                                                <tr>
+                                                    <td>{{ request.agent_name }}</td>
+                                                    <td>{{ request.bus_name }}</td>
+                                                    <td>{{ request.selected_stop }}</td>
+                                                    <td><span class="status-badge {% if request.status == 'Pending' %}status-pending{% else %}status-approved{% endif %}">{{ request.status }}</span></td>
+                                                    <td>{{ request.date_assigned }}</td>
+                                                    {% if request.status == 'Pending' %}
+                                                        <td>
+                                                            <div class="action-buttons">
+                                                                <button class="action-button approve-button approve-job" data-job-id="{{ request.job_id }}">Approve</button>
+                                                                <button class="action-button reject-button reject-job" data-job-id="{{ request.job_id }}">Reject</button>
+                                                            </div>
+                                                        </td>
+                                                    {% elif filter_type != 'approved' %}
+                                                        <td>N/A</td>
+                                                    {% endif %}
+                                                </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <tr><td colspan="{% if filter_type != 'approved' %}6{% else %}5{% endif %}" class="text-center">No job requests found.</td></tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Approve Modal -->
+    <div id="approveModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body text-center py-4">
+            <div class="checkmark-circle">
+              <div class="background"></div>
+              <div class="checkmark"></div>
+            </div>
+            <h2 class="mb-3">Job Request Approved</h2>
+            <p class="mb-4" id="approveMessage"></p>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reject Modal -->
+    <div id="rejectModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body text-center py-4">
+            <div class="crossmark-circle">
+              <div class="background"></div>
+              <div class="crossmark"></div>
+            </div>
+            <h2 class="mb-3">Job Request Rejected</h2>
+            <p class="mb-4" id="rejectMessage"></p>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.dropdown-item').click(function(e) {
+                e.preventDefault();
+                var filter = $(this).data('filter');
+                $('#filterDropdown').text($(this).text());
+                window.location.href = "{% url 'moderator_job_requests' %}?filter=" + filter;
+            });
+
+            $('.approve-job, .reject-job').click(function() {
+                var jobId = $(this).data('job-id');
+                var action = $(this).hasClass('approve-job') ? 'approve' : 'reject';
+
+                $.ajax({
+                    url: '{% url "process_job_request" %}',
+                    method: 'POST',
+                    data: {
+                        'job_id': jobId,
+                        'action': action,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            if (action === 'approve') {
+                                $('#approveMessage').text(response.message);
+                                $('#approveModal').modal('show');
+                            } else {
+                                $('#rejectMessage').text(response.message);
+                                $('#rejectModal').modal('show');
+                            }
+                        } else {
+                            alert('Error: ' + response.error);
+                        }
+                    },
+                    error: function() {
+                        alert('An error occurred while processing the request.');
+                    }
+                });
+            });
+
+            $('#approveModal, #rejectModal').on('hidden.bs.modal', function () {
+                location.reload();
+            });
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const navLinks = document.querySelectorAll('.header-nav .nav-link');
+            
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        navLinks.forEach(link => link.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

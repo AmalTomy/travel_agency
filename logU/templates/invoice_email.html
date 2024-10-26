@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tax Invoice</title>
+    <style>
+        @font-face {
+            font-family: 'DejaVu Sans';
+            src: url('{{ STATIC_URL }}fonts/DejaVuSans.ttf');
+        }
+        body {
+            font-family: 'DejaVu Sans', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #000;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 1px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .invoice-details {
+            display: flex;
+            justify-content: space-between;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        .total {
+            text-align: right;
+            margin-top: 20px;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Tax Invoice</h1>
+            <p><strong>ORIGINAL FOR RECIPIENT</strong></p>
+        </div>
+        <div class="invoice-details">
+            <div>
+                <p><strong>Invoice No:</strong> {{ booking.ticket_number }}</p>
+                <p><strong>Transaction Detail:</strong> RG</p>
+                <p><strong>Customer GSTIN No:</strong> {{ booking.customer.gstin|default:"N/A" }}</p>
+                <p><strong>Customer Name:</strong> {{ booking.customer.first_name }} {{ booking.customer.last_name }}</p>
+                <p><strong>Location:</strong> {{ booking.departure_location }}</p>
+            </div>
+            <div>
+                <p><strong>Date:</strong> {{ booking.booking_date|date:"d/m/Y" }}</p>
+                <p><strong>Transaction Category:</strong> UPReg</p>
+                <p><strong>Place of Supply:</strong> {{ booking.departure_location }}</p>
+                <p><strong>Document Type:</strong> INVOICE</p>
+                <p><strong>PNR No:</strong> {{ booking.ticket_number }}</p>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Travel Information</th>
+                    <th>Payment Breakup</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <p><strong>Bus Operator Name & Address:</strong></p>
+                        <p>{{ booking.bus.operator_name }}</p>
+                        <p>{{ booking.bus.operator_address }}</p>
+                    </td>
+                    <td>
+                        <p><strong>Bus Fare:</strong> ₹{{ booking.total_amount }}</p>
+                        <p><strong>Other charges (Toll, taxes etc):</strong> N/A</p>
+                        <p><strong>Rescheduling charges:</strong> N/A</p>
+                        <p><strong>Rescheduling Excess fare:</strong> N/A</p>
+                        <p><strong>Additional Services:</strong> N/A</p>
+                        <p><strong>Operator discount:</strong> ₹0.00</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Origin:</strong> {{ booking.departure_location }}</td>
+                    <td><strong>Total Taxable Value:</strong> ₹{{ booking.total_amount }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Destination:</strong> {{ booking.destination }}</td>
+                    <td>
+                        <p><strong>CGST @ 2.5%:</strong> ₹{{ booking.cgst|default:"0.00" }}</p>
+                        <p><strong>SGST @ 2.5%:</strong> ₹{{ booking.sgst|default:"0.00" }}</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="total">
+            <p><strong>Total Invoice Value:</strong> ₹{{ booking.total_amount }}</p>
+        </div>
+        <div class="footer">
+            <p>Whether Tax is payable under Reverse Charge Mechanism : No</p>
+            <p>This is a computer generated Invoice and does not require Signature/Stamp.</p>
+            <!-- Add more footer text as needed -->
+        </div>
+    </div>
+</body>
+</html>

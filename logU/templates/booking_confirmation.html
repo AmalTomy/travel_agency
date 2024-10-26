@@ -1,0 +1,468 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #FFFFFF;
+            color: #333333;
+        }
+        .confirmation-card {
+            max-width: 600px;
+            margin: 2rem auto;
+            background-color: #F0F0F0;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #2C3E50;
+            color: #FFFFFF;
+            border-radius: 10px 10px 0 0;
+        }
+        .location-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .location-name {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        /* Styles for the centered modal */
+        .centered-modal {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 800px;
+            height: auto;
+            max-height: 90vh;
+            background-color: #FFFFFF;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            z-index: 1060;
+            overflow-y: auto;
+            display: none;
+        }
+        .centered-modal.show {
+            display: block;
+        }
+        .centered-modal-header {
+            background-color: #2C3E50;
+            color: #FFFFFF;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            border-radius: 10px 10px 0 0;
+        }
+        .centered-modal-body {
+            padding: 30px;
+        }
+        .centered-modal-footer {
+            padding: 20px;
+            text-align: right;
+            border-top: 1px solid #dee2e6;
+        }
+        .modal-backdrop {
+            opacity: 0.5;
+        }
+        .btn-close {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #FFFFFF;
+            cursor: pointer;
+        }
+
+        .btn-close:hover {
+            color: #1ABC9C;
+        }
+        .booking-card {
+            background: #F0F0F0;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .booking-header {
+            background: #2C3E50;
+            color: #FFFFFF;
+            padding: 15px;
+            border-radius: 10px 10px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+
+        .booking-id {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .journey-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .location {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .journey-arrow {
+            font-size: 1.5em;
+            color: #1ABC9C;
+        }
+
+        .info-group {
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #666666;
+        }
+
+        .info-value {
+            font-size: 1.1em;
+        }
+
+        .total-amount {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #1ABC9C;
+        }
+    </style>
+</head>
+<body>
+   
+    <!-- Centered Modal -->
+    <div class="centered-modal" id="bookingConfirmationModal">
+        <div class="centered-modal-header">
+            <h5 class="modal-title">Booking Confirmation</h5>
+            <button type="button" class="btn-close" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="centered-modal-body">
+            <div class="booking-card">
+                <div class="booking-header">
+                    <span class="booking-id">Booking ID: {{ booking.booking_id }}</span>
+                    <div>{{ booking.booking_date }}</div>
+                </div>
+                
+                <div class="journey-info">
+                    <div class="location">
+                        <i class="fas fa-map-marker-alt"></i> {{ booking.departure_location }}
+                    </div>
+                    <div class="journey-arrow">
+                        <i class="fas fa-long-arrow-alt-right"></i>
+                    </div>
+                    <div class="location">
+                        {{ booking.destination }} <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                </div>
+
+                <div class="info-group">
+                    <div class="info-label">Bus Information</div>
+                    <div class="info-value">{{ booking.bus.bus_name }} ({{ booking.bus.bus_number }})</div>
+                    <div>Departure: {{ booking.bus.departure_time }} | Arrival: {{ booking.bus.arrival_time }}</div>
+                </div>
+
+                <div class="info-group">
+                    <div class="info-label">Booking Summary</div>
+                    <div>Tickets: {{ booking.num_tickets }} | Seats: {{ booking.seat_booked }}</div>
+                    <div class="total-amount">Total: ₹{{ booking.total_amount }}</div>
+                </div>
+
+                <div class="info-group" id="passengerDetails">
+                    <div class="info-label">Passenger Details</div>
+                    <div id="passengerForms"></div>
+                </div>
+
+                <div class="info-group">
+                    <div class="info-label">Booking Person Details</div>
+                    <div class="info-value">
+                        <strong>Name:</strong> {{ booking.customer.first_name }} {{ booking.customer.last_name }}<br>
+                        <strong>Email:</strong> {{ booking.customer.email }}<br>
+                        <strong>Phone:</strong> {{ booking.customer.phone }}<br>
+                        <strong>Address:</strong> {{ booking.customer.address }}, {{ booking.customer.city }}, {{ booking.customer.district }} {{ booking.customer.postal_code }}
+                    </div>
+                </div>
+
+                <!-- Add fields to collect missing information if necessary -->
+            </div>
+        </div>
+        <div class="centered-modal-footer">
+            <button type="button" class="btn btn-primary" onclick="proceedToPayment()">Pay</button>
+            <!-- Add this button near the payment button -->
+            <a href="{% url 'cancel_temporary_booking' %}" class="btn btn-danger">Cancel Booking</a>
+        </div>
+    </div>
+
+    <div class="modal-backdrop fade" style="display: none;"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize Stripe
+        const stripe = Stripe('{{ stripe_public_key }}');
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const payButton = document.querySelector('button[onclick="proceedToPayment()"]');
+            if (payButton) {
+                payButton.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    if (validateForms()) {
+                        proceedToPayment();
+                    }
+                });
+                // Initially disable the pay button
+                payButton.disabled = true;
+            }
+
+            // Show the modal
+            setTimeout(showModal, 500); // Delay to ensure the page is fully loaded
+
+            // Ensure close button works
+            const closeButton = document.querySelector('.btn-close');
+            if (closeButton) {
+                closeButton.addEventListener('click', function() {
+                    closeModal();
+                    cancelBooking();
+                });
+            }
+
+            // Add event listener to the Cancel Booking button
+            const cancelButton = document.querySelector('.btn-danger');
+            if (cancelButton) {
+                cancelButton.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    cancelBooking();
+                });
+            }
+
+            function generatePassengerForms() {
+                const numTickets = {{ booking.num_tickets }};
+                const seatNumbers = '{{ booking.seat_booked }}'.split(',');
+                const passengerForms = document.getElementById('passengerForms');
+                passengerForms.innerHTML = '';
+
+                for (let i = 0; i < numTickets; i++) {
+                    const form = document.createElement('div');
+                    form.className = 'passenger-form mb-4';
+                    form.innerHTML = `
+                        <h5>Passenger ${i + 1}</h5>
+                        <div class="row">
+                            <div class="col-md-2 mb-3">
+                                <label>Seat Number</label>
+                                <input type="text" class="form-control" value="${seatNumbers[i]}" readonly>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label>Full Name</label>
+                                <input type="text" class="form-control" name="passenger_name_${i}" required pattern="^[a-zA-Z ]+$">
+                                <div class="invalid-feedback">Please enter a valid name (letters and spaces only).</div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label>Email</label>
+                                <input type="email" class="form-control" name="passenger_email_${i}" required>
+                                <div class="invalid-feedback">Please enter a valid email address.</div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label>Phone Number</label>
+                                <input type="tel" class="form-control" name="passenger_phone_${i}" required pattern="^[0-9]{10}$">
+                                <div class="invalid-feedback">Please enter a valid 10-digit phone number.</div>
+                            </div>
+                        </div>
+                    `;
+                    passengerForms.appendChild(form);
+                }
+
+                // Add event listeners for form validation
+                const inputs = passengerForms.querySelectorAll('input[required]');
+                inputs.forEach(input => {
+                    input.addEventListener('input', validateForms);
+                });
+            }
+
+            generatePassengerForms();
+
+            function validateForms() {
+                const forms = document.querySelectorAll('.passenger-form');
+                let isValid = true;
+
+                forms.forEach((form, index) => {
+                    const nameInput = form.querySelector(`[name="passenger_name_${index}"]`);
+                    const emailInput = form.querySelector(`[name="passenger_email_${index}"]`);
+                    const phoneInput = form.querySelector(`[name="passenger_phone_${index}"]`);
+
+                    // Validate name
+                    if (!nameInput.value.match(/^[a-zA-Z ]+$/)) {
+                        nameInput.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        nameInput.classList.remove('is-invalid');
+                    }
+
+                    // Validate email
+                    if (!emailInput.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                        emailInput.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        emailInput.classList.remove('is-invalid');
+                    }
+
+                    // Validate phone (10 digits only)
+                    if (!phoneInput.value.match(/^[0-9]{10}$/)) {
+                        phoneInput.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        phoneInput.classList.remove('is-invalid');
+                    }
+                });
+
+                // Enable or disable the pay button based on form validity
+                const payButton = document.querySelector('button[onclick="proceedToPayment()"]');
+                if (payButton) {
+                    payButton.disabled = !isValid;
+                }
+
+                return isValid;
+            }
+
+            // Make sure to remove 'function' keyword here
+            window.proceedToPayment = () => {
+                // Remove the beforeunload event listener
+                window.removeEventListener('beforeunload', cancelBookingOnUnload);
+
+                const passengerData = [];
+                const forms = document.querySelectorAll('.passenger-form');
+                forms.forEach((form, index) => {
+                    passengerData.push({
+                        seat: '{{ booking.seat_booked }}'.split(',')[index],
+                        name: form.querySelector(`[name="passenger_name_${index}"]`).value,
+                        email: form.querySelector(`[name="passenger_email_${index}"]`).value,
+                        phone: form.querySelector(`[name="passenger_phone_${index}"]`).value
+                    });
+                });
+
+                fetch('/create-checkout-session/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        booking_id: '{{ booking.booking_id }}',
+                        passengers: passengerData
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.sessionId) {
+                        // Redirect to Stripe Checkout without triggering beforeunload
+                        window.location.href = stripe.redirectToCheckout({ sessionId: data.sessionId }).then(function (result) {
+                            if (result.error) {
+                                console.error(result.error.message);
+                            }
+                        });
+                    } else {
+                        throw new Error('Failed to create checkout session');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Re-add the event listener in case of an error
+                    window.addEventListener('beforeunload', cancelBookingOnUnload);
+                });
+            };
+
+            // Separate function for canceling booking on unload
+            function cancelBookingOnUnload(e) {
+                e.preventDefault();
+                e.returnValue = '';
+
+                fetch('/cancel-temporary-booking/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                }).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Temporary booking cancelled');
+                    }
+                });
+            }
+
+            // Add the event listener for beforeunload
+            window.addEventListener('beforeunload', cancelBookingOnUnload);
+        });
+
+        function cancelBooking() {
+            fetch('/cancel-temporary-booking/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+            }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Temporary booking cancelled');
+                    window.location.href = '/'; // Redirect to home page or wherever you want
+                }
+            }).catch(error => {
+                console.error('Error cancelling booking:', error);
+            });
+        }
+
+        function showModal() {
+            const modal = document.getElementById('bookingConfirmationModal');
+            const backdrop = document.querySelector('.modal-backdrop');
+            modal.classList.add('show');
+            backdrop.style.display = 'block';
+            document.body.classList.add('modal-open');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('bookingConfirmationModal');
+            const backdrop = document.querySelector('.modal-backdrop');
+            modal.classList.remove('show');
+            backdrop.style.display = 'none';
+            document.body.classList.remove('modal-open');
+            cancelBooking(); // Cancel the booking when closing the modal
+        }
+
+        // Function to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

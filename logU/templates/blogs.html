@@ -1,0 +1,452 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Reports - YourCompany</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #FFFFFF;
+            color: #333333;
+        }
+        .navbar-custom {
+            background-color: #2C3E50;
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .navbar-nav .nav-link {
+            color: #FFFFFF;
+        }
+        footer {
+            background-color: #2C3E50;
+            color: #FFFFFF;
+            padding: 20px 0;
+        }
+        .rounded-logo {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+        }
+        .main-card {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 50px;
+            margin-bottom: 50px;
+            transition: all 0.3s ease;
+        }
+        .main-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        .report-card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .report-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        .report-card-header {
+            background-color: #425969;
+            color: #ffffff;
+            padding: 15px;
+        }
+        .report-card-body {
+            padding: 20px;
+        }
+        .report-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .btn-read-more {
+            background-color: #261e1e;
+            color: #ffffff;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .btn-read-more:hover {
+            background-color: #ffffff;
+            transform: scale(1.05);
+        }
+        .weather-tag {
+            background-color: #2ecc71;
+            color: #ffffff;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        /* Custom Modal Styles */
+        .custom-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .custom-modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 10px;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        /* New animations */
+        @keyframes slideInFromLeft {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate3d(0, 40px, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .main-card {
+            animation: slideInFromLeft 0.8s ease-out;
+        }
+
+        .report-card {
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .report-card:nth-child(1) { animation-delay: 0.1s; }
+        .report-card:nth-child(2) { animation-delay: 0.2s; }
+        .report-card:nth-child(3) { animation-delay: 0.3s; }
+        /* Add more if needed */
+
+        .weather-tag {
+            animation: pulse 2s infinite;
+        }
+
+        .btn-read-more {
+            transition: all 0.3s ease;
+            margin-top: 14px;
+        }
+
+        .btn-read-more:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .custom-modal {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .custom-modal.show {
+            opacity: 1;
+        }
+
+        .custom-modal-content {
+            transform: scale(0.7);
+            transition: all 0.3s ease;
+        }
+
+        .custom-modal.show .custom-modal-content {
+            transform: scale(1);
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: none;
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #3498db;
+            animation: spin 1s ease-in-out infinite;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .custom-modal-content {
+            max-width: 800px;
+            width: 90%;
+        }
+
+        .modal-user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .modal-user-info img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .weather-card {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 0.25rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .weather-card .card-title {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container d-flex align-items-center">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'welcome' %}">
+                <img src="{% static 'images/airplane.gif' %}" alt="alternative" class="rounded-logo">
+                <!-- <span class="company-name">TBSC</span> -->
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'welcome' %}">HOME</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="container mt-5">
+        <div class="main-card">
+            <h2 class="text-center mb-4">Travel Reports</h2>
+            <div class="row">
+                {% for report in approved_reports %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="report-card">
+                            <div class="report-card-header">
+                                <h5>{{ report.departure }} to {{ report.destination }}</h5>
+                                <small><i class="fas fa-calendar-alt"></i> {{ report.travel_date }}</small>
+                            </div>
+                            <div class="report-card-body">
+                                {% if report.photos.first %}
+                                    <img src="{{ report.photos.first.image.url }}" alt="Report Image" class="report-image mb-3">
+                                {% endif %}
+                                <p>{{ report.description|truncatewords:30 }}</p>
+                                <div class="weather-tag">
+                                    <i class="fas fa-cloud-sun"></i> {{ report.weather_classification }}
+                                </div>
+                                <button class="btn btn-read-more btn-sm mt-3" data-report-id="{{ report.id }}">
+                                    Read More <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12">
+                        <p class="text-center">No approved travel reports available.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-5">   
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>About Us</h5>
+                    <p>Your trusted partner for comfortable and reliable bus travel.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Home</a></li>
+                        <li><a href="#" class="text-white">Book a Trip</a></li>
+                        <li><a href="#" class="text-white">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact Info</h5>
+                    <p>Email: info@yourcompany.com<br>Phone: +1 234 567 8900</p>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2024 YourCompany. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom Modal -->
+    <div id="customModal" class="custom-modal">
+        <div class="custom-modal-content">
+            <span class="close-button">&times;</span>
+            <div id="modalBody">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="spinner"></div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var modal = document.getElementById('customModal');
+        var closeButton = modal.querySelector('.close-button');
+        var modalBody = document.getElementById('modalBody');
+        var spinner = document.getElementById('loadingSpinner');
+
+        function showModal() {
+            modal.style.display = "block";
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function hideModal() {
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = "none", 300);
+        }
+
+        function showSpinner() {
+            spinner.style.display = 'block';
+        }
+
+        function hideSpinner() {
+            spinner.style.display = 'none';
+        }
+
+        closeButton.onclick = hideModal;
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                hideModal();
+            }
+        }
+
+        // Attach click event to all "Read More" buttons
+        var buttons = document.querySelectorAll('.btn-read-more');
+        buttons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var reportId = this.getAttribute('data-report-id');
+
+                showSpinner();
+                // Fetch the report details
+                fetch(`/blog-detail/${reportId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        hideSpinner();
+                        modalBody.innerHTML = `
+                            <div class="row">
+                                <div class="col-12 text-center mb-4">
+                                    <div class="d-flex align-items-center justify-content-center mb-3">
+                                        <img src="${data.user_profile_image || '{% static "images/default_user.png" %}'}" alt="User Profile" class="rounded-circle mr-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                        <span class="ml-2">${data.user_name}</span>
+                                    </div>
+                                    <p class="small text-muted">${data.travel_date}</p>
+                                    <h5>${data.departure} to ${data.destination}</h5>
+                                </div>
+                                <div class="col-12 text-center">
+                                    ${data.photos.length > 0 ? `
+                                        <img src="${data.photos[0].image}" alt="Travel Photo" class="img-fluid rounded mb-3" style="max-height: 400px; object-fit: cover;">
+                                    ` : ''}
+                                    <p class="text-left">${data.description}</p>
+                                    <div class="card mt-4 weather-card">
+                                        <div class="card-body">
+                                            <h6 class="card-title"><strong>Weather:</strong> ${data.weather_classification}</h6>
+                                            <p class="card-text">${data.weather_paragraph}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            ${data.photos.length > 1 ? `
+                                <div class="row mt-4">
+                                    <h6 class="col-12">Additional Photos:</h6>
+                                    ${data.photos.slice(1).map(photo => `
+                                        <div class="col-md-4 mb-3">
+                                            <img src="${photo.image}" alt="Travel Photo" class="img-fluid rounded">
+                                            ${photo.caption ? `<p class="mt-2 small">${photo.caption}</p>` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                        `;
+                        showModal();
+                    })
+                    .catch(error => {
+                        hideSpinner();
+                        console.error('Error:', error);
+                        modalBody.innerHTML = '<p>Error loading report details.</p>';
+                        showModal();
+                    });
+            });
+        });
+    });
+    </script>
+</body>
+</html>

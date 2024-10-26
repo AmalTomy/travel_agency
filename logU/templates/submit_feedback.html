@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% load static %}
+
+    <!-- Website Title -->
+    <title>TBSC</title>
+
+    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:500,700&display=swap&subset=latin-ext" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600&display=swap&subset=latin-ext" rel="stylesheet">
+    <link href="{% static 'css1/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css1/fontawesome-all.css' %}" rel="stylesheet">
+    <link href="{% static 'css1/styles.css' %}" rel="stylesheet">
+
+    <!-- Favicon  -->
+    <link rel="icon" href="{% static 'images/logo1.png' %}">
+    <style>
+        body {
+            background-color: #f4f7f6;
+            color: #333333;
+            font-family: 'Open Sans', sans-serif;
+        }
+        .navbar-custom {
+            background-color: #2C3E50;
+            padding: 10px 20px;
+        }
+        .navbar-brand img {
+            height: 40px;
+        }
+        .form-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        .form-container label {
+            color: #333333;
+        }
+        .form-container .form-control {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            color: #333333;
+        }
+        .form-container .form-control::placeholder {
+            color: #999999;
+        }
+        .btn-custom {
+            background-color: #1ABC9C;
+            color: #ffffff;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn-custom:hover {
+            background-color: #16A085;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(22, 160, 133, 0.4);
+        }
+        .footer {
+            background-color: #2C3E50;
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .hidden {
+            display: none;
+        }
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #1ABC9C;
+            margin-bottom: 20px;
+            margin-left: 160px;
+            margin-top: 20px;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: center;
+        }
+        .error-message {
+            color: #E74C3C;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 15px;
+            background-color: #1ABC9C;
+            color: #ffffff;
+            border-radius: 5px;
+            display: none;
+            z-index: 9999;
+            animation: fadeInOut 5s ease-in-out;
+            min-width: 200px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-20px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+        .navbar-logo {
+            height: 40px; /* Adjust this value as needed */
+            width: auto;
+            border-radius: 50%; /* This makes the image circular */
+            margin-left: 100px;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: linear-gradient(145deg, #f6f6f6, #ffffff);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .card-body {
+            padding: 40px;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+        }
+
+        .form-control:focus {
+            border-color: #1ABC9C;
+            box-shadow: 0 0 0 0.2rem rgba(26, 188, 156, 0.25);
+        }
+
+        .btn-primary {
+            background-color: #1ABC9C;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #16A085;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(22, 160, 133, 0.4);
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #2C3E50;
+            margin-bottom: 8px;
+        }
+
+        /* Floating labels */
+        .form-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .form-group input:not([type="hidden"]),
+        .form-group select,
+        .form-group textarea {
+            height: 50px;
+            padding: 10px 15px;
+        }
+
+        .form-group label {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            background-color: #f9f9f9;
+            padding: 0 5px;
+        }
+
+        .form-group input:focus + label,
+        .form-group input:not(:placeholder-shown) + label,
+        .form-group select:focus + label,
+        .form-group select:not(:placeholder-shown) + label,
+        .form-group textarea:focus + label,
+        .form-group textarea:not(:placeholder-shown) + label {
+            top: -10px;
+            left: 10px;
+            font-size: 12px;
+        }
+
+        .recommend-options {
+            display: flex;
+            justify-content: flex-start;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-check-input {
+            margin-right: 5px;
+        }
+
+        .submit-group {
+            margin-top: auto;
+        }
+
+        .btn-primary {
+            padding: 15px 0;
+            font-size: 18px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #feedbackForm {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Modal styles */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+        }
+
+        /* Success animation styles */
+        .success-animation {
+            margin: 20px auto;
+        }
+
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: #4bb71b;
+            stroke-miterlimit: 10;
+            box-shadow: inset 0px 0px 0px #4bb71b;
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+        }
+
+        .checkmark__circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: #4bb71b;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+
+        .checkmark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+
+        @keyframes stroke {
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes scale {
+            0%, 100% {
+                transform: none;
+            }
+            50% {
+                transform: scale3d(1.1, 1.1, 1);
+            }
+        }
+
+        @keyframes fill {
+            100% {
+                box-shadow: inset 0px 0px 0px 30px #4bb71b;
+            }
+        }
+
+        /* Success Checkmark */
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+        }
+
+        .success-checkmark .check-icon {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            border-radius: 50%;
+            box-sizing: content-box;
+            border: 4px solid #4CAF50;
+        }
+
+        .success-checkmark .check-icon::before {
+            top: 3px;
+            left: -2px;
+            width: 30px;
+            transform-origin: 100% 50%;
+            border-radius: 100px 0 0 100px;
+        }
+
+        .success-checkmark .check-icon::after {
+            top: 0;
+            left: 30px;
+            width: 60px;
+            transform-origin: 0 50%;
+            border-radius: 0 100px 100px 0;
+            animation: rotate-circle 4.25s ease-in;
+        }
+
+        .success-checkmark .check-icon::before, .success-checkmark .check-icon::after {
+            content: '';
+            height: 100px;
+            position: absolute;
+            background: #FFFFFF;
+            transform: rotate(-45deg);
+        }
+
+        .success-checkmark .check-icon .icon-line {
+            height: 5px;
+            background-color: #4CAF50;
+            display: block;
+            border-radius: 2px;
+            position: absolute;
+            z-index: 10;
+        }
+
+        .success-checkmark .check-icon .icon-line.line-tip {
+            top: 46px;
+            left: 14px;
+            width: 25px;
+            transform: rotate(45deg);
+            animation: icon-line-tip 0.75s;
+        }
+
+        .success-checkmark .check-icon .icon-line.line-long {
+            top: 38px;
+            right: 8px;
+            width: 47px;
+            transform: rotate(-45deg);
+            animation: icon-line-long 0.75s;
+        }
+
+        .success-checkmark .check-icon .icon-circle {
+            top: -4px;
+            left: -4px;
+            z-index: 10;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            position: absolute;
+            box-sizing: content-box;
+            border: 4px solid rgba(76, 175, 80, .5);
+        }
+
+        .success-checkmark .check-icon .icon-fix {
+            top: 8px;
+            width: 5px;
+            left: 26px;
+            z-index: 1;
+            height: 85px;
+            position: absolute;
+            transform: rotate(-45deg);
+            background-color: #FFFFFF;
+        }
+
+        @keyframes rotate-circle {
+            0% {
+                transform: rotate(-45deg);
+            }
+            5% {
+                transform: rotate(-45deg);
+            }
+            12% {
+                transform: rotate(-405deg);
+            }
+            100% {
+                transform: rotate(-405deg);
+            }
+        }
+
+        @keyframes icon-line-tip {
+            0% {
+                width: 0;
+                left: 1px;
+                top: 19px;
+            }
+            54% {
+                width: 0;
+                left: 1px;
+                top: 19px;
+            }
+            70% {
+                width: 50px;
+                left: -8px;
+                top: 37px;
+            }
+            84% {
+                width: 17px;
+                left: 21px;
+                top: 48px;
+            }
+            100% {
+                width: 25px;
+                left: 14px;
+                top: 45px;
+            }
+        }
+
+        @keyframes icon-line-long {
+            0% {
+                width: 0;
+                right: 46px;
+                top: 54px;
+            }
+            65% {
+                width: 0;
+                right: 46px;
+                top: 54px;
+            }
+            84% {
+                width: 55px;
+                right: 0px;
+                top: 35px;
+            }
+            100% {
+                width: 47px;
+                right: 8px;
+                top: 38px;
+            }
+        }
+
+        /* Error Animation */
+        .error-animation {
+            width: 80px;
+            height: 80px;
+            margin: 30px auto;
+        }
+
+        .error-mark {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+
+        .error-line-left,
+        .error-line-right {
+            position: absolute;
+            height: 5px;
+            width: 100%;
+            background-color: #FF6B6B;
+            border-radius: 2px;
+            top: 37px;
+        }
+
+        .error-line-left {
+            transform: rotate(45deg);
+            animation: error-line-left 0.7s;
+        }
+
+        .error-line-right {
+            transform: rotate(-45deg);
+            animation: error-line-right 0.7s;
+        }
+
+        @keyframes error-line-left {
+            0% {
+                transform: rotate(45deg) scaleX(0);
+            }
+            100% {
+                transform: rotate(45deg) scaleX(1);
+            }
+        }
+
+        @keyframes error-line-right {
+            0% {
+                transform: rotate(-45deg) scaleX(0);
+            }
+            100% {
+                transform: rotate(-45deg) scaleX(1);
+            }
+        }
+    </style>
+</head>
+<body data-spy="scroll" data-target=".fixed-top">
+    <div id="notification" class="notification"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark navbar-custom fixed-top">
+        <a class="navbar-brand" href="{% url 'welcome' %}">
+            <img src="{% static 'images/airplane.gif' %}" alt="TBSC Logo" class="navbar-logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-awesome fas fa-bars"></span>
+            <span class="navbar-toggler-awesome fas fa-times"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link page-scroll" href="{% url 'welcome' %}" style="padding-right: 100px;">HOME <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- end of navbar -->
+
+    <!-- Main Content -->
+    <div class="content-wrapper">
+        <div class="container mt-5">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="text-center mb-4"><i class="fas fa-comment-alt"></i> Submit Feedback</h1>
+                    
+                    <form id="feedbackForm" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" id="booking_id" name="booking_id" value="{{ initial_data.booking_id }}">
+                        
+                        <div class="form-group">
+                            <input type="text" id="bus_name" class="form-control" value="{{ initial_data.bus_name }}" readonly>
+                            <label for="bus_name">Bus Name</label>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" id="bus_route" class="form-control" value="{{ initial_data.bus_route }}" readonly>
+                            <label for="bus_route">Bus Route</label>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" id="travel_date" class="form-control" value="{{ initial_data.travel_date|date:'Y-m-d' }}" readonly>
+                            <label for="travel_date">Travel Date</label>
+                        </div>
+
+                        <div class="form-group">
+                            <select id="rating" name="rating" class="form-control" required>
+                                <option value="" disabled selected>Select rating</option>
+                                <option value="1">1 - Poor</option>
+                                <option value="2">2 - Fair</option>
+                                <option value="3">3 - Good</option>
+                                <option value="4">4 - Very Good</option>
+                                <option value="5">5 - Excellent</option>
+                            </select>
+                            <label for="rating">Rating</label>
+                        </div>
+
+                        <div class="form-group">
+                            <textarea id="comment" name="comment" class="form-control" required></textarea>
+                            <label for="comment">Comment</label>
+                        </div>
+
+                        <div class="form-group">
+                            <textarea id="improvements" name="improvements" class="form-control"></textarea>
+                            <label for="improvements">Suggestions for Improvement</label>
+                        </div>
+
+                        <div class="form-group">
+                            <select id="recommend" name="recommend" class="form-control" required>
+                                <option value="" disabled selected>Select an option</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                            <label for="recommend">Would you recommend our service?</label>
+                        </div>
+
+                        <div class="submit-group">
+                            <button type="submit" class="btn btn-primary">SUBMIT FEEDBACK</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Success Modal -->
+    <div class="modal fade" id="feedbackSuccessModal" tabindex="-1" role="dialog" aria-labelledby="feedbackSuccessModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <div class="success-checkmark">
+                        <div class="check-icon">
+                            <span class="icon-line line-tip"></span>
+                            <span class="icon-line line-long"></span>
+                            <div class="icon-circle"></div>
+                            <div class="icon-fix"></div>
+                        </div>
+                    </div>
+                    <h4 class="mt-4">Thanks for your feedback!</h4>
+                    <p>Travel again with us.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Already Submitted Modal -->
+    <div class="modal fade" id="feedbackAlreadySubmittedModal" tabindex="-1" role="dialog" aria-labelledby="feedbackAlreadySubmittedModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <div class="error-animation">
+                        <div class="error-mark">
+                            <div class="error-line-left"></div>
+                            <div class="error-line-right"></div>
+                        </div>
+                    </div>
+                    <h4 class="mt-4">Feedback Already Submitted</h4>
+                    <p>You have already provided feedback for this booking.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- end of main content -->
+
+    <!-- Footer -->
+    <div class="footer">
+        <p class="p-small">&copy; 2024 TBSC. All rights reserved.</p>
+    </div>
+    <!-- end of footer -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#feedbackForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+
+                $.ajax({
+                    url: '{% url "submit_feedback" %}',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            if (response.message === 'Feedback submitted successfully!') {
+                                // Show the success modal
+                                $('#feedbackSuccessModal').modal('show');
+                                
+                                // Redirect to welcome page after 3 seconds
+                                setTimeout(function() {
+                                    window.location.href = '{% url "welcome" %}';
+                                }, 3000);
+                            } else if (response.message === 'Feedback already exists for this booking.') {
+                                // Show the already submitted modal
+                                $('#feedbackAlreadySubmittedModal').modal('show');
+                                
+                                // Redirect to welcome page after 3 seconds
+                                setTimeout(function() {
+                                    window.location.href = '{% url "welcome" %}';
+                                }, 3000);
+                            }
+                        } else {
+                            alert('Error: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', xhr.responseText);
+                        alert('An error occurred while submitting feedback. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

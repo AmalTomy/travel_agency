@@ -1,0 +1,445 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Notification Reports - Moderator Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .stat-card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-nav .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem;
+            margin-right: 15px; /* Adjust spacing between items */
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .header-nav .nav-link.active {
+            background-color: rgba(0, 123, 255, 0.1); /* Light blue background */
+            color: #007bff; /* Blue text color */
+        }
+
+        .header-nav .nav-link.active::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 123, 255, 0.2); /* Semi-transparent overlay */
+            z-index: -1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        header .d-flex {
+            margin-left: auto; /* Pushes the header content to the right */
+        }
+
+        .alert {
+            display: flex;
+            align-items: center;
+            padding-right: 177px;
+        }
+
+        /* Centering the welcome message */
+        .welcome-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50vh; /* Adjust height as needed */
+            text-align: center;
+        }
+
+        /* Fade-in writing animation */
+        .welcome-message {
+            font-size: 2rem;
+            opacity: 0;
+            animation: fadeInWrite 3s forwards;
+        }
+
+        @keyframes fadeInWrite {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .report-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .report-card h5 {
+            margin-bottom: 15px;
+            color: #333333;
+            font-weight: bold;
+        }
+        .report-card p {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            color: #555555;
+        }
+        .report-card i {
+            margin-right: 10px;
+            font-size: 1.1em;
+            color: #666666;
+        }
+        .btn-group {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .btn-group .btn {
+            flex: 1;
+            margin: 0 5px;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .btn-view {
+            background-color: #f0f0f0;
+            color: #333333;
+        }
+        .btn-view:hover {
+            background-color: #e0e0e0;
+        }
+        .btn-accept {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .btn-accept:hover {
+            background-color: #c8e6c9;
+        }
+        .btn-reject {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .btn-reject:hover {
+            background-color: #ffcdd2;
+        }
+        .severity-indicator {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .severity-low {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .severity-medium {
+            background-color: #fff3e0;
+            color: #e65100;
+        }
+        .severity-high {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .status-indicator {
+            font-weight: bold;
+        }
+        .status-pending {
+            color: #1976d2;
+        }
+        .status-accepted {
+            color: #2e7d32;
+        }
+        .status-rejected {
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <main class="col-md-12 px-md-4 main-content">
+                <!-- Header -->
+                <header class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
+                    <div class="d-flex align-items-center dropdown">
+                        <img src="{% static 'images/spy.gif' %}" alt="User" class="rounded-circle" style="width: 40px; height: 40px; border: 2px solid #007bff;">
+                        <span class="me-3 dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ moderator_name }}
+                        </span>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'signout' %}">Logout</a></li>
+                        </ul>
+                    </div>
+                </header>
+
+                <div class="alert alert-light d-flex justify-content-end align-items-center" role="alert">
+                    <nav class="header-nav">
+                        <a class="nav-link" href="{% url 'mod_home' %}">
+                            <i class="fas fa-home me-2"></i> Home
+                        </a>
+                        <a class="nav-link" href="{% url 'mod_sch' %}">
+                            <i class="fas fa-bus me-2"></i> Schedule Buses
+                        </a>
+                        <a class="nav-link" href="{% url 'notifications_report' %}">
+                            <i class="fas fa-list-alt me-2"></i> Report List
+                        </a>
+                        <a class="nav-link" href="{% url 'mod_agentlist' %}">
+                            <i class="fas fa-users me-2"></i> Agents
+                        </a>
+                        <a class="nav-link" href="{% url 'moderator_job_requests' %}">
+                            <i class="fas fa-briefcase me-2"></i> Agent Job Requests
+                        </a>
+                        <a class="nav-link" href="{% url 'buses_added_by_moderator' %}">
+                            <i class="fas fa-plus-circle me-2"></i> Bus Added
+                        </a>
+                        <a class="nav-link " href="{% url 'view_bus_bookings' %}">
+                            <i class="fas fa-book me-2"></i> Bus Bookings
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Safety Notification Reports -->
+                <div class="container mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Safety Notification Reports</h2>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                Filter by Status
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                                <li><a class="dropdown-item" href="#" data-status="all">All</a></li>
+                                <li><a class="dropdown-item" href="#" data-status="pending">Pending</a></li>
+                                <li><a class="dropdown-item" href="#" data-status="approved">Approved</a></li>
+                                <li><a class="dropdown-item" href="#" data-status="rejected">Rejected</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="reportContainer">
+                        {% regroup safety_reports by submitted_at|date:"l, F d, Y" as reports_by_date %}
+                        {% for date, reports in reports_by_date %}
+                            <h3 class="mt-4 mb-3">{{ date }}</h3>
+                            <div class="row">
+                                {% for report in reports %}
+                                    <div class="col-md-6 col-lg-4 mb-4 report-item" data-status="{{ report.status|lower }}">
+                                        <div class="report-card">
+                                            <h5><i class="fas fa-exclamation-triangle"></i> {{ report.report_title }}</h5>
+                                            <p><i class="fas fa-user-tie"></i> <strong>Agent:</strong> {{ report.agent.first_name }} {{ report.agent.last_name }}</p>
+                                            <p><i class="far fa-calendar-alt"></i> <strong>Incident Date:</strong> {{ report.incident_datetime|date:"F d, Y H:i" }}</p>
+                                            <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> {{ report.location }}</p>
+                                            <p>
+                                                <i class="fas fa-exclamation-circle"></i> <strong>Severity:</strong> 
+                                                <span class="severity-indicator severity-{{ report.severity_level|lower }}">
+                                                    {{ report.severity_level }}
+                                                </span>
+                                            </p>
+                                            <p>
+                                                <i class="fas fa-info-circle"></i> <strong>Status:</strong> 
+                                                <span class="status-indicator status-{{ report.status|lower }}">
+                                                    {{ report.status }}
+                                                </span>
+                                            </p>
+                                            <div class="btn-group" role="group">
+                                                <a href="{% url 'view_notification_report' report.report_id %}" class="btn btn-view w-100"><i class="fas fa-eye"></i> View</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% empty %}
+                            <p>No reports found.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.header-nav .nav-link');
+        
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            const reports = [
+                {% for report in safety_reports %}
+                {
+                    id: "{{ report.report_id }}",
+                    title: "{{ report.report_title }}",
+                    agent: "{{ report.agent.first_name }} {{ report.agent.last_name }}",
+                    incidentDate: new Date("{{ report.incident_datetime|date:'Y-m-d H:i:s' }}"),
+                    location: "{{ report.location }}",
+                    severity: "{{ report.severity_level }}",
+                    status: "{{ report.status }}",
+                },
+                {% endfor %}
+            ];
+
+            function groupReportsByDate(reports) {
+                const grouped = {};
+                reports.forEach(report => {
+                    const dateKey = formatDate(report.submittedAt); // Change this line
+                    if (!grouped[dateKey]) {
+                        grouped[dateKey] = [];
+                    }
+                    grouped[dateKey].push(report);
+                });
+                return grouped;
+            }
+
+            function renderReports(groupedReports) {
+                const container = document.getElementById('reportContainer');
+                container.innerHTML = '';
+
+                Object.keys(groupedReports).sort((a, b) => new Date(b) - new Date(a)).forEach(date => {
+                    const dateHeader = document.createElement('h3');
+                    dateHeader.textContent = date;
+                    dateHeader.className = 'mt-4 mb-3';
+                    container.appendChild(dateHeader);
+
+                    const row = document.createElement('div');
+                    row.className = 'row';
+
+                    groupedReports[date].forEach(report => {
+                        const col = document.createElement('div');
+                        col.className = 'col-md-6 col-lg-4 mb-4 report-item';
+                        col.setAttribute('data-status', report.status.toLowerCase());
+
+                        col.innerHTML = `
+                            <div class="report-card">
+                                <h5><i class="fas fa-exclamation-triangle"></i> ${report.title}</h5>
+                                <p><i class="fas fa-user-tie"></i> <strong>Agent:</strong> ${report.agent}</p>
+                                <p><i class="far fa-calendar-alt"></i> <strong>Incident Date:</strong> ${formatDateTime(report.incidentDate)}</p>
+                                <p><i class="fas fa-clock"></i> <strong>Submitted At:</strong> ${formatDateTime(report.submittedAt)}</p>
+                                <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> ${report.location}</p>
+                                <p>
+                                    <i class="fas fa-exclamation-circle"></i> <strong>Severity:</strong> 
+                                    <span class="severity-indicator severity-${report.severity.toLowerCase()}">
+                                        ${report.severity}
+                                    </span>
+                                </p>
+                                <p>
+                                    <i class="fas fa-info-circle"></i> <strong>Status:</strong> 
+                                    <span class="status-indicator status-${report.status.toLowerCase()}">
+                                        ${report.status}
+                                    </span>
+                                </p>
+                                <div class="btn-group" role="group">
+                                    <a href="/view_notification_report/${report.id}" class="btn btn-view w-100"><i class="fas fa-eye"></i> View</a>
+                                </div>
+                            </div>
+                        `;
+
+                        row.appendChild(col);
+                    });
+
+                    container.appendChild(row);
+                });
+            }
+
+            function formatDate(date) {
+                return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            }
+
+            function formatDateTime(date) {
+                return date.toLocaleString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric', 
+                    hour: '2-digit', 
+                    minute: '2-digit'
+                });
+            }
+
+            const groupedReports = groupReportsByDate(reports);
+            renderReports(groupedReports);
+
+            // Filter functionality
+            const filterDropdown = document.getElementById('filterDropdown');
+            const filterItems = document.querySelectorAll('.dropdown-item');
+
+            filterItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const status = this.getAttribute('data-status');
+                    filterReports(status);
+                    filterDropdown.textContent = `Filter by Status: ${status.charAt(0).toUpperCase() + status.slice(1)}`;
+                });
+            });
+
+            function filterReports(status) {
+                const reportItems = document.querySelectorAll('.report-item');
+                reportItems.forEach(item => {
+                    if (status === 'all' || item.getAttribute('data-status') === status) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                // Hide date headers if no reports are visible under them
+                const dateHeaders = document.querySelectorAll('#reportContainer h3');
+                dateHeaders.forEach(header => {
+                    const nextElement = header.nextElementSibling;
+                    const visibleReports = nextElement.querySelectorAll('.report-item[style="display: block;"]');
+                    header.style.display = visibleReports.length > 0 ? 'block' : 'none';
+                    nextElement.style.display = visibleReports.length > 0 ? 'flex' : 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

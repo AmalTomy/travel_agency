@@ -1,0 +1,702 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moderators Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .stat-card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-nav .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem;
+            margin-right: 15px; /* Adjust spacing between items */
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .header-nav .nav-link.active {
+            background-color: rgba(0, 123, 255, 0.1); /* Light blue background */
+            color: #007bff; /* Blue text color */
+        }
+
+        .header-nav .nav-link.active::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 123, 255, 0.2); /* Semi-transparent overlay */
+            z-index: -1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        header .d-flex {
+            margin-left: auto; /* Pushes the header content to the right */
+        }
+
+        .alert {
+            display: flex;
+            align-items: center;
+            padding-right: 177px;
+        }
+
+        /* Centering the welcome message */
+        .welcome-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50vh; /* Adjust height as needed */
+            text-align: center;
+        }
+
+        /* Fade-in writing animation */
+        .welcome-message {
+            font-size: 2rem;
+            opacity: 0;
+            animation: fadeInWrite 3s forwards;
+        }
+
+        @keyframes fadeInWrite {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Agent Details Modal Styles */
+        .agent-modal {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+
+        .agent-modal .modal-header {
+            background-color: #6c757d;
+            color: white;
+            border-bottom: none;
+            padding: 20px;
+        }
+
+        .agent-modal .modal-title {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .agent-modal .modal-body {
+            padding: 30px;
+        }
+
+        .agent-modal .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .agent-modal .profile-image:hover {
+            transform: scale(1.05);
+        }
+
+        .agent-modal p {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .agent-modal p:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .agent-modal strong {
+            color: #495057;
+        }
+
+        .agent-modal a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .agent-modal a:hover {
+            color: #0056b3;
+        }
+
+        /* Modal Animation */
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal.show .modal-dialog {
+            animation: modalFadeIn 0.5s ease forwards;
+        }
+
+        /* Agent Card Styles */
+        .agent-card {
+            transition: all 0.3s ease;
+            transform: translateY(0);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .agent-card .card-body {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            padding: 1.5rem;
+        }
+
+        .agent-card .card-title {
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .agent-card .card-text {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        /* Card content fade-in animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .agent-card .card-body > * {
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .agent-card .card-body > *:nth-child(1) { animation-delay: 0.1s; }
+        .agent-card .card-body > *:nth-child(2) { animation-delay: 0.2s; }
+        .agent-card .card-body > *:nth-child(3) { animation-delay: 0.3s; }
+        .agent-card .card-body > .animated-btn { animation-delay: 0.4s; }
+
+        /* Animated button styles */
+        .animated-btn {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            transition-duration: 0.3s;
+            cursor: pointer;
+            border-radius: 25px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
+            animation-delay: 0.4s;
+        }
+
+        .animated-btn:before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .animated-btn:hover {
+            background-color: #0056b3;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .animated-btn:hover:before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .animated-btn i {
+            margin-right: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .animated-btn:hover i {
+            transform: rotate(360deg);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+            }
+        }
+
+        .animated-btn:focus {
+            outline: none;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Specific styles for each button type */
+        .view-details {
+            background-color: #28a745;
+        }
+
+        .view-details:hover {
+            background-color: #218838;
+        }
+
+        .view-previous-jobs {
+            background-color: #17a2b8;
+        }
+
+        .view-previous-jobs:hover {
+            background-color: #138496;
+        }
+
+        /* Previous Jobs Modal Styles */
+        .previous-jobs-modal {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+
+        .previous-jobs-modal .modal-header {
+            background-color: #6c757d;
+            color: white;
+            border-bottom: none;
+            padding: 20px;
+        }
+
+        .previous-jobs-modal .modal-title {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .previous-jobs-modal .modal-body {
+            padding: 30px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .job-timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .job-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #007bff;
+        }
+
+        .job-item {
+            position: relative;
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .job-icon {
+            position: absolute;
+            left: -44px;
+            top: 0;
+            width: 30px;
+            height: 30px;
+            background-color: #007bff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .job-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .job-content:hover {
+            transform: translateY(-5px);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Empty state styles */
+        .text-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+        }
+
+        .text-center i {
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        .text-center h4 {
+            color: #343a40;
+            margin-bottom: 0.5rem;
+        }
+
+        .text-center p {
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Main content -->
+            <main class="col-md-12 px-md-4 main-content">
+                <!-- Header -->
+                <header class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
+                    <div class="d-flex align-items-center dropdown">
+                        <img src="{% static 'images/spy.gif' %}" alt="User" class="rounded-circle" style="width: 40px; height: 40px; border: 2px solid #007bff;">
+                        {% if error_message %}
+                            <div class="alert alert-warning">{{ error_message }}</div>
+                        {% else %}
+                            <span class="me-3 dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ moderator_name }}
+                            </span>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li><a class="dropdown-item" href="{% url 'mod_profile' %}">Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'signout' %}">Logout</a></li>
+                            </ul>
+                        {% endif %}
+                    </div>
+                </header>
+
+                <div class="alert alert-light d-flex justify-content-end align-items-center" role="alert">
+                    <nav class="header-nav">
+                        <a class="nav-link" href="{% url 'mod_home' %}">
+                            <i class="fas fa-home me-2"></i> Home
+                        </a>
+                        <a class="nav-link" href="{% url 'mod_sch' %}">
+                            <i class="fas fa-bus me-2"></i> Schedule Buses
+                        </a>
+                        <a class="nav-link" href="{% url 'notifications_report' %}">
+                            <i class="fas fa-list-alt me-2"></i> Report List
+                        </a>
+                        <a class="nav-link" href="{% url 'mod_agentlist' %}">
+                            <i class="fas fa-users me-2"></i> Agents
+                        </a>
+                        <a class="nav-link" href="{% url 'moderator_job_requests' %}">
+                            <i class="fas fa-briefcase me-2"></i> Agent Job Requests
+                        </a>
+                        <a class="nav-link" href="{% url 'buses_added_by_moderator' %}">
+                            <i class="fas fa-plus-circle me-2"></i> Bus Added
+                        </a>
+                        <a class="nav-link " href="{% url 'view_bus_bookings' %}">
+                            <i class="fas fa-book me-2"></i> Bus Bookings
+                        </a>
+                    </nav>
+                </div>
+                
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Agents Under Your Supervision</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                {% if agents %}
+                                    {% for agent in agents %}
+                                        <div class="col-md-4 mb-4">
+                                            <div class="card agent-card">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">{{ agent.first_name }} {{ agent.last_name }}</h5>
+                                                    <p class="card-text"><i class="fas fa-envelope me-2"></i>{{ agent.email }}</p>
+                                                    <p class="card-text"><i class="fas fa-phone me-2"></i>{{ agent.mobile }}</p>
+                                                    <div class="button-container">
+                                                        <button class="btn btn-primary btn-sm mt-2 view-details animated-btn" data-agent-id="{{ agent.agent_id }}">
+                                                            <i class="fas fa-eye me-1"></i>View Details
+                                                        </button>
+                                                        <button class="btn btn-primary btn-sm mt-2 view-previous-jobs animated-btn" data-agent-id="{{ agent.agent_id }}">
+                                                            <i class="fas fa-history me-1"></i>View Previous Jobs
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="col-md-12">
+                                        <p>No agents under your supervision.</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for displaying agent details -->
+            <div class="modal fade" id="agentDetailsModal" tabindex="-1" aria-labelledby="agentDetailsModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content agent-modal">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="agentDetailsModalLabel">Agent Details</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="agentDetailsContent">
+                            <!-- Agent details will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add this new modal for previous jobs -->
+            <div class="modal fade" id="previousJobsModal" tabindex="-1" aria-labelledby="previousJobsModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content previous-jobs-modal">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="previousJobsModalLabel">Previous Jobs</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="previousJobsContent">
+                            <!-- Previous jobs will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.header-nav .nav-link');
+        
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Add event listeners for view details buttons
+            const viewDetailsButtons = document.querySelectorAll('.view-details');
+            viewDetailsButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const agentId = this.getAttribute('data-agent-id');
+                    if (agentId) {
+                        this.classList.add('clicked');
+                        setTimeout(() => {
+                            this.classList.remove('clicked');
+                        }, 300);
+                        fetchAgentDetails(agentId);
+                    } else {
+                        console.error('Agent ID is missing');
+                        alert('Error: Agent ID is missing. Please try again later.');
+                    }
+                });
+            });
+
+            // Add event listeners for view previous jobs buttons
+            const viewPreviousJobsButtons = document.querySelectorAll('.view-previous-jobs');
+            viewPreviousJobsButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const agentId = this.getAttribute('data-agent-id');
+                    if (agentId) {
+                        this.classList.add('clicked');
+                        setTimeout(() => {
+                            this.classList.remove('clicked');
+                        }, 300);
+                        fetchPreviousJobs(agentId);
+                    } else {
+                        console.error('Agent ID is missing');
+                        alert('Error: Agent ID is missing. Please try again later.');
+                    }
+                });
+            });
+        });
+
+        function fetchAgentDetails(agentId) {
+            // Use the correct URL for your Django view
+            fetch(`/mod_agentdetails/${agentId}/`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    displayAgentDetails(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching agent details:', error);
+                    alert('Failed to fetch agent details. Please try again.');
+                });
+        }
+
+        function displayAgentDetails(agent) {
+            const modalContent = document.getElementById('agentDetailsContent');
+            modalContent.innerHTML = `
+                <div class="text-center mb-4">
+                    <img src="${agent.profile_image}" alt="Profile Image" class="profile-image mb-3">
+                    <h4 class="mb-0">${agent.first_name} ${agent.last_name}</h4>
+                    <p class="text-muted">${agent.email}</p>
+                </div>
+                <p><strong>Phone:</strong> ${agent.mobile}</p>
+                <p><strong>Address:</strong> ${agent.address || 'N/A'}</p>
+                <p><strong>City:</strong> ${agent.city || 'N/A'}</p>
+                <p><strong>District:</strong> ${agent.district || 'N/A'}</p>
+                <p><strong>Date Joined:</strong> ${agent.date_joined || 'N/A'}</p>
+                <p><strong>Company:</strong> ${agent.company || 'N/A'}</p>
+                <p><strong>Location:</strong> ${agent.location || 'N/A'}</p>
+                <p><strong>Status:</strong> ${agent.status || 'N/A'}</p>
+                ${agent.document_link ? `<p><strong>Document:</strong> <a href="${agent.document_link}" target="_blank">View Document</a></p>` : ''}
+            `;
+            
+            const modal = new bootstrap.Modal(document.getElementById('agentDetailsModal'));
+            modal.show();
+        }
+
+        function fetchPreviousJobs(agentId) {
+            console.log(`Fetching previous jobs for agent ${agentId}`);
+            fetch(`/mod_agent_previous_jobs/${agentId}/`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Received data:', data);
+                    displayPreviousJobs(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching previous jobs:', error);
+                    displayPreviousJobs([]); // Display empty state when there's an error
+                });
+        }
+
+        function displayPreviousJobs(jobs) {
+            console.log('Displaying jobs:', jobs);
+            const modalContent = document.getElementById('previousJobsContent');
+            if (!Array.isArray(jobs) || jobs.length === 0) {
+                modalContent.innerHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-briefcase-medical fa-4x mb-3 text-muted"></i>
+                        <h4>No Job History</h4>
+                        <p class="text-muted">This agent has no previous job records.</p>
+                    </div>
+                `;
+            } else {
+                let jobsHtml = '<div class="job-timeline">';
+                jobs.forEach((job, index) => {
+                    jobsHtml += `
+                        <div class="job-item" style="animation-delay: ${index * 0.1}s">
+                            <div class="job-icon"><i class="fas fa-briefcase"></i></div>
+                            <div class="job-content">
+                                <h5>${job.title}</h5>
+                                <p><strong>Date:</strong> ${job.date}</p>
+                                <p><strong>Description:</strong> ${job.description}</p>
+                                <p><strong>Status:</strong> <span class="badge bg-${job.status === 'Completed' ? 'success' : 'warning'}">${job.status}</span></p>
+                            </div>
+                        </div>
+                    `;
+                });
+                jobsHtml += '</div>';
+                modalContent.innerHTML = jobsHtml;
+            }
+            
+            const modal = new bootstrap.Modal(document.getElementById('previousJobsModal'));
+            modal.show();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,563 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Bookings</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #FFFFFF; /* White */
+            display: flex;
+            flex-direction: column;
+            color: #333333; /* Dark Gray text color */
+        }
+        .booking-card {
+            transition: transform 0.3s ease-in-out;
+            background-color: #F0F0F0; /* Light Gray */
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .booking-card:hover {
+            transform: translateY(-5px);
+        }
+        .modal-content {
+            background-color: #FFFFFF; /* White */
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        .modal-header {
+            background-color: #2C3E50; /* Deep Blue */
+            color: #FFFFFF; /* White text */
+            border-bottom: none;
+        }
+        .modal-body {
+            padding: 30px;
+            color: #333333; /* Dark Gray text */
+        }
+        .section {
+            background-color: #F0F0F0; /* Light Gray */
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .section h6 {
+            color: #2C3E50; /* Deep Blue */
+            margin-bottom: 15px;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #2C3E50; /* Deep Blue */
+        }
+        .info-value {
+            color: #333333; /* Dark Gray */
+        }
+        .download-btn {
+            background-color: #1ABC9C; /* Teal */
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            color: #FFFFFF; /* White text */
+        }
+        .download-btn:hover {
+            background-color: #16A085; /* Darker Teal */
+        }
+        .close-btn {
+            background-color: transparent;
+            border: none;
+            color: #FFFFFF; /* White */
+            font-size: 24px;
+        }
+
+        /* New styles for header and footer */
+        .header {
+            background-color: #2C3E50 !important; /* Deep Blue */
+            color: #FFFFFF !important; /* White */
+            padding: 15px 0;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .content-wrapper {
+            flex: 1 0 auto;
+            padding: 20px 0;
+        }
+        .footer {
+            background-color: #2C3E50; /* Deep Blue */
+            color: #FFFFFF; /* White */
+            padding: 20px 0;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .btn-primary {
+            background-color: #2ECC71; /* Mint Green */
+            border-color: #2ECC71;
+            color: #FFFFFF; /* White text */
+        }
+        .btn-primary:hover {
+            background-color: #27AE60; /* Darker Mint Green */
+            border-color: #27AE60;
+        }
+        h1 {
+            color: #2C3E50; /* Deep Blue */
+        }
+        .navbar-logo {
+    height: 40px; /* Adjust this value as needed */
+        width: auto;
+        border-radius: 50%; /* This makes the image circular */
+    }
+
+    /* Updated header styles with !important to override any conflicting styles */
+    .header {
+        background-color: #2C3E50 !important; /* Deep Blue */
+        color: #FFFFFF !important; /* White */
+        padding: 15px 0;
+    }
+
+    .header .nav-link {
+        color: #FFFFFF !important; /* White */
+        text-decoration: none;
+    }
+
+    .header .nav-link:hover {
+        color: #FFFFFF !important; /* Keep it white on hover */
+        text-decoration: underline; /* Add underline on hover for better UX */
+    }
+
+    /* Ensure the logo container doesn't have a background */
+    .navbar-brand {
+        background-color: transparent !important;
+    }
+
+    /* Additional style to force text color in header */
+    .header * {
+        color: #FFFFFF !important;
+    }
+
+    /* New styles for enhanced visual appeal */
+    .content-wrapper {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 40px 0;
+    }
+
+    h1 {
+        color: #2C3E50;
+        text-align: center;
+        font-size: 3rem;
+        margin-bottom: 2rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        animation: fadeInDown 1s ease-out;
+    }
+
+    .booking-card {
+        transition: all 0.3s ease-in-out;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transform: translateY(0);
+    }
+
+    .booking-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .card-title {
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: #2C3E50;
+    }
+
+    .card-text {
+        color: #34495E;
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-primary, .btn-outline-primary {
+        border-radius: 25px;
+        padding: 0.5rem 1rem;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover, .btn-outline-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .date-header {
+        background-color: #2C3E50;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        display: inline-block;
+        margin-bottom: 1rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        animation: slideInLeft 0.5s ease-out;
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .booking-card {
+        animation: fadeIn 0.5s ease-out;
+        animation-fill-mode: both;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Modal enhancements */
+    .modal-content {
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #2C3E50 0%, #4CA1AF 100%);
+        color: white;
+        border-bottom: none;
+    }
+
+    .modal-body {
+        padding: 2rem;
+    }
+
+    .section {
+        background-color: #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .section:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .info-row {
+        margin-bottom: 0.8rem;
+    }
+
+    .info-label {
+        font-weight: bold;
+        color: #2C3E50;
+    }
+
+    .info-value {
+        color: #34495E;
+    }
+
+    .download-btn {
+        background: linear-gradient(135deg, #1ABC9C 0%, #16A085 100%);
+        border: none;
+        border-radius: 25px;
+        padding: 10px 25px;
+        font-size: 1rem;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .download-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    </style>
+</head>
+<body>
+    <!-- New header -->
+    <header class="header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <a class="navbar-brand" href="{% url 'welcome' %}">
+                    <img src="{% static 'images/airplane.gif' %}" alt="TBSC Logo" class="navbar-logo">
+                </a>
+                <a class="nav-link page-scroll" href="{% url 'welcome' %}">HOME</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <div class="container my-5">
+            <h1 class="text-center mb-5">My Bookings</h1>
+            <div id="bookings-container" class="row">
+                <!-- Bookings will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="bookingDetailsModal" tabindex="-1" aria-labelledby="bookingDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="bookingDetailsModalLabel">Booking Details</h5>
+                        <button type="button" class="close-btn" data-bs-dismiss="modal" aria-label="Close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="bookingDetailsContent">
+                        <!-- Booking details will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 TBSC. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Booking data from the backend
+        const bookings = JSON.parse('{{ bookings|safe }}');
+
+        function createDateHeader(date) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            const formattedDate = new Date(date).toLocaleDateString('en-US', options);
+            return `
+                <div class="col-12 mt-4 mb-3">
+                    <h3 class="date-header">${formattedDate}</h3>
+                </div>
+            `;
+        }
+
+        function createBookingCard(booking, index) {
+            const canSubmitFeedback = new Date() > new Date(booking.arrival_date + 'T' + booking.arrival_time);
+
+            return `
+                <div class="col-md-6 col-lg-4 mb-4" style="animation-delay: ${index * 0.1}s;">
+                    <div class="card booking-card">
+                        <div class="card-body">
+                            <h5 class="card-title">${booking.departure_location} to ${booking.destination}</h5>
+                            <p class="card-text"><i class="far fa-calendar-alt mr-2"></i> Travel Date: ${booking.date}</p>
+                            <p class="card-text"><i class="far fa-clock mr-2"></i> ${booking.departure_time}</p>
+                            <div class="d-flex justify-content-between mt-3">
+                                <button class="btn btn-primary btn-sm show-details" data-booking-id="${booking.id}">
+                                    Show Details
+                                </button>
+                                <a href="{% url 'submit_feedback' %}?booking_id=${booking.id}" 
+                                   class="btn btn-outline-primary btn-sm ${canSubmitFeedback ? '' : 'disabled'}"
+                                   ${canSubmitFeedback ? '' : 'aria-disabled="true" tabindex="-1"'}
+                                   title="${canSubmitFeedback ? 'Submit Feedback' : 'Feedback can be submitted after the journey'}">
+                                    Submit Feedback
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createBookingDetails(booking) {
+            return `
+                <div class="section">
+                    <h6><i class="fas fa-info-circle"></i> Booking Summary</h6>
+                    <div class="info-row">
+                        <span class="info-label">Booking ID:</span>
+                        <span class="info-value">${booking.id}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Booking Date:</span>
+                        <span class="info-value">${booking.booking_date}</span>
+                    </div>
+                </div>
+                <div class="section">
+                    <h6><i class="fas fa-bus"></i> Trip Details</h6>
+                    <div class="info-row">
+                        <span class="info-label">Bus Route:</span>
+                        <span class="info-value">${booking.departure_location} to ${booking.destination}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Travel Date:</span>
+                        <span class="info-value">${booking.date}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Departure Time:</span>
+                        <span class="info-value">${booking.departure_time}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Arrival Time:</span>
+                        <span class="info-value">${booking.arrival_time}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Bus Operator:</span>
+                        <span class="info-value">${booking.bus_operator}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Seat Number(s):</span>
+                        <span class="info-value">${booking.seat_numbers}</span>
+                    </div>
+                </div>
+                <div class="section">
+                    <h6><i class="fas fa-user"></i> Booked Person Details</h6>
+                    <div class="info-row">
+                        <span class="info-label">Name:</span>
+                        <span class="info-value">${booking.booked_person.name}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value">${booking.booked_person.email}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Phone:</span>
+                        <span class="info-value">${booking.booked_person.phone}</span>
+                    </div>
+                </div>
+                <div class="section">
+                    <h6><i class="fas fa-users"></i> Passenger Details</h6>
+                    ${createPassengerDetailsHtml(booking.passenger_details)}
+                </div>
+                <div class="section">
+                    <h6><i class="fas fa-ticket-alt"></i> Ticket Information</h6>
+                    <div class="info-row">
+                        <span class="info-label">Price Paid:</span>
+                        <span class="info-value">₹${booking.price_paid}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Payment Status:</span>
+                        <span class="info-value">${booking.payment_status}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Payment Method:</span>
+                        <span class="info-value">${booking.payment_method}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Payment Date:</span>
+                        <span class="info-value">${booking.payment_date}</span>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="#" class="btn download-btn" id="downloadTicketBtn" onclick="generateETicket(${booking.id})">
+                        <i class="fas fa-download"></i> Generate Ticket
+                    </a>
+                </div>
+            `;
+        }
+
+        function createPassengerDetailsHtml(passengers) {
+            return passengers.map((passenger, index) => `
+                <div class="passenger-info">
+                    <h6>Passenger ${index + 1}</h6>
+                    <div class="info-row">
+                        <span class="info-label">Full Name:</span>
+                        <span class="info-value">${passenger.fullName || passenger.name || 'N/A'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value">${passenger.email || 'N/A'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Phone:</span>
+                        <span class="info-value">${passenger.phone || 'N/A'}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderBookings() {
+            const container = document.getElementById('bookings-container');
+            
+            // Sort bookings by booking date (newest first)
+            bookings.sort((a, b) => new Date(b.booking_date) - new Date(a.booking_date));
+
+            // Group bookings by booking date (only considering the date part)
+            const groupedBookings = bookings.reduce((groups, booking) => {
+                const date = new Date(booking.booking_date).toDateString(); // This will give us the date part only
+                if (!groups[date]) {
+                    groups[date] = [];
+                }
+                groups[date].push(booking);
+                return groups;
+            }, {});
+
+            // Render grouped bookings
+            let html = '';
+            for (const [date, dateBookings] of Object.entries(groupedBookings)) {
+                html += createDateHeader(date);
+                html += dateBookings.map((booking, index) => createBookingCard(booking, index)).join('');
+            }
+
+            container.innerHTML = html;
+
+            // Add event listeners to show details buttons
+            document.querySelectorAll('.show-details').forEach(button => {
+                button.addEventListener('click', function() {
+                    const bookingId = this.getAttribute('data-booking-id');
+                    const booking = bookings.find(b => b.id == bookingId);
+                    const modalContent = document.getElementById('bookingDetailsContent');
+                    modalContent.innerHTML = createBookingDetails(booking);
+                    
+                    // Show the modal
+                    const modal = new bootstrap.Modal(document.getElementById('bookingDetailsModal'));
+                    modal.show();
+                });
+            });
+        }
+
+        // Render bookings when the page loads
+        document.addEventListener('DOMContentLoaded', renderBookings);
+
+        function generateETicket(bookingId) {
+            // Open a new window or tab with the e-ticket
+            window.open(`/e_ticket/?booking_id=${bookingId}`, '_blank');
+        }
+    </script>
+</body>
+</html>

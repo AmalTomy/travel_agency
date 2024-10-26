@@ -1,0 +1,531 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Cancellation - YourCompany</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #FFFFFF;
+            color: #333333;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar-custom {
+            background-color: #2C3E50;
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .navbar-nav .nav-link {
+            color: #FFFFFF;
+        }
+        main {
+            flex: 1 0 auto;
+            padding: 20px 0;
+        }
+        footer {
+            background-color: #2C3E50;
+            color: #FFFFFF;
+            padding: 20px 0;
+            flex-shrink: 0;
+        }
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+        }
+        .navbar-brand .logo-image {
+            max-height: 40px;
+            margin-right: 10px;
+        }
+        .navbar-brand .company-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .btn-primary {
+            background-color: #1ABC9C;
+            border-color: #1ABC9C;
+        }
+        .btn-primary:hover {
+            background-color: #16A085;
+            border-color: #16A085;
+        }
+        .rounded-logo {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+        }
+        /* Add any additional custom styles for the cancellation page here */
+        /* New styles for main content */
+        .card {
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .card-header {
+            background: linear-gradient(45deg, #1ABC9C, #3498DB);
+            color: white;
+            border-radius: 10px 10px 0 0;
+            padding: 20px;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .booking-card {
+            border-radius: 15px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .booking-card .card-body {
+            padding: 20px;
+        }
+
+        .booking-card .card-title {
+            color: #2C3E50;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .booking-card .card-text {
+            margin-bottom: 10px;
+            color: #34495E;
+        }
+
+        .btn-danger {
+            background-color: #E74C3C;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background-color: #C0392B;
+            transform: scale(1.05);
+        }
+
+        /* Animation keyframes */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Styles for the cancellation policy modal */
+        .modal-content {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            background: linear-gradient(45deg, #1ABC9C, #3498DB);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            border-bottom: none;
+        }
+
+        .modal-title {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-body h6 {
+            color: #2C3E50;
+            font-weight: 700;
+            margin-top: 20px;
+        }
+
+        .modal-body p {
+            color: #34495E;
+            line-height: 1.6;
+        }
+
+        .modal-footer {
+            border-top: none;
+        }
+
+        .btn-secondary {
+            background-color: #3498DB;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #2980B9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideInFromTop {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal.show .modal-content {
+            animation: fadeInScale 0.5s ease-out forwards;
+        }
+
+        .modal-body h6,
+        .modal-body p {
+            opacity: 0;
+            animation: slideInFromTop 0.5s ease-out forwards;
+        }
+
+        .modal-body h6:nth-child(1) { animation-delay: 0.2s; }
+        .modal-body p:nth-child(2) { animation-delay: 0.4s; }
+        .modal-body h6:nth-child(3) { animation-delay: 0.6s; }
+        .modal-body p:nth-child(4) { animation-delay: 0.8s; }
+        .modal-body p:nth-child(5) { animation-delay: 1s; }
+
+        /* Styles for the new cancellation confirmation modal */
+        #cancellationConfirmModal .modal-content {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        #cancellationConfirmModal .modal-header {
+            background: linear-gradient(45deg, #FF416C, #FF4B2B);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+
+        #cancellationConfirmModal .modal-body {
+            padding: 30px;
+        }
+
+        #cancellationConfirmModal .animated-icon {
+            animation: pulse 1.5s infinite;
+            color: #FF416C;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        #cancellationConfirmModal .modal-footer {
+            border-top: none;
+        }
+
+        #cancellationConfirmModal .btn-danger {
+            background-color: #FF416C;
+            border: none;
+        }
+
+        #cancellationConfirmModal .btn-danger:hover {
+            background-color: #FF4B2B;
+        }
+        .btn-secondary1 {
+            background-color: #3498DB;
+            border-radius: 4px;
+            padding: 5px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        /* Animation for modal appearance */
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease-out;
+            transform: scale(0.8);
+        }
+
+        .modal.show .modal-dialog {
+            transform: scale(1);
+        }
+    </style>
+    <!-- Add this in the <head> section -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container d-flex align-items-center">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'welcome' %}">
+                <img src="{% static 'images/airplane.gif' %}" alt="alternative" class="rounded-logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'welcome' %}">HOME</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'signout' %}">LOGOUT</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mt-5">
+        <div class="card" style="animation: fadeInUp 0.5s ease-out;">
+            <div class="card-header">
+                <h2>Your Bookings</h2>
+            </div>
+            <div class="card-body">
+                {% if bookings %}
+                    <div class="row">
+                        {% for booking in bookings %}
+                            <div class="col-md-6 mb-4">
+                                <div class="card booking-card" style="animation: fadeInUp {{ forloop.counter|add:"1" }}00ms ease-out;">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Booking #{{ booking.booking_id }}</h5>
+                                        <p class="card-text"><strong>From:</strong> {{ booking.bus.departure_location }}</p>
+                                        <p class="card-text"><strong>To:</strong> {{ booking.bus.destination_location }}</p>
+                                        <p class="card-text"><strong>Date:</strong> {{ booking.departure_date|date:"F d, Y" }}</p>
+                                        <p class="card-text"><strong>Seats:</strong> {{ booking.seat_booked }}</p>
+                                        <p class="card-text"><strong>Total Price:</strong> ${{ booking.total_amount }}</p>
+                                        <p class="card-text"><strong>Status:</strong> {{ booking.payment_status }}</p>
+                                        <p class="card-text"><strong>Booking Date:</strong> {{ booking.booking_date|date:"F d, Y, g:i a" }}</p>
+                                        <p class="card-text"><strong>Cancellation Deadline:</strong> {{ booking.get_cancellation_deadline|date:"F d, Y, g:i a" }}</p>
+                                        {% if booking.is_cancellable %}
+                                            <form id="cancelForm{{ booking.booking_id }}" method="post" action="{% url 'cancel_booking' booking.booking_id %}">
+                                                {% csrf_token %}
+                                                <button type="button" class="btn btn-danger" style="animation: pulse 2s infinite;" onclick="confirmCancellation({{ booking.booking_id }})">Cancel Booking</button>
+                                            </form>
+                                        {% else %}
+                                            <p class="text-muted">This booking is not eligible for cancellation.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            {% if bookings.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page=1{% if query %}&search={{ query }}{% endif %}">&laquo; First</a></li>
+                                <li class="page-item"><a class="page-link" href="?page={{ bookings.previous_page_number }}{% if query %}&search={{ query }}{% endif %}">Previous</a></li>
+                            {% endif %}
+
+                            <li class="page-item disabled"><a class="page-link" href="#">Page {{ bookings.number }} of {{ bookings.paginator.num_pages }}</a></li>
+
+                            {% if bookings.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ bookings.next_page_number }}{% if query %}&search={{ query }}{% endif %}">Next</a></li>
+                                <li class="page-item"><a class="page-link" href="?page={{ bookings.paginator.num_pages }}{% if query %}&search={{ query }}{% endif %}">Last &raquo;</a></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% else %}
+                    <p>You have no current bookings.</p>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-5">  
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>About Us</h5>
+                    <p>Your trusted partner for comfortable and reliable bus travel.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Home</a></li>
+                        <li><a href="#" class="text-white">Book a Trip</a></li>
+                        <li><a href="#" class="text-white">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact Info</h5>
+                    <p>Email: info@yourcompany.com<br>Phone: +1 234 567 8900</p>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2024 YourCompany. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <!-- Cancellation Policy Modal -->
+    <div class="modal fade" id="cancellationPolicyModal" tabindex="-1" aria-labelledby="cancellationPolicyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancellationPolicyModalLabel">Cancellation Policy & Refund Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Cancellation Policy:</h6>
+                    <p>Cancellations are allowed up to 24 hours before the scheduled departure time. After this deadline, cancellations are not permitted.</p>
+                    
+                    <h6>Refund Information:</h6>
+                    <p>For eligible cancellations, only 65% of the full amount will be credited back to you. The refund process typically takes 5-7 business days, depending on your bank.</p>
+                    
+                    <p><strong>Note:</strong> Please review your booking details carefully before cancelling, as this action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">I Understand</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add this new modal structure -->
+    <div class="modal fade" id="cancellationConfirmModal" tabindex="-1" aria-labelledby="cancellationConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancellationConfirmModalLabel">Confirm Cancellation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="animated-icon mb-4">
+                        <i class="fas fa-exclamation-triangle fa-4x"></i>
+                    </div>
+                    <p>Are you sure you want to cancel this booking?</p>
+                    <p><strong>Only 65% of the amount will be refunded.</strong></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary1" data-bs-dismiss="modal">No, Keep Booking</button>
+                    <button type="button" class="btn btn-danger" id="confirmCancellationBtn">Yes, Cancel Booking</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var myModal = new bootstrap.Modal(document.getElementById('cancellationPolicyModal'), {
+                backdrop: 'static',
+                keyboard: false
+            });
+            myModal.show();
+        });
+
+        function confirmCancellation(bookingId) {
+            var modal = new bootstrap.Modal(document.getElementById('cancellationConfirmModal'));
+            modal.show();
+
+            document.getElementById('confirmCancellationBtn').onclick = function() {
+                modal.hide();
+                cancelBooking(bookingId);
+            };
+        }
+
+        function cancelBooking(bookingId) {
+            $.ajax({
+                url: '/cancel_booking/' + bookingId + '/',
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Booking Canceled',
+                            text: response.message,
+                            confirmButtonColor: '#3085d6',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Store the cancellation message in localStorage
+                                localStorage.setItem('cancellationMessage', response.message);
+                                // Redirect to the welcome page
+                                window.location.href = "{% url 'welcome' %}";
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while canceling the booking.',
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while canceling the booking.',
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>

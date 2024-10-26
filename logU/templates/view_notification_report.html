@@ -1,0 +1,532 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Safety Notification Report</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .stat-card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-nav .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem;
+            margin-right: 15px;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .header-nav .nav-link.active {
+            background-color: rgba(0, 123, 255, 0.1);
+            color: #007bff;
+        }
+
+        .header-nav .nav-link.active::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 123, 255, 0.2);
+            z-index: -1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        header .d-flex {
+            margin-left: auto;
+        }
+
+        .alert {
+            display: flex;
+            align-items: center;
+            padding-right: 177px;
+        }
+
+        .report-detail-card {
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border: none;
+            transition: transform 0.3s ease;
+        }
+        .report-detail-card:hover {
+            transform: translateY(-5px);
+        }
+        .report-detail-card h3 {
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .report-detail-card p {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            color: #34495e;
+            font-size: 1.1em;
+        }
+        .report-detail-card i {
+            margin-right: 15px;
+            font-size: 1.3em;
+            color: #000000; /* Changed from #3498db to black */
+            width: 25px;
+            text-align: center;
+        }
+        .severity-indicator {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .severity-low { background-color: #2ecc71; color: #fff; }
+        .severity-medium { background-color: #f39c12; color: #fff; }
+        .severity-high { background-color: #e74c3c; color: #fff; }
+        .status-indicator { 
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+        .status-pending { background-color: #3498db; color: #fff; }
+        .status-approved { background-color: #2ecc71; color: #fff; }
+        .status-rejected { background-color: #e74c3c; color: #fff; }
+        .report-media {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .report-media h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .report-media img, .report-media video {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .btn-group {
+            margin-top: 30px;
+        }
+        .btn-group .btn {
+            padding: 10px 20px;
+            font-size: 1.1em;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        .btn-group .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn-success {
+            background-color: #2ecc71;
+            border-color: #2ecc71;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        @keyframes shrink-and-bubble {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(0.8); opacity: 0.8; }
+            100% { transform: scale(0.1); opacity: 0; }
+        }
+
+        @keyframes float-away {
+            0% { transform: translate(0, 0); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
+        }
+
+        .bubble {
+            position: absolute;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            animation: float-away 1s forwards;
+        }
+
+        .shrinking {
+            animation: shrink-and-bubble 1s forwards;
+        }
+
+        .custom-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 400px;
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .checkmark-circle {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            display: inline-block;
+            vertical-align: top;
+            margin-bottom: 20px;
+        }
+
+        .checkmark-circle .background {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #2ecc71;
+            position: absolute;
+            margin-left: 115px;
+        }
+
+        .checkmark-circle .checkmark {
+            border-radius: 5px;
+        }
+
+        .checkmark-circle .checkmark:after {
+            content: "";
+            width: 50px;
+            height: 100px;
+            border: 10px solid #fff;
+            border-top: 0;
+            border-left: 0;
+            position: absolute;
+            top: -10px;
+            left: 30px;
+            transform: rotate(45deg);
+            animation: checkmark 0.8s ease-in-out forwards;
+            margin-left: 105px;
+        }
+
+        @keyframes checkmark {
+            0% { height: 0; width: 0; opacity: 1; }
+            20% { height: 0; width: 50px; opacity: 1; }
+            40% { height: 100px; width: 50px; opacity: 1; }
+            100% { height: 100px; width: 50px; opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Main content -->
+            <main class="col-md-12 px-md-4 main-content">
+                <!-- Header -->
+                <header class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
+                    <div class="d-flex align-items-center dropdown">
+                        <img src="{% static 'images/spy.gif' %}" alt="User" class="rounded-circle" style="width: 40px; height: 40px; border: 2px solid #007bff;">
+                        {% if error_message %}
+                            <div class="alert alert-warning">{{ error_message }}</div>
+                        {% else %}
+                            <span class="me-3 dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                {% if moderator_name %}
+                                    {{ moderator_name }}
+                                {% else %}
+                                    Moderator Name Not Set
+                                {% endif %}
+                            </span>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'buses_added_by_moderator' %}">Buses Added by You</a></li>                            
+                                <li><a class="dropdown-item" href="{% url 'signout' %}">Logout</a></li>
+                            </ul>
+                        {% endif %}
+                    </div>
+                </header>
+
+                <div class="alert alert-light d-flex justify-content-end align-items-center" role="alert">
+                    <nav class="header-nav">
+                        <a class="nav-link" href="{% url 'mod_home' %}">
+                            <i class="fas fa-home me-2"></i> Home
+                        </a>
+                        <a class="nav-link" href="{% url 'mod_sch' %}">
+                            <i class="fas fa-bus me-2"></i> Schedule Buses
+                        </a>
+                        <a class="nav-link" href="{% url 'notifications_report' %}">
+                            <i class="fas fa-list-alt me-2"></i> Report List
+                        </a>
+                        <a class="nav-link" href="{% url 'mod_agentlist' %}">
+                            <i class="fas fa-users me-2"></i> Agents
+                        </a>
+                        <a class="nav-link" href="{% url 'moderator_job_requests' %}">
+                            <i class="fas fa-briefcase me-2"></i> Agent Job Requests
+                        </a>
+                        <a class="nav-link" href="{% url 'buses_added_by_moderator' %}">
+                            <i class="fas fa-plus-circle me-2"></i> Bus Added
+                        </a>
+                        <a class="nav-link " href="{% url 'view_bus_bookings' %}">
+                            <i class="fas fa-book me-2"></i> Bus Bookings
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Safety Notification Report Detail -->
+                <div class="container mt-5">
+                    <h2 class="mb-4 text-center">Safety Notification Report Details</h2>
+                    <div class="report-detail-card">
+                        <h3><i class="fas fa-exclamation-triangle"></i> {{ report.report_title }}</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><i class="fas fa-user-tie"></i> <strong>Agent:</strong> {{ report.agent.first_name }} {{ report.agent.last_name }}</p>
+                                <p><i class="far fa-calendar-alt"></i> <strong>Incident Date:</strong> {{ report.incident_datetime|date:"F d, Y H:i" }}</p>
+                                <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> {{ report.location }}</p>
+                                <!-- Add the new bus and stop information here -->
+                                <p><i class="fas fa-bus"></i> <strong>Bus:</strong> 
+                                    {% if report.bus %}
+                                       {{ report.bus.bus_name }} ({{ report.bus.bus_number }})
+                                    {% else %}
+                                       Not specified
+                                    {% endif %}
+                                 </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><i class="fas fa-route"></i> <strong>Route:</strong> 
+                                    {% if report.bus %}
+                                       {{ report.bus.departure_location }} - {{ report.bus.destination_location }}
+                                    {% else %}
+                                       Not specified
+                                    {% endif %}
+                                </p>
+                                <p>
+                                    <i class="fas fa-exclamation-circle"></i> <strong>Severity:</strong> 
+                                    <span class="severity-indicator severity-{{ report.severity_level|lower }}">
+                                        {{ report.severity_level }}
+                                    </span>
+                                </p>
+                                <p>
+                                    <i class="fas fa-info-circle"></i> <strong>Status:</strong> 
+                                    <span class="status-indicator status-{{ report.status|lower }}">
+                                        {{ report.status }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <p><i class="fas fa-file-alt"></i> <strong>Description:</strong> {{ report.description }}</p>
+                        
+                        {% if report.latitude and report.longitude %}
+                        <p><i class="fas fa-map-pin"></i> <strong>Coordinates:</strong> {{ report.latitude }}, {{ report.longitude }}</p>
+                        {% endif %}
+                        
+                        <p><i class="far fa-calendar-alt"></i> <strong>Departure Date:</strong> 
+                            {% if departure_date %}
+                                {{ departure_date|date:"F d, Y" }}
+                            {% else %}
+                                Not specified
+                            {% endif %}
+                        </p>
+                        
+                        <div class="report-media">
+                            <h4><i class="fas fa-photo-video"></i> Attached Media</h4>
+                            <div class="row">
+                                {% for media in media_files %}
+                                    <div class="col-md-4 mb-3">
+                                        {% if media.file.name|lower|slice:"-3:" in 'jpg,png,gif,jpeg' %}
+                                            <img src="{{ media.file.url }}" alt="Report Image" class="img-fluid">
+                                        {% elif media.file.name|lower|slice:"-3:" in 'mp4,avi,mov' %}
+                                            <video controls class="img-fluid">
+                                                <source src="{{ media.file.url }}" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        {% else %}
+                                            <p>Unsupported media type: {{ media.file.name }}</p>
+                                        {% endif %}
+                                    </div>
+                                {% empty %}
+                                    <p>No media files attached to this report.</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        {% if report.status == 'Pending' %}
+                        <div class="btn-group mt-4 d-flex justify-content-center" role="group">
+                            <button class="btn btn-success accept-report me-3" data-report-id="{{ report.report_id }}"><i class="fas fa-check"></i> Accept Report</button>
+                            <button class="btn btn-danger reject-report" data-report-id="{{ report.report_id }}"><i class="fas fa-times"></i> Reject Report</button>
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Custom Notification Modal -->
+    <div id="customModal" class="custom-modal">
+        <div class="modal-content">
+            <div class="checkmark-circle">
+                <div class="background"></div>
+                <div class="checkmark"></div>
+            </div>
+            <h2>Successfully submitted</h2>
+            <p id="modalMessage"></p>
+            <p id="notificationDetails"></p>
+            <button id="modalCloseBtn" class="btn btn-primary">Close</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            const navLinks = document.querySelectorAll('.header-nav .nav-link');
+        
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            function createBubbles($element) {
+                const bubbleCount = 20;
+                const elementRect = $element[0].getBoundingClientRect();
+
+                for (let i = 0; i < bubbleCount; i++) {
+                    const $bubble = $('<div class="bubble"></div>');
+                    const size = Math.random() * 10 + 5;
+                    const left = Math.random() * elementRect.width;
+                    const top = Math.random() * elementRect.height;
+                    const tx = (Math.random() - 0.5) * 200;
+                    const ty = (Math.random() - 0.5) * 200;
+
+                    $bubble.css({
+                        width: `${size}px`,
+                        height: `${size}px`,
+                        left: `${left}px`,
+                        top: `${top}px`,
+                        '--tx': `${tx}px`,
+                        '--ty': `${ty}px`
+                    });
+
+                    $element.append($bubble);
+                }
+            }
+
+            function updateUIAfterAction(newStatus) {
+                $('.status-indicator')
+                    .removeClass('status-pending status-approved status-rejected')
+                    .addClass('status-' + newStatus.toLowerCase())
+                    .text(newStatus.toUpperCase());
+                $('.btn-group').remove(); // Remove the buttons after action
+            }
+
+            function handleReportAction(action, reportId) {
+                console.log("Handling report action:", action, "for report ID:", reportId);
+                $.ajax({
+                    url: '{% url "process_report" %}',
+                    method: 'POST',
+                    data: {
+                        report_id: reportId,
+                        action: action,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        console.log("Report action response:", response);
+                        if (response.success) {
+                            if (action === 'reject') {
+                                const $reportCard = $('.report-detail-card');
+                                $reportCard.addClass('shrinking');
+                                createBubbles($reportCard);
+                                setTimeout(() => {
+                                    $reportCard.fadeOut(500, function() {
+                                        $(this).remove();
+                                    });
+                                }, 1000);
+                            } else {
+                                // Show custom modal for accept action
+                                $('#modalMessage').text(response.message);
+                                $('#notificationDetails').text(response.notificationDetails || '');
+                                $('#customModal').fadeIn();
+                                // Trigger the checkmark animation
+                                $('.checkmark-circle .checkmark').addClass('draw');
+                                updateUIAfterAction('Approved');
+                            }
+                        } else {
+                            console.error("Error processing report:", response.error);
+                            alert("Error processing report: " + response.error);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX error:", error);
+                        console.error("Status:", status);
+                        console.error("Response Text:", xhr.responseText);
+                        alert("AJAX error: " + error + "\nStatus: " + status + "\nResponse: " + xhr.responseText);
+                    }
+                });
+            }
+
+            // Handle Accept button click
+            $('.accept-report').click(function() {
+                var reportId = $(this).data('report-id');
+                handleReportAction('accept', reportId);
+            });
+
+            // Handle Reject button click
+            $('.reject-report').click(function() {
+                var reportId = $(this).data('report-id');
+                handleReportAction('reject', reportId);
+            });
+
+            // Close custom modal
+            $('#modalCloseBtn').click(function() {
+                $('#customModal').fadeOut();
+                $('.checkmark-circle .checkmark').removeClass('draw');
+            });
+        });
+    </script>
+</body>
+</html>

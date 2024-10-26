@@ -19,78 +19,80 @@
     <link rel="icon" href="{% static 'images/logo1.png' %}">
     <style>
         body {
-            background-color: #103C4A; /* Adjust the color to match your image */
-            color: #fff;
+            background-color: #FFFFFF;
+            color: #333333;
         }
         .navbar-custom {
-            background-color: #103C4A;
-            padding: 10px 20px; /* Reduced padding */
+            background-color: #2C3E50;
+            padding: 10px 20px;
         }
         .navbar-brand img {
-            height: 40px; /* Adjust the logo size */
+            height: 40px;
         }
         .form-container {
-            background-color: #1A5263;
+            background-color: #F0F0F0;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            margin-top: 20px; /* Add some margin for spacing */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
         }
         .form-container label {
-            color: #fff;
+            color: #333333;
         }
         .form-container .form-control {
-            background-color: #2B7A8C;
-            border: none;
-            color: #fff;
+            background-color: #FFFFFF;
+            border: 1px solid #E0E0E0;
+            color: #333333;
         }
         .form-container .form-control::placeholder {
-            color: #fff;
+            color: #999999;
         }
         .btn-custom {
-            background-color: #FFD700;
-            color: #103C4A;
-            margin-left: 20px;
-
+            background-color: #1ABC9C;
+            color: #FFFFFF;
+            border: none;
+        }
+        .btn-custom:hover {
+            background-color: #16A085;
         }
         .footer {
-            background-color: #103C4A;
-            color: #fff;
+            background-color: #2C3E50;
+            color: #FFFFFF;
             text-align: center;
-            padding: 10px 0; /* Reduced padding */
+            padding: 10px 0;
         }
         .hidden {
             display: none;
         }
         .profile-image {
-            width: 150px; /* Adjust the size as needed */
-            height: 150px; /* Adjust the size as needed */
-            border-radius: 50%; /* Makes the image circular */
-            object-fit: cover; /* Ensures the image covers the entire area */
-            border: 2px solid #ccc; /* Optional: Add a border */
-            margin-bottom: 20px; /* Add some margin for spacing */
-            margin-left: 160px; /* Add some margin for spacing */ 
-            margin-top: 20px; /* Add some margin for spacing */
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #1ABC9C;
+            margin-bottom: 20px;
+            margin-left: 160px;
+            margin-top: 20px;
         }
         .btn-container {
             display: flex;
             justify-content: center;
         }
         .error-message {
-            color: red;
+            color: #E74C3C;
             font-size: 0.9em;
             margin-top: 5px;
         }
         .notification {
             position: fixed;
-            top: 80px; /* Adjust this value based on your navbar height */
+            top: 80px;
             right: 20px;
             padding: 15px;
-            background-color: #4CAF50;
-            color: white;
+            background-color: #1ABC9C;
+            color: #FFFFFF;
             border-radius: 5px;
             display: none;
-            z-index: 9999; /* Ensure it's above other elements */
+            z-index: 9999;
             animation: fadeInOut 5s ease-in-out;
             min-width: 200px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -102,6 +104,12 @@
             90% { opacity: 1; transform: translateY(0); }
             100% { opacity: 0; transform: translateY(-20px); }
         }
+        .navbar-logo {
+            height: 40px; /* Adjust this value as needed */
+            width: auto;
+            border-radius: 50%; /* This makes the image circular */
+            margin-left: 100px;
+        }
     </style>
 </head>
 <body data-spy="scroll" data-target=".fixed-top">
@@ -109,8 +117,8 @@
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-md navbar-dark navbar-custom fixed-top">
-        <a class="navbar-brand logo-image" href="{% url 'welcome' %}">
-            <img src="{% static 'images/logo1.png' %}" alt="alternative">
+        <a class="navbar-brand" href="{% url 'welcome' %}">
+            <img src="{% static 'images/airplane.gif' %}" alt="TBSC Logo" class="navbar-logo">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-awesome fas fa-bars"></span>
@@ -119,7 +127,7 @@
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link page-scroll" href="{% url 'welcome' %}">HOME <span class="sr-only">(current)</span></a>
+                    <a class="nav-link page-scroll" href="{% url 'welcome' %}" style="padding-right: 100px;">HOME <span class="sr-only">(current)</span></a>
                 </li>
             </ul>
         </div>
@@ -173,7 +181,7 @@
                     </div>
                     <div class="form-group text-center btn-container">
                         <button type="button" id="editButton" class="btn btn-custom">Edit Profile</button>
-                        <button type="submit" id="updateButton" class="btn btn-custom hidden">Update Profile</button>
+                        <button type="submit" id="updateButton" class="btn btn-custom hidden" style="margin-left: 28px;">Update Profile</button>
                         <button type="button" id="cancelButton" class="btn btn-custom hidden">Cancel</button>
                     </div>
                 </form>
@@ -240,8 +248,8 @@
 
         function validateFirstName(input) {
             const errorElement = document.getElementById('first_name-error');
-            if (input.value.trim() === '' || /\d/.test(input.value)) {
-                errorElement.textContent = 'First name is required and should not contain numbers.';
+            if (input.value.trim() === '' || /\d/.test(input.value) || /[^a-zA-Z\s]/.test(input.value)) {
+                errorElement.textContent = 'First name is required and should not contain numbers or special characters.';
                 input.setCustomValidity('Invalid first name');
             } else {
                 errorElement.textContent = '';
@@ -251,8 +259,8 @@
 
         function validateLastName(input) {
             const errorElement = document.getElementById('last_name-error');
-            if (input.value.trim() === '' || /\d/.test(input.value)) {
-                errorElement.textContent = 'Last name is required and should not contain numbers.';
+            if (input.value.trim() === '' || /\d/.test(input.value) || /[^a-zA-Z\s]/.test(input.value)) {
+                errorElement.textContent = 'Last name is required and should not contain numbers or special characters.';
                 input.setCustomValidity('Invalid last name');
             } else {
                 errorElement.textContent = '';
@@ -397,7 +405,7 @@
             const notification = document.getElementById('notification');
             console.log('Notification element:', notification);
             notification.textContent = message;
-            notification.style.backgroundColor = type === 'success' ? '#4CAF50' : '#f44336';
+            notification.style.backgroundColor = type === 'success' ? '#1ABC9C' : '#f44336';
             notification.style.display = 'block';
             notification.style.opacity = '1';
             notification.style.transform = 'translateY(0)';

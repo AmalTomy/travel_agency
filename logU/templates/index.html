@@ -32,6 +32,14 @@
 	
 	<!-- Favicon  -->
     <link rel="icon" href="{% static 'images/logo1.png' %}">
+    <style>
+       .rounded-logo {
+        border-radius: 50%;
+        width: 50px;  /* Adjust as needed */
+        height: 50px; /* Adjust as needed */
+        object-fit: cover;
+}
+    </style>
 </head>
 <body data-spy="scroll" data-target=".fixed-top">
     
@@ -50,7 +58,7 @@
 <nav class="navbar navbar-expand-md navbar-dark navbar-custom fixed-top">
     <!-- Image Logo -->
     <a class="navbar-brand logo-image" href="{% url 'index' %}">
-        <img src="{% static 'images/logo1.png' %}" alt="alternative">
+        <img src="{% static 'images/airplane.gif' %}" alt="BusGo Animated Logo" class="rounded-logo">
     </a>
     
     <!-- Mobile Menu Toggle Button -->
@@ -71,11 +79,14 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle page-scroll" href="#" id="navbarDropdown" role="button" aria-haspopup="true" aria-expanded="false">ACCOUNT</a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{% url 'signup' %}"><span class="item-text">SIGN UP</span></a>
+                    <a class="dropdown-item" href="{% url 'login' %}"><span class="item-text">SIGN IN</span></a>
+                    <div class="dropdown-items-divide-hr"></div>
+                    <a class="dropdown-item" href="{% url 'signup' %}"><span class="item-text">CUSTOMER SIGN UP</span></a>
                     <div class="dropdown-items-divide-hr"></div>
                     <a class="dropdown-item" href="{% url 'mod_reg' %}"><span class="item-text">MODERATOR SIGN UP</span></a>
                     <div class="dropdown-items-divide-hr"></div>
-                    <a class="dropdown-item" href="{% url 'login' %}"><span class="item-text">SIGN IN</span></a>
+                    <a class="dropdown-item" href="{% url 'agent_registration' %}"><span class="item-text">AGENT SIGN UP</span></a>
+
                 </div>
             </li>
             <li class="nav-item">
@@ -111,8 +122,10 @@
                         <div class="text-container">
                             <h1>BUS <span id="js-rotating">TRAVEL, COMFORT, ADVENTURE</span></h1>
                             <p class="p-heading p-large">BusGo is a leading bus travel platform offering comfortable and reliable journeys across the country</p>
-                            <a class="btn-solid-lg page-scroll" href="{% url 'signup' %}">USER SIGNUP</a>
-                            <a class="btn-solid-lg page-scroll" href="{% url 'mod_reg' %}">MODERATOR SIGNUP</a>                        </div>
+                            <a class="btn-solid-lg page-scroll" href="{% url 'signup' %}">CUSTOMER SIGNUP</a>
+                            <a class="btn-solid-lg page-scroll" href="{% url 'mod_reg' %}">MODERATOR SIGNUP</a>
+                            <a class="btn-solid-lg page-scroll" href="{% url 'agent_registration' %}">AGENT SIGNUP</a>
+                        </div>
                     </div> <!-- end of col -->
                 </div> <!-- end of row -->
             </div> <!-- end of container -->

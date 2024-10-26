@@ -655,9 +655,11 @@ input[type='checkbox'] {
 }
 
 .navbar-custom .navbar-brand.logo-image img {
-    width: 5.0625rem;
-	height: 4rem;
+    width: 3rem;
+	height: 3rem;
 	-webkit-backface-visibility: hidden;
+	border-radius: 50%;
+	margin-left: -50px;
 }
 
 .navbar-custom .navbar-brand.logo-text {
@@ -775,7 +777,10 @@ input[type='checkbox'] {
 	background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url('../images/header-background.jpg') center center no-repeat;
 	background-size: cover;
 }
-
+.welcome-header1 {
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url('../images/bus1.jpg') center center no-repeat;
+    background-size: cover;
+}
 .header .header-content {
 	padding-top: 8rem;
 	padding-bottom: 2.125rem;

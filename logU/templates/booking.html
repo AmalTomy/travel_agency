@@ -14,13 +14,15 @@
  <style>
     body {
         font-family: 'Arial', sans-serif;
+        background-color: #FFFFFF;
+        color: #333333;
     }
     .navbar-custom {
-        background-color: #0a3d62;
+        background-color: #2C3E50;
     }
     .navbar-custom .navbar-brand,
     .navbar-custom .navbar-nav .nav-link {
-        color: white;
+        color: #FFFFFF;
     }
     .hero-section {
         background-image: url('{% static "images/busbg.jpg" %}');
@@ -32,7 +34,7 @@
         justify-content: center;
     }
     .booking-container {
-        background-color: white;
+        background-color: #F0F0F0;
         padding: 20px;
         border-radius: 5px;
         box-shadow: 0 0 20px rgba(0,0,0,0.1);
@@ -44,32 +46,35 @@
     }
     .nav-tabs .nav-link {
         border: none;
-        background-color: #f8f9fa;
-        color: #495057;
+        background-color: #FFFFFF;
+        color: #333333;
         margin-right: 5px;
         border-radius: 5px 5px 0 0;
         padding: 10px 20px;
     }
     .nav-tabs .nav-link.active {
-        background-color: #dc3545;
-        color: white;
+        background-color: #1ABC9C;
+        color: #FFFFFF;
     }
     .form-control {
         margin-bottom: 15px;
+        background-color: #FFFFFF;
+        border: 1px solid #E0E0E0;
+        color: #333333;
     }
     .btn-search {
-        background-color: #dc3545;
-        color: white;
+        background-color: #1ABC9C;
+        color: #FFFFFF;
         border: none;
         padding: 10px 20px;
         font-size: 18px;
     }
     .btn-search:hover {
-        background-color: #c82333;
+        background-color: #16A085;
     }
     footer {
-        background-color: #0a3d62;
-        color: white;
+        background-color: #2C3E50;
+        color: #FFFFFF;
         padding: 20px 0;
     }
 
@@ -88,54 +93,11 @@
         font-size: 1.5rem; /* Adjust this value to control the font size of the company name */
         font-weight: bold; /* Adjust this value for desired font weight */
     }
-    .travel-blogs {
-        background-color: #f8f9fa;
-        padding: 50px 0;
-    }
-
-    .blog-card {
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        margin-bottom: 20px;
-        transition: transform 0.3s ease;
-    }
-
-    .blog-card:hover {
-        transform: translateY(-5px);
-    }
-
-    .blog-card img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-    }
-
-    .blog-card .card-body {
-        padding: 20px;
-    }
-
-    .blog-card .card-title {
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-
-    .blog-card .card-text {
-        color: #6c757d;
-        margin-bottom: 15px;
-    }
-
-    .blog-card .btn-link {
-        color: #007bff;
-        text-decoration: none;
-    }
 
     /* Add this to your existing styles */
     .autocomplete-items {
         position: absolute;
-        border: 1px solid #d4d4d4;
+        border: 1px solid #E0E0E0;
         border-bottom: none;
         border-top: none;
         z-index: 1000; /* Increased z-index to ensure it appears above other elements */
@@ -144,21 +106,35 @@
         right: 0;
         max-height: 200px;
         overflow-y: auto;
-        background-color: white; /* Ensure background is white */
+        background-color: #FFFFFF; /* Ensure background is white */
     }
     .autocomplete-items div {
         padding: 10px;
         cursor: pointer;
-        background-color: #fff;
-        border-bottom: 1px solid #d4d4d4;
+        background-color: #FFFFFF;
+        border-bottom: 1px solid #E0E0E0;
     }
     .autocomplete-items div:hover {
-        background-color: #e9e9e9;
+        background-color: #F0F0F0;
     }
     /* Add this new rule */
     .col-md-3 {
         position: relative; /* Ensure parent is positioned */
     }
+    .btn-primary {
+        background-color: #1ABC9C;
+        border-color: #1ABC9C;
+    }
+    .btn-primary:hover {
+        background-color: #16A085;
+        border-color: #16A085;
+    }
+    .rounded-logo {
+    border-radius: 50%;
+    width: 40px;  /* Adjust as needed */
+    height: 40px; /* Adjust as needed */
+    object-fit: cover;
+}
 </style>
 </head>
 <body>
@@ -166,8 +142,8 @@
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container d-flex align-items-center">
             <a class="navbar-brand d-flex align-items-center" href="{% url 'welcome' %}">
-                <img src="{% static 'images/logo1.png' %}" alt="alternative" class="logo-image">
-                <span class="company-name">TBSC</span>
+                <img src="{% static 'images/airplane.gif' %}" alt="alternative" class="rounded-logo">
+                <!-- <span class="company-name">TBSC</span> -->
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -205,7 +181,7 @@
                         <div id="destinationInputAutocomplete" class="autocomplete-items"></div>
                     </div>
                     <div class="col-md-3">
-                        <input type="date" name="date" class="form-control" required>
+                        <input type="date" id="dateInput" name="date" class="form-control" required>
                     </div>
                     <div class="col-md-3">
                         <button type="submit" class="btn btn-search w-100">SEARCH BUS</button>
@@ -213,20 +189,6 @@
                     
                 </div>
             </form>
-        </div>
-    </section>
-
-
-
-    <section class="travel-blogs">
-        <h2 class="text-center mb-4">TRAVEL BLOGS</h2>
-        <div class="container">
-            <div class="row" id="blogCarousel">
-                <!-- Blog cards will be dynamically inserted here -->
-            </div>
-        </div>
-        <div class="text-center mt-4">
-            <a href="#" class="btn btn-primary">See All Blogs →</a>
         </div>
     </section>
 
@@ -262,70 +224,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
     <script>
-        const blogs = [
-            {
-                title: "Dubai",
-                image: "{% static 'images/Dubai.jpg' %}",
-                description: "Dubai is HOT! I know-Duh. During the 'winter months', which correlate to ours, the temperatures are cooler wit...",
-                link: "#"
-            },
-            {
-                title: "Goa",
-                image: "{% static 'images/goa.jpg' %}",
-                description: "Goa is the perfect mix of natural beauty, lively nightlife, and tropical environs. Check out our Goa blog...",
-                link: "#"
-            },
-            {
-                title: "Kerala",
-                image: "{% static 'images/kerala-tourism.jpg' %}",
-                description: "If you're looking for a Southern getaway in India then Kerala is the perfect choice of destination to plan...",
-                link: "#"
-            },
-            {
-                title: "Goa",
-                image: "{% static 'images/goa.jpg' %}",
-                description: "Goa is the perfect mix of natural beauty, lively nightlife, and tropical environs. Check out our Goa blog...",
-                link: "#"
-            },
-            // Add more blog objects as needed
-        ];
-
-        function createBlogCard(blog) {
-            return `
-                <div class="col-md-3">
-                    <div class="blog-card">
-                        <img src="${blog.image}" alt="${blog.title}">
-                        <div class="card-body">
-                            <h5 class="card-title">${blog.title}</h5>
-                            <p class="card-text">${blog.description}</p>
-                            <a href="${blog.link}" class="btn-link">Read more →</a>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function updateBlogCarousel() {
-            console.log('Updating blog carousel'); // Debugging log
-            const carousel = document.getElementById('blogCarousel');
-            carousel.innerHTML = '';
-            const displayedBlogs = blogs.slice(0, 4); // Display 4 blogs at a time
-            displayedBlogs.forEach(blog => {
-                carousel.innerHTML += createBlogCard(blog);
-            });
-        }
-
-        // Initial update
-        updateBlogCarousel();
-
-        // Rotate blogs every 5 seconds
-        setInterval(() => {
-            blogs.push(blogs.shift()); // Move the first blog to the end
-            updateBlogCarousel();
-        }, 5000);
-    </script>
-
-    <script>
         document.addEventListener("DOMContentLoaded", function() {
             let locations = [];
 
@@ -353,16 +251,16 @@
                     let autocompleteDiv = document.getElementById(this.id + "Autocomplete");
                     console.log("Autocomplete div:", autocompleteDiv);
                     
-                    let matchingLocations = locations.filter(item => 
-                        item[type].toLowerCase().startsWith(val.toLowerCase())
-                    );
+                    let matchingLocations = [...new Set(locations
+                        .filter(item => item[type].toLowerCase().startsWith(val.toLowerCase()))
+                        .map(item => item[type]))];
                     
-                    matchingLocations.forEach((item) => {
-                        console.log("Match found:", item[type]);
+                    matchingLocations.forEach((location) => {
+                        console.log("Match found:", location);
                         let div = document.createElement("DIV");
-                        div.innerHTML = "<strong>" + item[type].substr(0, val.length) + "</strong>";
-                        div.innerHTML += item[type].substr(val.length);
-                        div.innerHTML += "<input type='hidden' value='" + item[type] + "'>";
+                        div.innerHTML = "<strong>" + location.substr(0, val.length) + "</strong>";
+                        div.innerHTML += location.substr(val.length);
+                        div.innerHTML += "<input type='hidden' value='" + location + "'>";
                         div.addEventListener("click", function(e) {
                             inp.value = this.getElementsByTagName("input")[0].value;
                             closeAllLists();
@@ -389,6 +287,18 @@
             document.addEventListener("click", function (e) {
                 closeAllLists();
             });
+
+            function setMinDate() {
+                let today = new Date();
+                let dd = String(today.getDate()).padStart(2, '0');
+                let mm = String(today.getMonth() + 1).padStart(2, '0');
+                let yyyy = today.getFullYear();
+
+                today = yyyy + '-' + mm + '-' + dd;
+                document.getElementById("dateInput").setAttribute("min", today);
+            }
+
+            setMinDate();
         });
     </script>
 </body>

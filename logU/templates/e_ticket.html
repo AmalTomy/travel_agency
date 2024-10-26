@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Bus Ticket</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .ticket-container {
+            perspective: 1000px;
+            width: 400px;
+            height: 600px; /* Reduced height */
+            margin: 20px auto;
+        }
+        .ticket-flipper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        .ticket-container.flipped .ticket-flipper {
+            transform: rotateY(180deg);
+        }
+        .ticket-front, .ticket-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            overflow: hidden; /* Changed from overflow-y: auto */
+        }
+        .ticket-back {
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+        .ticket-header {
+            background-color: #e74c3c;
+            color: white;
+            padding: 15px;
+        }
+        .ticket-body {
+            padding: 15px;
+        }
+        .route {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .location {
+            text-align: center;
+        }
+        .route-icon {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        .arrow {
+            font-size: 20px;
+            color: #e74c3c;
+        }
+        .ticket-info {
+            background-color: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+        .ticket-details {
+            margin-top: 15px;
+        }
+        .seat-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+        .divider {
+            border-top: 1px solid #ddd;
+            margin: 10px 0;
+        }
+        .passenger-section {
+            margin-top: 15px;
+        }
+        .passenger-section h3 {
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+        .passenger-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8em;
+        }
+        .passenger-table th, .passenger-table td {
+            padding: 5px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .passenger-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .btn-container {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .btn-save {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-qr, .btn-ticket {
+            background-color: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="ticket-container">
+        <div class="ticket-flipper">
+            <div class="ticket-front">
+                <div class="pdf-content">
+                    <div class="ticket-header">
+                        <h2>Your ticket details</h2>
+                    </div>
+                    <div class="ticket-body">
+                        <div class="route">
+                            <div class="location">
+                                <div class="route-icon">🏙️</div>
+                                <div id="departure"></div>
+                            </div>
+                            <div class="arrow">&#8594;</div>
+                            <div class="location">
+                                <div class="route-icon">🏙️</div>
+                                <div id="destination"></div>
+                            </div>
+                        </div>
+                        <div class="ticket-info">
+                            <div class="seat-info">
+                                <span>Ticket No</span>
+                                <span id="ticketNumber"></span>
+                            </div>
+                            <div class="seat-info">
+                                <span>Fare</span>
+                                <span id="fare"></span>
+                            </div><br>
+                            <div id="time"></div>
+                            <div id="date"></div>
+                            <div id="busOperator"></div>
+                            <div id="seatNumbers"></div>
+                            <div style="text-align: right; cursor: pointer;" onclick="toggleDetails()">Hide Details ▲</div>
+                        </div>
+                        <div class="ticket-details" id="ticketDetails">
+                            <div class="seat-info">
+                                <span>Booked Seats:</span>
+                                <span id="bookedSeats"></span>
+                            </div>
+                            <div class="seat-info">
+                                <span>Booked by:</span>
+                                <span id="passengerName"></span>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="passenger-section">
+                                <h3>Passenger Details</h3>
+                                <table class="passenger-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="passengerDetails">
+                                        <!-- Passenger rows will be inserted here by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ticket-back">
+                <div class="qr-code">
+                    <div id="qrcode"></div>
+                    <p class="qr-text">Scan to view ticket on your phone</p>
+                </div>
+            </div>
+        </div>
+        <div class="btn-container">
+            <button id="saveBtn" class="btn btn-save" onclick="generatePDF()">Save</button>
+            <button id="flipBtn" class="btn btn-qr" onclick="toggleQRCode()">Get QR</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let booking, passengerDetails;
+            try {
+                booking = JSON.parse('{{ booking|escapejs }}');
+                passengerDetails = JSON.parse('{{ passenger_details|escapejs }}');
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                return;
+            }
+            
+            // Populate the ticket with booking and passenger details
+            document.getElementById('departure').textContent = booking.departure_location;
+            document.getElementById('destination').textContent = booking.destination;
+            document.getElementById('time').textContent = `${booking.departure_time} - ${booking.arrival_time}`;
+            document.getElementById('date').textContent = booking.date;
+            document.getElementById('busOperator').textContent = booking.bus_operator;
+            document.getElementById('seatNumbers').textContent = `Seat No: ${booking.seat_numbers}`;
+            document.getElementById('bookedSeats').textContent = booking.seat_numbers;
+            document.getElementById('passengerName').textContent = booking.booked_person.name;
+            document.getElementById('ticketNumber').textContent = booking.ticket_number;
+            document.getElementById('fare').textContent = `₹ ${booking.price_paid}`;
+
+            // Populate passenger details
+            const passengerDetailsElement = document.getElementById('passengerDetails');
+            passengerDetails.forEach((passenger, index) => {
+                passengerDetailsElement.innerHTML += `
+                    <tr>
+                        <td>${passenger.name || 'N/A'}</td>
+                        <td>${passenger.email || 'N/A'}</td>
+                        <td>${passenger.phone || 'N/A'}</td>
+                    </tr>
+                `;
+            });
+        });
+
+        function toggleDetails() {
+            const details = document.getElementById('ticketDetails');
+            const toggleText = document.querySelector('.ticket-info div:last-child');
+            if (details.style.display === 'none') {
+                details.style.display = 'block';
+                toggleText.innerHTML = 'Hide Details ▲';
+            } else {
+                details.style.display = 'none';
+                toggleText.innerHTML = 'Show Details ▼';
+            }
+        }
+
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            html2canvas(document.querySelector(".pdf-content")).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const imgProps= doc.getImageProperties(imgData);
+                const pdfWidth = doc.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                doc.save("e-ticket.pdf");
+            });
+        }
+
+        function toggleQRCode() {
+            const ticketContainer = document.querySelector('.ticket-container');
+            const flipBtn = document.getElementById('flipBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            
+            ticketContainer.classList.toggle('flipped');
+            
+            if (ticketContainer.classList.contains('flipped')) {
+                flipBtn.textContent = 'E-Ticket';
+                flipBtn.classList.remove('btn-qr');
+                flipBtn.classList.add('btn-ticket');
+                saveBtn.style.display = 'none';
+                
+                if (!document.getElementById('qrcode').hasChildNodes()) {
+                    const currentUrl = window.location.href;
+                    const mobileUrl = currentUrl + (currentUrl.includes('?') ? '&' : '?') + 'mobile=true';
+                    
+                    new QRCode(document.getElementById("qrcode"), {
+                        text: mobileUrl,
+                        width: 250,
+                        height: 250
+                    });
+                }
+            } else {
+                flipBtn.textContent = 'Get QR';
+                flipBtn.classList.remove('btn-ticket');
+                flipBtn.classList.add('btn-qr');
+                saveBtn.style.display = 'inline-block';
+            }
+        }
+    </script>
+</body>
+</html>

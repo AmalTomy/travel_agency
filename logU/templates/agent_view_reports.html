@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% load static %}
+
+    <!-- Website Title -->
+    <title>Agent Safety Reports - TBSC</title>
+
+    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:500,700&display=swap&subset=latin-ext" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600&display=swap&subset=latin-ext" rel="stylesheet">
+    <link href="{% static 'css1/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css1/fontawesome-all.css' %}" rel="stylesheet">
+    <link href="{% static 'css1/styles.css' %}" rel="stylesheet">
+
+    <!-- Favicon  -->
+    <link rel="icon" href="{% static 'images/logo1.png' %}">
+    <style>
+        body {
+            background-color: #f4f7f6;
+            color: #333333;
+        }
+        .navbar-custom {
+            background-color: #2C3E50;
+            padding: 10px 0;
+        }
+        .navbar-logo, .agent-logo {
+            height: 40px;
+            width: auto;
+            border-radius: 50%;
+        }
+        .agent-name {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .content {
+            padding-top: 80px;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .card-header {
+            background-color: #ededed;;
+            color: #ffffff;
+            border-bottom: none;
+            padding: 20px;
+        }
+        .card-body {
+            padding: 30px;
+        }
+        .table {
+            border-collapse: separate;
+            border-spacing: 0 15px;
+        }
+        .table thead th {
+            border-bottom: none;
+            background-color: #f1f3f9;
+            color: #3f51b5;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            padding: 15px;
+        }
+        .table tbody tr {
+            background-color: #ffffff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        .table tbody tr:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        .table td {
+            vertical-align: middle;
+            padding: 20px 15px;
+            border: none;
+        }
+        .badge {
+            padding: 8px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 30px;
+        }
+        .badge-warning {
+            background-color: #ffc107;
+            color: #000000;
+        }
+        .badge-success {
+            background-color: #28a745;
+        }
+        .badge-danger {
+            background-color: #dc3545;
+        }
+        .footer {
+            flex-shrink: 0;
+            background-color: #2C3E50;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'agent_welcome' %}">
+                <img src="{% static 'images/airplane.gif' %}" alt="TBSC Logo" class="navbar-logo mr-2">
+            </a>
+            <div class="ml-auto d-flex align-items-center">
+                <img src="{% static 'images/agent.gif' %}" alt="Agent" class="agent-logo mr-2">
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="agent-name">{{ agent.first_name }} {{ agent.last_name }}</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'agent_welcome' %}"><i class="fas fa-tasks"></i>Home</a>
+                        <a class="dropdown-item" href="{% url 'safety_notification_report' %}"><i class="fas fa-user-cog"></i> Submit Safety Report</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'signout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- end of navbar -->
+
+    <!-- Main Content -->
+    <div class="content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="mb-0">Your Safety Notification Reports</h4>
+                        </div>
+                        <div class="card-body">
+                            {% if reports %}
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Report Title</th>
+                                                <th>Incident Date</th>
+                                                <th>Location</th>
+                                                <th>Status</th>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for report in reports %}
+                                                <tr>
+                                                    <td><strong>{{ report.report_title }}</strong></td>
+                                                    <td>{{ report.incident_datetime|date:"M d, Y H:i" }}</td>
+                                                    <td>{{ report.location }}</td>
+                                                    <td>
+                                                        <span class="badge {% if report.status == 'Pending' %}badge-warning{% elif report.status == 'Approved' %}badge-success{% else %}badge-danger{% endif %}">
+                                                            {{ report.status }}
+                                                        </span>
+                                                    </td>
+                                                    <td>{{ report.description|truncatewords:20 }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <p class="text-center">You haven't submitted any safety notification reports yet.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end of main content -->
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="p-small">&copy; 2024 TBSC. All rights reserved.</p>
+    </footer>
+    <!-- end of footer -->
+
+    <!-- Scripts -->
+    <script src="{% static 'js1/jquery.min.js' %}"></script>
+    <script src="{% static 'js1/popper.min.js' %}"></script>
+    <script src="{% static 'js1/bootstrap.min.js' %}"></script>
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Travel Report</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    {% load static %}
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #FFFFFF;
+            color: #333333;
+        }
+        .navbar-custom {
+            background-color: #2C3E50;
+            padding: 10px 20px;
+        }
+        .navbar-brand img {
+            height: 40px;
+        }
+        .content {
+            flex: 1 0 auto;
+        }
+        .footer {
+            flex-shrink: 0;
+            background-color: #2C3E50;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .spinner-border { display: none; }
+        .classification-result { font-size: 0.9em; margin-top: 5px; }
+        #imagePreview img { max-width: 200px; height: auto; margin-right: 10px; margin-bottom: 10px; }
+        .navbar-logo {
+            height: 40px;
+            width: auto;
+            border-radius: 50%;
+            margin-left: 100px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark navbar-custom fixed-top">
+        <a class="navbar-brand" href="{% url 'welcome' %}">
+            <img src="{% static 'images/airplane.gif' %}" alt="TBSC Logo" class="navbar-logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-awesome fas fa-bars"></span>
+            <span class="navbar-toggler-awesome fas fa-times"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link page-scroll" href="{% url 'welcome' %}" style="padding-right: 100px;">HOME <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- end of navbar -->
+
+    <div class="content">
+        <div class="container mt-5 pt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title text-center mb-4">Submit Travel Report</h2>
+                            
+                            <div class="text-center mb-3">
+                                <a href="{% url 'view_reports' %}" class="btn btn-secondary">View Submitted Reports</a>
+                            </div>
+                            
+                            <form method="post" enctype="multipart/form-data" id="reportForm">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="departure">Departure</label>
+                                    <input type="text" class="form-control" id="departure" name="departure" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="destination">Destination</label>
+                                    <input type="text" class="form-control" id="destination" name="destination" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="travel_date">Travel Date</label>
+                                    <input type="date" class="form-control" id="travel_date" name="travel_date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Trip Description</label>
+                                    <textarea class="form-control" id="description" name="description" rows="10" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="photo">Upload Photo (1 image required)</label>
+                                    <input type="file" class="form-control-file" id="photo" name="photo" accept="image/*" required>
+                                </div>
+                                <div id="imagePreview" class="mt-3"></div>
+                                <div id="weatherClassification" class="mt-2"></div>
+                                <button type="submit" class="btn btn-primary mt-3" id="submitBtn">Submit Report</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p class="p-small">&copy; 2024 TBSC. All rights reserved.</p>
+    </div>
+    <!-- end of footer -->
+
+    <script>
+        document.getElementById('photo').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+            
+            document.getElementById('imagePreview').innerHTML = '';
+            document.getElementById('weatherClassification').innerHTML = '';
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '200px';
+                img.style.height = 'auto';
+                document.getElementById('imagePreview').appendChild(img);
+            }
+            reader.readAsDataURL(file);
+
+            // Add a loading message for weather classification
+            const loadingMsg = document.createElement('p');
+            loadingMsg.textContent = 'Analyzing weather...';
+            document.getElementById('weatherClassification').appendChild(loadingMsg);
+        });
+
+        document.getElementById('reportForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('{% url "submit_travel_report" %}', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('weatherClassification').innerHTML = `<p>Weather classification: ${data.weather_classification}</p>`;
+                    alert('Travel report submitted successfully!');
+                    window.location.href = '{% url "view_reports" %}';
+                } else {
+                    alert('Error submitting report. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        });
+    </script>
+</body>
+</html>

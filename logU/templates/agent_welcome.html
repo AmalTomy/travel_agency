@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% load static %}
+
+    <!-- Website Title -->
+    <title>Agent Welcome - TBSC</title>
+
+    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:500,700&display=swap&subset=latin-ext" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600&display=swap&subset=latin-ext" rel="stylesheet">
+    <link href="{% static 'css1/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css1/fontawesome-all.css' %}" rel="stylesheet">
+    <link href="{% static 'css1/styles.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+
+    <!-- Favicon  -->
+    <link rel="icon" href="{% static 'images/logo1.png' %}">
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            background-color: #FFFFFF;
+            color: #333333;
+        }
+        .navbar-custom {
+            background-color: #2C3E50;
+            padding: 10px 0;
+        }
+        .navbar-logo {
+            height: 40px;
+            width: auto;
+            border-radius: 50%;
+
+        }
+        .website-name {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-left: 10px;
+        }
+        .agent-logo {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .agent-name {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .dropdown-toggle::after {
+            vertical-align: middle;
+        }
+        .dropdown-menu {
+            background-color: #34495E;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .dropdown-item {
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+        .dropdown-item:hover {
+            background-color: #2C3E50;
+            color: #1ABC9C;
+        }
+        .dropdown-divider {
+            border-top-color: #4A6278;
+        }
+        .content {
+            flex: 1 0 auto;
+            padding-top: 80px; /* Adjust this value based on your navbar height */
+        }
+        .welcome-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .welcome-header {
+            margin-bottom: 40px;
+        }
+        .welcome-header h1 {
+            font-weight: 700;
+            font-size: 2.5rem;
+            color: #2C3E50;
+        }
+        .responsibility-card {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            height: 100%;
+            transition: all 0.3s ease;
+            border-left: 4px solid #1ABC9C;
+        }
+        .responsibility-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .responsibility-icon {
+            font-size: 2rem;
+            color: #1ABC9C;
+            margin-bottom: 15px;
+        }
+        .responsibility-card h5 {
+            color: #2C3E50;
+            font-weight: 600;
+        }
+        .btn-custom {
+            background-color: #1ABC9C;
+            color: #ffffff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .btn-custom:hover {
+            background-color: #16a085;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .footer {
+            flex-shrink: 0;
+            background-color: #2C3E50;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+        }
+        .modal-header {
+            background: linear-gradient(135deg, #1ABC9C, #16a085);
+            color: #ffffff;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+        .modal-title {
+            font-weight: 600;
+        }
+        .modal-body p {
+            margin-bottom: 10px;
+        }
+        .modal-footer {
+            border-top: none;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: #ffffff;
+        }
+        .btn-primary {
+            background-color: #1ABC9C;
+            border-color: #1ABC9C;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #16a085;
+            border-color: #16a085;
+            transform: translateY(-2px);
+        }
+        .chat-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #3f51b5;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1000;
+            animation: pulse 2s infinite;
+        }
+
+        .chat-icon i {
+            color: white;
+            font-size: 24px;
+        }
+
+        .chat-box {
+            display: none;
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: opacity 0.3s ease-in-out;
+            border: 1px solid #2C3E50;
+        }
+
+        .chat-box.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #2C3E50;
+            color: #ffffff;
+        }
+
+        .moderator-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .moderator-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .chat-header h5 {
+            margin: 0;
+            font-size: 16px;
+            color: #f0f0f0;
+        }
+
+        .close-chat {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 18px;
+            max-width: 80%;
+        }
+
+        .message.sent {
+            background-color: #3f51b5;
+            color: #ffffff;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .message.received {
+            background-color: #f0f0f0;
+            color: #2C3E50;
+            align-self: flex-start;
+        }
+
+        .chat-footer {
+            display: flex;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #2C3E50;
+        }
+
+        .chat-footer input {
+            flex-grow: 1;
+            border: 1px solid #2C3E50;
+            border-radius: 20px;
+            padding: 8px 15px;
+            margin-right: 10px;
+        }
+
+        .chat-footer button {
+            background-color: #3f51b5;
+            color: #ffffff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .chat-footer button:hover {
+            background-color: #1ABC9C;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-custom, .chat-footer button {
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover, .chat-footer button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .responsibility-card {
+            transition: all 0.3s ease;
+        }
+
+        .responsibility-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #1ABC9C, #16a085);
+            color: white;
+            border-bottom: none;
+            padding: 20px;
+        }
+
+        .modal-title {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .section-title {
+            color: #1ABC9C;
+            font-weight: 600;
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 20px;
+            background-color: #1ABC9C;
+            border-radius: 5px;
+        }
+
+        .info-card {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .agent-details, .supervisor-details {
+            margin-bottom: 30px;
+        }
+
+        .current-job-info {
+            background-color: #e8f8f5;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .job-status {
+            font-weight: 600;
+            color: #1ABC9C;
+        }
+
+        .job-selection-form {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .custom-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231ABC9C' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 30px;
+        }
+
+        .btn-primary {
+            background-color: #1ABC9C;
+            border-color: #1ABC9C;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #16a085;
+            border-color: #16a085;
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'agent_welcome' %}">
+                <img src="{% static 'images/airplane.gif' %}" alt="TBSC Logo" class="navbar-logo mr-2">
+            </a>
+            <div class="ml-auto d-flex align-items-center">
+                {% if profile_image_url %}
+                    <img src="{{ profile_image_url }}" alt="Agent Profile Image" class="agent-logo mr-2">
+                {% else %}
+                    <img src="{% static 'images/agent.gif' %}" alt="Default Profile Image" class="agent-logo mr-2">
+                {% endif %}
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="agent-name">{{ agent.first_name }} {{ agent.last_name }}</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'agent_profile_update' %}"><i class="fas fa-tasks"></i> Profile</a>
+                        <a class="dropdown-item" href="{% url 'agent_view_reports' %}"><i class="fas fa-user-cog"></i> Submitted Reports</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'signout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- end of navbar -->
+
+    <!-- Main Content -->
+    <div class="content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 welcome-container">
+                    <div class="welcome-header text-center mb-5">
+                        <h1 class="mb-4">Welcome, {{ agent.first_name }}!</h1>
+                        <p class="lead">We're thrilled to have you on board as an agent.</p>
+                    </div>
+                    <div class="welcome-body">
+                        <p class="lead text-center mb-5">As a valued member of our team, you play a crucial role in managing client relationships and ensuring timely service delivery. To ensure a smooth transition, please familiarize yourself with our key responsibilities:</p>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="responsibility-card">
+                                    <i class="fas fa-clipboard-check responsibility-icon"></i>
+                                    <h5>Accurate Reporting</h5>
+                                    <p>Ensure all reports are precise and based on firsthand information. Verify details before submitting.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="responsibility-card">
+                                    <i class="fas fa-bolt responsibility-icon"></i>
+                                    <h5>Timely Updates</h5>
+                                    <p>Report incidents promptly to facilitate swift action and ensure prompt response.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="responsibility-card">
+                                    <i class="fas fa-user-secret responsibility-icon"></i>
+                                    <h5>Confidentiality</h5>
+                                    <p>Safeguard sensitive information within the platform. Do not share reports externally.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="responsibility-card">
+                                    <i class="fas fa-comments responsibility-icon"></i>
+                                    <h5>Clear Communication</h5>
+                                    <p>Use concise language when describing incidents. Include all relevant details.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="responsibility-card">
+                                    <i class="fas fa-camera responsibility-icon"></i>
+                                    <h5>Photo Evidence</h5>
+                                    <p>Attach clear, relevant photos whenever possible to support your reports.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="responsibility-card">
+                                    <i class="fas fa-check-double responsibility-icon"></i>
+                                    <h5>Compliance</h5>
+                                    <p>Adhere to all platform guidelines and protocols when submitting reports.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-5">
+                            <a href="#" class="btn btn-custom mr-3" data-toggle="modal" data-target="#yourJobModal">Your Job</a>
+                            <a href="#" 
+                               class="btn btn-custom mr-3" 
+                               id="safetyReportBtn">
+                                Safety Notification Report
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end of main content -->
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="p-small">&copy; 2024 TBSC. All rights reserved.</p>
+    </footer>
+    <!-- end of footer -->
+
+    <!-- Scripts -->
+    <script src="{% static 'js1/jquery.min.js' %}"></script>
+    <script src="{% static 'js1/popper.min.js' %}"></script>
+    <script src="{% static 'js1/bootstrap.min.js' %}"></script>
+
+    <!-- Your Job Modal -->
+    <div class="modal fade" id="yourJobModal" tabindex="-1" role="dialog" aria-labelledby="yourJobModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="yourJobModalLabel">Your Job Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 agent-details">
+                            <h6 class="section-title">Agent Details</h6>
+                            <div class="info-card">
+                                <p><strong>Name:</strong> {{ agent.first_name }} {{ agent.last_name }}</p>
+                                <p><strong>Email:</strong> {{ agent.email }}</p>
+                                <p><strong>Phone:</strong> {{ agent.mobile }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 supervisor-details">
+                            <h6 class="section-title">Supervisor Details</h6>
+                            <div class="info-card">
+                                <p><strong>Supervisor:</strong> {{ moderator.first_name }} {{ moderator.last_name }}</p>
+                                <p><strong>Travel Company:</strong> {{ moderator.company }}</p>
+                                <p><strong>Email:</strong> {{ moderator.email }}</p>
+                                <p><strong>Phone:</strong> {{ moderator.mobile }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="currentJobInfo" class="current-job-info" style="display: none;">
+                        <h6 class="section-title">Current Job</h6>
+                        <div class="info-card">
+                            <p><strong>Route:</strong> <span id="currentRoute"></span></p>
+                            <p><strong>Stop:</strong> <span id="currentStop"></span></p>
+                            <p><strong>Arrival Date:</strong> <span id="arrivalDate"></span></p>
+                            <p id="jobStatus" class="job-status"></p>
+                        </div>
+                    </div>
+                    
+                    <div id="jobSelectionForm" class="job-selection-form" style="display: none;">
+                        <h6 class="section-title">Select New Job</h6>
+                        <div class="form-group">
+                            <label for="routeSelect">Select Route:</label>
+                            <select class="form-control custom-select" id="routeSelect">
+                                <option value="">Choose a route...</option>
+                                {% for route in bus_routes %}
+                                    <option value="{{ route.departure_location }}-{{ route.destination_location }}" data-date="{{ route.date|date:'Y-m-d' }}">
+                                        {{ route.departure_location }} to {{ route.destination_location }} ({{ route.date|date:'Y-m-d' }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" id="busStopsContainer" style="display: none;">
+                            <label for="busStopsSelect">Select Bus Stops:</label>
+                            <select class="form-control custom-select" id="busStopsSelect">
+                                <option value="">Choose bus stops...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" id="particularStopContainer" style="display: none;">
+                            <label for="particularStopSelect">Select Particular Stop:</label>
+                            <select class="form-control custom-select" id="particularStopSelect">
+                                <option value="">Choose a stop...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="jobRequestMessage" class="alert alert-info mt-3" style="display: none;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveChangesBtn">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Debug Information -->
+    <script>
+    $(document).ready(function() {
+    $('#routeSelect').change(function() {
+        var selectedRoute = $(this).val();
+        var selectedDate = $(this).find(':selected').data('date');
+        if (selectedRoute && selectedDate) {
+            var [departure, destination] = selectedRoute.split('-');
+            $.ajax({
+                url: '{% url "get_buses_with_stops" %}',
+                data: {
+                    'departure': departure,
+                    'destination': destination,
+                    'date': selectedDate
+                },
+                dataType: 'json',
+                success: function(data) {
+                    console.log("Received data:", data);  // Log the received data
+                    if (data.success) {
+                        $('#busStopsSelect').empty().append('<option value="">Choose bus stops...</option>');
+                        data.buses.forEach(function(bus) {
+                            $('#busStopsSelect').append(`<option value="${bus.id}">${bus.stops.join(', ')}</option>`);
+                        });
+                        $('#busStopsContainer').show();
+                        $('#particularStopContainer').hide();
+                    } else {
+                        console.error("Error:", data.message);  // Log any error message
+                        alert(data.message);
+                        $('#busStopsContainer').hide();
+                        $('#particularStopContainer').hide();
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX error:", textStatus, errorThrown);  // Log any AJAX errors
+                    alert('An error occurred while fetching bus data. Please try again.');
+                }
+            });
+        } else {
+            console.error("Missing route or date");
+            $('#busStopsContainer').hide();
+            $('#particularStopContainer').hide();
+        }
+    });
+
+        $('#busStopsSelect').change(function() {
+            var selectedBusId = $(this).val();
+            if (selectedBusId) {
+                var stops = $(this).find(':selected').text().split(', ');
+                $('#particularStopSelect').empty().append('<option value="">Choose a stop...</option>');
+                stops.forEach(function(stop) {
+                    $('#particularStopSelect').append(`<option value="${stop}">${stop}</option>`);
+                });
+                $('#particularStopContainer').show();
+            } else {
+                $('#particularStopContainer').hide();
+            }
+        });
+
+        // function checkCurrentJob() {
+        //     $.ajax({
+        //         url: '{% url "check_current_job" %}',
+        //         method: 'GET',
+        //         success: function(response) {
+        //             if (response.has_job) {
+        //                 $('#currentJobInfo').show();
+        //                 $('#currentRoute').text(response.route);
+        //                 $('#currentStop').text(response.stop);
+        //                 $('#arrivalDate').text(response.arrival_date);
+                        
+        //                 var arrivalDate = new Date(response.arrival_date);
+        //                 var currentDate = new Date();
+                        
+        //                 if (arrivalDate > currentDate) {
+        //                     $('#jobStatus').text('Your current job is still active.');
+        //                     $('#saveChangesBtn').prop('disabled', true);
+        //                     $('#jobSelectionForm').hide();
+        //                 } else {
+        //                     $('#jobStatus').text('Your previous job has ended. You can now select a new job.');
+        //                     $('#saveChangesBtn').prop('disabled', false);
+        //                     $('#jobSelectionForm').show();
+        //                     completeJob();  // Add this function call
+        //                 }
+        //             } else {
+        //                 $('#currentJobInfo').hide();
+        //                 $('#jobSelectionForm').show();
+        //                 $('#saveChangesBtn').prop('disabled', false);
+        //             }
+        //             updateSafetyReportButton(response.has_job);
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Error checking current job:", error);
+        //             alert('An error occurred while checking your current job status.');
+        //         }
+        //     });
+        // }
+
+        // Call checkCurrentJob when the modal is opened
+        $('#yourJobModal').on('show.bs.modal', function (e) {
+            checkCurrentJob();
+        });
+
+        // Also call checkCurrentJob periodically
+        $(document).ready(function() {
+            checkCurrentJob();
+            setInterval(checkCurrentJob, 60000); // Check every minute
+        });
+
+        $('#saveChangesBtn').click(function() {
+            var busId = $('#busStopsSelect').val();
+            var selectedStop = $('#particularStopSelect').val();
+
+            if (!busId || !selectedStop) {
+                alert('Please select a bus and a stop before saving.');
+                return;
+            }
+
+            $.ajax({
+                url: '{% url "save_agent_job" %}',
+                method: 'POST',
+                data: {
+                    'bus_id': busId,
+                    'selected_stop': selectedStop,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#jobRequestMessage').text(response.message).show();
+                        $('#saveChangesBtn').prop('disabled', true);
+                        checkCurrentJob();
+                    } else {
+                        alert('Error saving job: ' + response.error);
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while saving the job.');
+                }
+            });
+        });
+    });
+
+    function updateSafetyReportButton(hasJob) {
+        const safetyReportBtn = document.getElementById('safetyReportBtn');
+        if (hasJob) {
+            safetyReportBtn.removeAttribute('disabled');
+        } else {
+            safetyReportBtn.setAttribute('disabled', '');
+        }
+    }
+
+    function checkCurrentJob() {
+        $.ajax({
+            url: '{% url "check_current_job" %}',
+            method: 'GET',
+            success: function(response) {
+                if (response.has_job) {
+                    $('#currentJobInfo').show();
+                    $('#currentRoute').text(response.route);
+                    $('#currentStop').text(response.stop);
+                    $('#arrivalDate').text(response.arrival_date);
+                    
+                    var arrivalDate = new Date(response.arrival_date);
+                    var currentDate = new Date();
+                    
+                    if (arrivalDate > currentDate) {
+                        $('#jobStatus').text('Your current job is still active.');
+                        $('#saveChangesBtn').prop('disabled', true);
+                        $('#jobSelectionForm').hide();
+                    } else {
+                        $('#jobStatus').text('Your previous job has ended. You can now select a new job.');
+                        $('#saveChangesBtn').prop('disabled', false);
+                        $('#jobSelectionForm').show();
+                        completeJob();  // Add this function call
+                    }
+                } else {
+                    $('#currentJobInfo').hide();
+                    $('#jobSelectionForm').show();
+                    $('#saveChangesBtn').prop('disabled', false);
+                }
+                updateSafetyReportButton(response.has_job);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error checking current job:", error);
+            }
+        });
+    }
+
+    function completeJob() {
+        $.ajax({
+            url: '{% url "complete_job" %}',  // You'll need to add this URL
+            method: 'POST',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    console.log('Job marked as completed');
+                } else {
+                    console.error('Failed to mark job as completed:', response.error);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error completing job:", error);
+            }
+        });
+    }
+
+    // Call checkCurrentJob when the modal is opened
+    $('#yourJobModal').on('show.bs.modal', function (e) {
+        checkCurrentJob();
+    });
+
+    // Also call checkCurrentJob periodically
+    $(document).ready(function() {
+        checkCurrentJob();
+        setInterval(checkCurrentJob, 60000); // Check every minute
+    });
+    </script>
+
+    <!-- Chat Icon -->
+    <div id="chat-icon" class="chat-icon">
+        <i class="fas fa-comments"></i>
+    </div>
+
+    <!-- Chat Box -->
+    <div id="chat-box" class="chat-box">
+        <div class="chat-header">
+            <div class="moderator-info">
+                {% if moderator.profile_image %}
+                    <img src="{{ moderator.profile_image.url }}" alt="Moderator" class="moderator-avatar">
+                {% else %}
+                    <img src="{% static 'images/default_profile.png' %}" alt="Default Profile" class="moderator-avatar">
+                {% endif %}
+                <h5>{{ moderator.first_name }} {{ moderator.last_name }}</h5>
+            </div>
+            <button id="close-chat" class="close-chat">&times;</button>
+        </div>
+        <div id="chat-messages" class="chat-messages"></div>
+        <div class="chat-footer">
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <button id="send-message">Send</button>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            const chatIcon = $('#chat-icon');
+            const chatBox = $('#chat-box');
+            const closeChat = $('#close-chat');
+            const chatMessages = $('#chat-messages');
+            const messageInput = $('#message-input');
+            const sendMessage = $('#send-message');
+            let currentRecipientId = {{ moderator.user.id }};
+            let lastMessageId = 0;
+            let pollingInterval;
+
+            // Initially hide the chat box
+            chatBox.addClass('hidden');
+
+            chatIcon.click(function() {
+                chatBox.toggleClass('hidden');
+                if (!chatBox.hasClass('hidden')) {
+                    loadChatMessages();
+                    startPolling();
+                } else {
+                    stopPolling();
+                }
+            });
+
+            closeChat.click(function() {
+                chatBox.addClass('hidden');
+                stopPolling();
+            });
+
+            function startPolling() {
+                pollingInterval = setInterval(fetchNewMessages, 5000); // Poll every 5 seconds
+            }
+
+            function stopPolling() {
+                clearInterval(pollingInterval);
+            }
+
+            function fetchNewMessages() {
+                $.get('{% url "get_new_messages" %}', {
+                    other_user_id: currentRecipientId,
+                    last_message_id: lastMessageId
+                }, function(data) {
+                    if (data.status === 'success') {
+                        data.messages.forEach(msg => {
+                            const messageClass = msg.sender_id === {{ request.user.id }} ? 'sent' : 'received';
+                            chatMessages.append(`<div class="message ${messageClass}">${msg.content}</div>`);
+                            lastMessageId = msg.id;
+                        });
+                        if (data.messages.length > 0) {
+                            scrollToBottom();
+                        }
+                    }
+                });
+            }
+
+            function loadChatMessages() {
+                $.get('{% url "get_chat_messages" %}', { other_user_id: currentRecipientId }, function(data) {
+                    if (data.status === 'success') {
+                        chatMessages.empty();
+                        data.messages.forEach(msg => {
+                            const messageClass = msg.sender_id === {{ request.user.id }} ? 'sent' : 'received';
+                            chatMessages.append(`<div class="message ${messageClass}">${msg.content}</div>`);
+                            lastMessageId = msg.id;
+                        });
+                        scrollToBottom();
+                    }
+                });
+            }
+
+            function scrollToBottom() {
+                chatMessages.scrollTop(chatMessages[0].scrollHeight);
+            }
+
+            sendMessage.click(function() {
+                sendChatMessage();
+            });
+
+            messageInput.keypress(function(e) {
+                if (e.which == 13) {
+                    sendChatMessage();
+                }
+            });
+
+            function sendChatMessage() {
+                const content = messageInput.val().trim();
+                if (content) {
+                    $.post('{% url "send_chat_message" %}', {
+                        content: content,
+                        recipient_id: currentRecipientId,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    }, function(data) {
+                        if (data.status === 'success') {
+                            messageInput.val('');
+                            const newMessage = $(`<div class="message sent">${content}</div>`);
+                            chatMessages.append(newMessage);
+                            scrollToBottom();
+                            lastMessageId = data.message_id;
+                        } else {
+                            console.error('Error sending message:', data.message);
+                            alert('Failed to send message. Please try again.');
+                        }
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        console.error('AJAX error:', textStatus, errorThrown);
+                        alert('An error occurred while sending the message. Please try again.');
+                    });
+                }
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    $(document).ready(function() {
+        // ... existing code ...
+
+        $('#safetyReportBtn').click(function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: '{% url "check_current_job" %}',
+                method: 'GET',
+                success: function(response) {
+                    if (response.has_job) {
+                        window.location.href = '{% url "safety_notification_report" %}';
+                    } else {
+                        Swal.fire({
+                            title: 'No Active Job',
+                            text: 'Apply for a job to continue',
+                            icon: 'warning',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'An error occurred. Please try again.',
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+
+        // ... existing code ...
+    });
+    </script>
+</body>
+</html>
