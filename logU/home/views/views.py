@@ -70,12 +70,12 @@ def deactivate_customer(request, customer_id):
 def logout_required(view_func):
     def wrapped_view(request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect('welcome')  # Redirect to welcome page if user is authenticated
+            return redirect('index')  # Redirect to welcome page if user is authenticated
         return view_func(request, *args, **kwargs)
     return wrapped_view
 
 
-@logout_required
+
 def index(request):
     return render(request, 'index.html')
 
@@ -92,7 +92,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
+@login_required
 def welcomePage(request):
     if request.user.is_authenticated:
         try:
@@ -411,7 +411,7 @@ def mod_reg(request):
 
 
 
-
+@login_required
 def mod_sch(request):
     try:
         moderator = Moderator.objects.get(user=request.user)

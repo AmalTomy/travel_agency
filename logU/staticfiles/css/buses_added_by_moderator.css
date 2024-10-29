@@ -1,0 +1,451 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.stat-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.header-nav {
+    display: flex;
+    align-items: center;
+}
+
+.header-nav .nav-link {
+    position: relative;
+    padding: 0.5rem 1rem;
+    margin-right: 15px; /* Adjust spacing between items */
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.header-nav .nav-link.active {
+    background-color: rgba(0, 123, 255, 0.1); /* Light blue background */
+    color: #007bff; /* Blue text color */
+}
+
+.header-nav .nav-link.active::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 123, 255, 0.2); /* Semi-transparent overlay */
+    z-index: -1;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+header .d-flex {
+    margin-left: auto; /* Pushes the header content to the right */
+}
+
+.alert {
+    display: flex;
+    align-items: center;
+    padding-right: 177px;
+}
+
+/* Centering the welcome message */
+.welcome-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh; /* Adjust height as needed */
+    text-align: center;
+}
+
+/* Fade-in writing animation */
+.welcome-message {
+    font-size: 2rem;
+    opacity: 0;
+    animation: fadeInWrite 3s forwards;
+}
+
+@keyframes fadeInWrite {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Add these new styles */
+.bus-row {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.bus-row:hover {
+    background-color: #f0f8ff;
+}
+
+.bus-details {
+    position: absolute;
+    right: 100%;
+    top: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.bus-row:hover .bus-details {
+    right: 0;
+    opacity: 1;
+}
+
+/* Modal styles */
+.modal-content {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    color: white;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+.driver-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.driver-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #6e8efb;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+.driver-image:hover {
+    transform: scale(1.05);
+}
+
+.driver-details {
+    text-align: center;
+}
+
+.driver-name {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.driver-contact {
+    font-size: 1.1em;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.license-btn {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: inline-block;
+    margin-top: 15px;
+}
+
+.license-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Modal animation */
+.modal.fade .modal-dialog {
+    transform: scale(0.7);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.bus-card {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.bus-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.bus-card .card-title {
+    color: #000000;
+    font-weight: bold;
+}
+
+.bus-card .card-subtitle {
+    font-size: 0.9rem;
+}
+
+.bus-card .card-text {
+    font-size: 0.95rem;
+}
+
+.status-badge {
+    display: inline-block;
+}
+
+.status-badge .badge {
+    font-size: 0.8rem;
+    padding: 0.4em 0.6em;
+}
+
+.bus-card .card-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+}
+
+.bus-card .btn-sm {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+#bookingsModal .modal-content {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+#bookingsModal .modal-header {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    color: white;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.booking-card {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.booking-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+#bookingsModal .modal-dialog {
+    max-width: 800px;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#bookingsModal.show .modal-content {
+    animation: fadeInScale 0.3s ease-out forwards;
+}
+
+.filter-sort-container {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+}
+
+.filter-sort-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+.filter-sort-container h5 {
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.btn-group {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+.btn-group .btn {
+    border: none;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-group .btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-group .btn.active {
+    background-color: #007bff;
+    color: white;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animated {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* Add these styles at the end of the file */
+
+#rescheduleSuccessModal .modal-content {
+    background-color: #f8f9fa;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.success-animation {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+}
+
+.bus-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 60px;
+    color: #007bff;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.5s ease-out;
+}
+
+.checkmark-circle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 2;
+    stroke: #7ac142;
+    fill: none;
+    opacity: 0;
+    transition: all 0.5s ease-out;
+}
+
+.checkmark {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 2;
+    stroke: #fff;
+    stroke-miterlimit: 10;
+    margin: 22px auto;
+    box-shadow: inset 0px 0px 0px #7ac142;
+}
+
+.checkmark.draw:after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    background-color: #7ac142;
+    transform: scale(0);
+    transition: all 0.3s ease-out;
+}
+
+.success-animation.animate .bus-icon {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.success-animation.animate .checkmark-circle {
+    opacity: 1;
+    stroke-dashoffset: 0;
+    animation: scale 0.3s ease-out 0.5s both;
+}
+
+.success-animation.animate .checkmark.draw:after {
+    animation: fill 0.3s ease-out 0.7s forwards, scale 0.3s ease-out 0.7s both;
+}
+
+@keyframes scale {
+    0%, 100% {
+        transform: none;
+    }
+    50% {
+        transform: scale3d(1.1, 1.1, 1);
+    }
+}
+
+@keyframes fill {
+    100% {
+        box-shadow: inset 0px 0px 0px 30px #7ac142;
+    }
+}
