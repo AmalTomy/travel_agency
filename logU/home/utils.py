@@ -26,25 +26,38 @@ def render_to_pdf(template_src, context_dict={}):
         return result.getvalue()
     return None
 
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing.image import img_to_array
-from PIL import Image
-import numpy as np
-import os
-
-# Load the trained model
-weather_model = load_model(settings.BASE_DIR / 'weather_classification_model.keras')
-
-# Get class names from the training directory
-train_dir = 'D:/project/dataset/train'
-weather_classes = sorted(os.listdir(train_dir))
-
 def classify_weather(image_path):
-    img = Image.open(image_path).resize((224, 224))
-    img_array = img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0)
-    img_array /= 255.0
+    """Lazy loading of TensorFlow and model only when needed"""
+    try:
+        # Import TensorFlow only when function is called
+        import tensorflow as tf
+        from tensorflow.keras.preprocessing.image import img_to_array
+        from PIL import Image
+        import numpy as np
+        from django.conf import settings
+        import os
 
-    prediction = weather_model.predict(img_array)
-    predicted_class = weather_classes[np.argmax(prediction)]
-    return predicted_class
+        # Load model only when needed
+        model_path = settings.BASE_DIR / 'weather_classification_model.keras'
+        if not hasattr(classify_weather, 'model'):
+            classify_weather.model = tf.keras.models.load_model(model_path)
+            
+        # Get class names
+        train_dir = 'D:/project/dataset/train'
+        if not hasattr(classify_weather, 'weather_classes'):
+            classify_weather.weather_classes = sorted(os.listdir(train_dir))
+
+        # Process image
+        img = Image.open(image_path).resize((224, 224))
+        img_array = img_to_array(img)
+        img_array = np.expand_dims(img_array, axis=0)
+        img_array /= 255.0
+
+        # Predict
+        prediction = classify_weather.model.predict(img_array)
+        predicted_class = classify_weather.weather_classes[np.argmax(prediction)]
+        return predicted_class
+
+    except Exception as e:
+        print(f"Error in weather classification: {str(e)}")
+        return "Unknown"

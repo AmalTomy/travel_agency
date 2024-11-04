@@ -19,10 +19,10 @@ from django.core.files.storage import default_storage
 from django.core.paginator import Paginator
 from django.db.models import Q
 from home.models import TravelReport, ReportPhoto
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing.image import img_to_array
-from PIL import Image
-import numpy as np
+# from tensorflow.keras.models import load_model
+# from tensorflow.keras.preprocessing.image import img_to_array
+# from PIL import Image
+# import numpy as np
 from home.models import TravelReport, ReportPhoto  # Add ReportPhoto here
 from django.db import transaction
 import os
@@ -40,21 +40,13 @@ from home.models import Bus, BusReschedule
 from django.utils import timezone
 
 # Load the trained model
-weather_model = load_model(settings.BASE_DIR / 'weather_classification_model.keras')
+# weather_model = load_model(settings.BASE_DIR / 'weather_classification_model.keras')
 
-# Get class names from the training directory
-train_dir = 'D:/project/dataset/train'
-weather_classes = sorted(os.listdir(train_dir))
+# # Get class names from the training directory
+# train_dir = 'D:/project/dataset/train'
+# weather_classes = sorted(os.listdir(train_dir))
 
-def classify_weather(image_path):
-    img = Image.open(image_path).resize((224, 224))
-    img_array = img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0)
-    img_array /= 255.0
 
-    prediction = weather_model.predict(img_array)
-    predicted_class = weather_classes[np.argmax(prediction)]
-    return predicted_class
 
 
 def toggle_moderator_status(request, moderator_id):
@@ -202,7 +194,7 @@ def submit_travel_report(request):
         if form.is_valid():
             report = form.save(commit=False)
             report.user = request.user
-            report.status = 'Pending'  # Set status to Pending
+            report.status = 'Pending'
             report.save()
             
             weather_classification = None
@@ -211,17 +203,12 @@ def submit_travel_report(request):
                 photo = ReportPhoto(report=report, image=image)
                 photo.save()
                 
-                # Classify the weather in the image
-                image_path = photo.image.path
-                weather_classification = classify_weather(image_path)
+                # Use the utility function
+                from home.utils import classify_weather
+                weather_classification = classify_weather(photo.image.path)
                 photo.classification = weather_classification
                 photo.save()
                 
-                print(f"Photo saved: {photo.image.url}")
-                print(f"Weather classification: {weather_classification}")
-            else:
-                print("No image uploaded")
-            
             return JsonResponse({
                 'success': True,
                 'weather_classification': weather_classification
