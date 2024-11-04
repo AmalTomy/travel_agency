@@ -40,7 +40,7 @@ from home.models import Bus, BusReschedule
 from django.utils import timezone
 
 # Load the trained model
-weather_model = load_model('D:/project/logU/weather_classification_model.keras')
+weather_model = load_model(settings.BASE_DIR / 'weather_classification_model.keras')
 
 # Get class names from the training directory
 train_dir = 'D:/project/dataset/train'

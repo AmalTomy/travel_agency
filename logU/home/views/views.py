@@ -75,7 +75,6 @@ def logout_required(view_func):
     return wrapped_view
 
 
-
 def index(request):
     return render(request, 'index.html')
 
@@ -126,7 +125,7 @@ def get_safety_alerts(request):
     return JsonResponse({'has_alerts': False})
 
 
-@logout_required
+# @logout_required
 def loginn(request):
     if request.method == 'POST':
         email = request.POST.get('email')
